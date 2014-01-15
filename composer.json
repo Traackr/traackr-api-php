@@ -24,5 +24,10 @@
   },
   "config": {
     "bin-dir": "bin"
+  },
+  "autoload": {
+    "psr-0": {
+      "TraacrkApi": "lib"
+    }
   }
 }

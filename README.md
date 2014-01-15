@@ -32,6 +32,8 @@ You include this library with:
 
 	require_once('lib/TraackrApi.php');
 
+If you are using Componser the autoload functionality should automatically load the appropriate PHP files (i.e. `require 'vendor/autoload.php'` will load the library files).
+
 ### Set your API key ###
 
 To set your API key use:
