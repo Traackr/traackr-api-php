@@ -1,5 +1,7 @@
 <?php
 
+namespace Traackr;
+
 abstract class TraackrApiObject {
 
    public static $connectionTimeout = 10;

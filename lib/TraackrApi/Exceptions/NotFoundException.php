@@ -1,5 +1,7 @@
 <?php
 
+namespace Traackr;
+
 class NotFoundException extends TraackrApiException {
 
 

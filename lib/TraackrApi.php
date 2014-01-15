@@ -1,5 +1,7 @@
 <?php
 
+namespace Traackr;
+
 // Objects
 require(dirname(__FILE__) . '/TraackrApi/TraackrApiObject.php');
 require(dirname(__FILE__) . '/TraackrApi/Influencers.php');
@@ -24,7 +26,7 @@ final class TraackrApi {
 
    private static $customerKey = '';
 
-   private static $jsonOutput = true;
+   private static $jsonOutput = false;
 
    public function __construct() {
 

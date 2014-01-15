@@ -1,4 +1,6 @@
-<?
+<?php
+
+namespace Traackr;
 
 class Influencers extends TraackrApiObject {
 
