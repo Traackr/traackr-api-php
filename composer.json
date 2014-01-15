@@ -26,8 +26,6 @@
     "bin-dir": "bin"
   },
   "autoload": {
-    "psr-0": {
-      "TraackrApi": "lib"
-    }
+    "files": [ "lib/TraackrApi.php"]
   }
 }
