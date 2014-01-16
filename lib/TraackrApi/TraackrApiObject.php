@@ -21,6 +21,7 @@ abstract class TraackrApiObject {
 
       // Adding some headers to force no caching.
       $curl_headers = array(
+            "accept-charset" => "utf-8",
             "Cache-Control: no-cache",
             "Pragma: no-cache",
             //some proxies throw a "417" error for CURL calls; CURL is supposed
