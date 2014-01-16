@@ -29,14 +29,16 @@ class Influencers extends TraackrApiObject {
    /*
     * Returns an infuencer's connections
     */
-   public static function connections($direction = 'to', $uid) {
+   public static function connections($uid, $direction = '') {
 
       if ( empty($uid) ) {
          throw new MissingParameterException("Missing Influencer UID parameter");
       }
 
+      $uid = is_array($uid) ? implode(',', $uid) : $uid;
+      $direction = empty($direction) ? '' : $direction.'/';
       $inf = new Influencers();
-      return $inf->get(TraackrApi::$apiBaseUrl.'influencers/connections/'.$direction.'/'.$uid,
+      return $inf->get(TraackrApi::$apiBaseUrl.'influencers/connections/'.$direction.$uid,
          array());
 
    } // End function connections()

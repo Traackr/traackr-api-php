@@ -114,22 +114,97 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
    } // End function testShowMissingParameter()
 
 
-   // public function testConnections() {
+   public function testConnections() {
 
-   //    // Ensure JSON output
-   //    Traackr\TraackrApi::setJsonOutput(true);
+      // Ensure JSON output
+      Traackr\TraackrApi::setJsonOutput(true);
 
-   //    $this->assertJsonStringEqualsJsonString(
-   //       '{"influencer":{"1395be8293373465ab172b8b1b677e31":{"uid":"1395be8293373465ab172b8b1b677e31","connections_to":[{"type":"TRAACKR","native_id":"ae1955b0f92037c895e5bfdd259a1304","connection_score":"92","connection_metrics":{"mention_percent_frequency":"0.08","retweet_percent_frequency":"0.0","mention_frequency":"7","mention_count":"13","retweet_frequency":"0","retweet_count":"0"}},{"type":"TWITTER_USER","native_id":"influence_this","connection_score":"25","connection_metrics":{"mention_percent_frequency":"0.06","retweet_percent_frequency":"0.0","mention_frequency":"5","mention_count":"5","retweet_frequency":"0","retweet_count":"0"}}]}}}',
-   //       Traackr\Influencers::connections('to', $this->infUid)
-   //    );
+      $this->assertJsonStringEqualsJsonString(
+         '{
+           "influencer":{
+             "1395be8293373465ab172b8b1b677e31":{
+               "uid":"1395be8293373465ab172b8b1b677e31",
+               "connections_to":[{
+                 "type":"TRAACKR",
+                 "native_id":"ae1955b0f92037c895e5bfdd259a1304",
+                 "connection_score":"199",
+                 "connection_metrics":{
+                   "mention_percent_frequency":"0.12",
+                   "retweet_percent_frequency":"0.0",
+                   "mention_frequency":"11",
+                   "mention_count":"18",
+                   "retweet_frequency":"0",
+                   "retweet_count":"0"
+                 }
+               },{
+                 "type":"TWITTER_USER",
+                 "native_id":"influence_this",
+                 "connection_score":"16",
+                 "connection_metrics":{
+                   "mention_percent_frequency":"0.04",
+                   "retweet_percent_frequency":"0.0",
+                   "mention_frequency":"4",
+                   "mention_count":"4",
+                   "retweet_frequency":"0",
+                   "retweet_count":"0"
+                 }
+               }]
+             }
+           }
+         }',
+         Traackr\Influencers::connections($this->infUid, 'to')
+      );
 
-   //    $this->assertJsonStringEqualsJsonString(
-   //       '{"influencer":{"1395be8293373465ab172b8b1b677e31":{"uid":"1395be8293373465ab172b8b1b677e31","connections_from":[]}}}',
-   //       Traackr\Influencers::connections('from', $this->infUid)
-   //    );
+      $this->assertJsonStringEqualsJsonString(
+         '{
+           "influencer":{
+             "1395be8293373465ab172b8b1b677e31":{
+               "uid":"1395be8293373465ab172b8b1b677e31",
+               "connections_from":[]
+             }
+           }
+         }',
+         Traackr\Influencers::connections($this->infUid, 'from')
+      );
 
-   // } // End function testConnections
+      $this->assertJsonStringEqualsJsonString(
+         '{
+           "influencer":{
+             "1395be8293373465ab172b8b1b677e31":{
+               "uid":"1395be8293373465ab172b8b1b677e31",
+               "connections_to":[{
+                 "type":"TRAACKR",
+                 "native_id":"ae1955b0f92037c895e5bfdd259a1304",
+                 "connection_score":"199",
+                 "connection_metrics":{
+                   "mention_percent_frequency":"0.12",
+                   "retweet_percent_frequency":"0.0",
+                   "mention_frequency":"11",
+                   "mention_count":"18",
+                   "retweet_frequency":"0",
+                   "retweet_count":"0"
+                 }
+               },{
+                 "type":"TWITTER_USER",
+                 "native_id":"influence_this",
+                 "connection_score":"16",
+                 "connection_metrics":{
+                   "mention_percent_frequency":"0.04",
+                   "retweet_percent_frequency":"0.0",
+                   "mention_frequency":"4",
+                   "mention_count":"4",
+                   "retweet_frequency":"0",
+                   "retweet_count":"0"
+                 }
+               }],
+               "connections_from":[]
+             }
+           }
+         }',
+         Traackr\Influencers::connections($this->infUid)
+      );
+
+   } // End function testConnections
 
    /**
     * @expectedException Traackr\NotFoundException
@@ -148,13 +223,40 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
       Traackr\TraackrApi::setJsonOutput(true);
 
       $this->assertJsonStringEqualsJsonString(
-         '{"influencer":{"dchancogne":{"uid":"1395be8293373465ab172b8b1b677e31","name":"David Chancogne","description":"Web. Geek: http://traackr-people.tumblr.com. Traackr: http://traackr.com. Propz: http://propz.me","primary_affiliation":"Traackr","title":"CTO","location":"Cambridge, MA, United States","email":"dchancogne@traackr.com","thumbnail_url":"http://pbs.twimg.com/profile_images/2678827459/a1d9ca2d94e329636cc753133b98525a.png","avatar":{"large":"http://pbs.twimg.com/profile_images/2678827459/a1d9ca2d94e329636cc753133b98525a.png","medium":"http://pbs.twimg.com/profile_images/2678827459/a1d9ca2d94e329636cc753133b98525a_bigger.png","small":"http://pbs.twimg.com/profile_images/2678827459/a1d9ca2d94e329636cc753133b98525a_normal.png"},"reach":"0.24","resonance":"0.57"}}}',
+         '{
+           "influencer":{
+             "dchancogne":{
+               "uid":"1395be8293373465ab172b8b1b677e31",
+               "name":"David Chancogne",
+               "description":"Web. Geek: http://traackr-people.tumblr.com. Traackr: http://traackr.com. Propz: http://propz.me",
+               "primary_affiliation":"Traackr",
+               "title":"CTO",
+               "location":"Cambridge, MA, United States",
+               "email":"dchancogne@traackr.com",
+               "thumbnail_url":"http://pbs.twimg.com/profile_images/2678827459/a1d9ca2d94e329636cc753133b98525a.png",
+               "avatar":{
+                 "large":"http://pbs.twimg.com/profile_images/2678827459/a1d9ca2d94e329636cc753133b98525a.png",
+                 "medium":"http://pbs.twimg.com/profile_images/2678827459/a1d9ca2d94e329636cc753133b98525a_bigger.png",
+                 "small":"http://pbs.twimg.com/profile_images/2678827459/a1d9ca2d94e329636cc753133b98525a_normal.png"
+               },
+               "reach":"0.24",
+               "resonance":"0.57"
+             }
+           }
+         }',
          Traackr\Influencers::lookupTwitter('dchancogne')
       );
-      // $this->assertJsonStringEqualsJsonString(
-      //    Influencers::show('1395be8293373465ab172b8b1b677e31'),
-      //    Influencers::lookupTwitter('dchancogne')
-      // );
+
+      // NOTE
+      // Disable customer key so that 'show' doe not return tags b/c lookupTwitter doesn't currently
+      Traackr\TraackrApi::setCustomerKey('');
+      Traackr\TraackrApi::setJsonOutput(false);
+      $inf = Traackr\Influencers::show($this->infUid);
+      $twitter = Traackr\Influencers::lookupTwitter('dchancogne');
+      $this->assertJsonStringEqualsJsonString(
+         json_encode($inf['influencer'][$this->infUid]),
+         json_encode($twitter['influencer']['dchancogne'])
+      );
 
    } // End function testLookupTwitter()
 
