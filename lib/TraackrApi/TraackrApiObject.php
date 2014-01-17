@@ -61,22 +61,24 @@ abstract class TraackrApiObject {
          "Accept: text/plain"
       ));
       $curl_exec = curl_exec($this->curl);
-      if($curl_exec === false) {
+      if( $curl_exec === false ) {
          // $this->log('cUrl error: '.curl_error($this->ch), LOG_WARNING);
-         throw new TraackrApiException();
+         $info = curl_getinfo($this->curl);
+         throw new TraackrApiException('API call failed ('.$info['url'].'): '.curl_error($this->curl));
       }
       if ( is_null($curl_exec) ) {
          // $this->log('cUrl error: Return was null', LOG_WARNING);
-         throw new TraackrApiException();
+         throw new TraackrApiException('API call failed. Response was null.');
       }
       $httpcode = curl_getinfo($this->curl, CURLINFO_HTTP_CODE);
       if( $httpcode != "200" ) {
          // $this->log('cUrl HTTP error: '.$httpcode, LOG_WARNING);
          if ( $httpcode == "404" ) {
-            throw new NotFoundException();
+            $info = curl_getinfo($this->curl);
+            throw new NotFoundException('API resource not found: '.$info['url']);
          }
          else {
-            throw new TraackrApiException('API Error returned: '.$httpcode);
+            throw new TraackrApiException('API HTTP Error: '.$httpcode);
          }
          return false;
       }
@@ -88,8 +90,6 @@ abstract class TraackrApiObject {
       else {
          $rez = $curl_exec;
       }
-
-      // json_decode() might return null on error
       return is_null($rez)? false : $rez;
 
    } // End function call()

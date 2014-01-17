@@ -85,6 +85,9 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
       $inf = Traackr\Influencers::show($this->infUid, true);
       $this->assertTrue(isset($inf['influencer'][$this->infUid]['channels']),
          'Channels not returned');
+      $twitter = array_values(array_filter($inf['influencer'][$this->infUid]['channels'],
+         function($elm) { return $elm['root_domain'] == 'twitter';}));
+      $this->assertEquals('http://twitter.com/dchancogne', $twitter[0]['url']);
 
       $infs = Traackr\Influencers::show(array($this->infUid, $this->infUid2));
       $this->assertCount(2, $infs['influencer'],
