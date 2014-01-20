@@ -34,11 +34,22 @@ abstract class TraackrApiObject {
 
    } // End constructor
 
+   protected function checkRequiredParams($params, $fields) {
+
+      foreach ($fields as $f) {
+
+         if ( empty($params[$f]) && !(isset($params[$f]) && is_bool($params[$f])) ) {
+            throw new MissingParameterException('Missing parameter: '.$f);
+         }
+
+      } // End fields loop
+
+   } // End function checkRequiredParams()
 
    protected function addCustomerKey(&$params) {
 
       $key = TraackrApi::getCustomerKey();
-      if ( !empty($key) ) {
+      if ( !empty($key) && empty($params[PARAM_CUSTOMER_KEY]) ) {
          $params[PARAM_CUSTOMER_KEY] = $key;
       }
       return $params;

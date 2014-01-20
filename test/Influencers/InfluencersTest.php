@@ -6,6 +6,7 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
 
    private $infUid = '1395be8293373465ab172b8b1b677e31';
    private $infTag = 'traackr-api-test';
+   private $infName = 'David Chancogne';
 
    private $infUid2 = 'ae1955b0f92037c895e5bfdd259a1304';
 
@@ -82,7 +83,7 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
       $this->assertEquals('David Chancogne', $inf['influencer'][$this->infUid]['name'],
          'Unable to find matching "name" field');
 
-      $inf = Traackr\Influencers::show($this->infUid, true);
+      $inf = Traackr\Influencers::show($this->infUid, array('with_channels' => true) );
       $this->assertTrue(isset($inf['influencer'][$this->infUid]['channels']),
          'Channels not returned');
       $twitter = array_values(array_filter($inf['influencer'][$this->infUid]['channels'],
@@ -278,12 +279,61 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
       $inf = Traackr\Influencers::show($this->infUid);
       $this->assertCount(0, $inf['influencer'][$this->infUid]['tags']);
 
-      Traackr\Influencers::tagAdd($this->infUid, $this->infTag);
+      Traackr\Influencers::tagAdd(array(
+         'influencers' => $this->infUid,
+         'tags' => $this->infTag));
       $inf = Traackr\Influencers::show($this->infUid);
       $this->assertCount(1, $inf['influencer'][$this->infUid]['tags']);
       $this->assertTrue(in_array($this->infTag, $inf['influencer'][$this->infUid]['tags']));
 
-      Traackr\Influencers::tagRemove($this->infUid, $this->infTag);
+      Traackr\Influencers::tagRemove(array(
+         'influencers' => $this->infUid,
+         'tags' => $this->infTag));
+
+      $inf = Traackr\Influencers::show($this->infUid);
+      $this->assertCount(0, $inf['influencer'][$this->infUid]['tags']);
+      $inf2 = Traackr\Influencers::show($this->infUid2);
+      $this->assertCount(0, $inf2['influencer'][$this->infUid2]['tags']);
+
+      Traackr\Influencers::tagAdd(array(
+         'influencers' => array($this->infUid, $this->infUid2),
+         'tags' => $this->infTag));
+      $inf = Traackr\Influencers::show($this->infUid);
+      $this->assertCount(1, $inf['influencer'][$this->infUid]['tags']);
+      $this->assertTrue(in_array($this->infTag, $inf['influencer'][$this->infUid]['tags']));
+      $inf2 = Traackr\Influencers::show($this->infUid2);
+      $this->assertCount(1, $inf2['influencer'][$this->infUid2]['tags']);
+      $this->assertTrue(in_array($this->infTag, $inf2['influencer'][$this->infUid2]['tags']));
+
+      Traackr\Influencers::tagRemove(array(
+         'influencers' => $this->infUid,
+         'tags' => $this->infTag));
+      Traackr\Influencers::tagRemove(array(
+         'influencers' => $this->infUid2,
+         'tags' => $this->infTag));
+
+      $inf = Traackr\Influencers::show($this->infUid);
+      $this->assertCount(0, $inf['influencer'][$this->infUid]['tags']);
+      $inf2 = Traackr\Influencers::show($this->infUid2);
+      $this->assertCount(0, $inf2['influencer'][$this->infUid2]['tags']);
+
+      Traackr\Influencers::tagAdd(array(
+         'influencers' => $this->infUid.','.$this->infUid2,
+         'tags' => $this->infTag));
+      $inf = Traackr\Influencers::show($this->infUid);
+      $this->assertCount(1, $inf['influencer'][$this->infUid]['tags']);
+      $this->assertTrue(in_array($this->infTag, $inf['influencer'][$this->infUid]['tags']));
+      $inf2 = Traackr\Influencers::show($this->infUid2);
+      $this->assertCount(1, $inf2['influencer'][$this->infUid2]['tags']);
+      $this->assertTrue(in_array($this->infTag, $inf2['influencer'][$this->infUid2]['tags']));
+
+      Traackr\Influencers::tagRemove(array(
+         'influencers' => $this->infUid,
+         'tags' => $this->infTag));
+      Traackr\Influencers::tagRemove(array(
+         'influencers' => $this->infUid2,
+         'tags' => $this->infTag));
+
 
    } // End function testTagAdd()
 
@@ -292,8 +342,12 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
       $inf = Traackr\Influencers::show($this->infUid);
       $this->assertCount(0, $inf['influencer'][$this->infUid]['tags']);
 
-      Traackr\Influencers::tagAdd($this->infUid, $this->infTag);
-      Traackr\Influencers::tagRemove($this->infUid, $this->infTag);
+      Traackr\Influencers::tagAdd(array(
+         'influencers' => $this->infUid,
+         'tags' => $this->infTag));
+      Traackr\Influencers::tagRemove(array(
+         'influencers' => $this->infUid,
+         'tags' => $this->infTag));
       $this->assertCount(0, $inf['influencer'][$this->infUid]['tags']);
       $this->assertTrue(!in_array($this->infTag, $inf['influencer'][$this->infUid]['tags']));
 
@@ -301,15 +355,76 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
 
    public function testTagList() {
 
-      $infs = Traackr\Influencers::tagList('SomeRandomTagNeverUser');
+      $infs = Traackr\Influencers::tagList(array('tag' => 'SomeRandomTagNeverUser'));
       $this->assertCount(0, $infs['influencers']);
 
-      Traackr\Influencers::tagAdd($this->infUid, $this->infTag);
-      $infs = Traackr\Influencers::tagList($this->infTag);
+      Traackr\Influencers::tagAdd(array(
+         'influencers' => $this->infUid,
+         'tags' => $this->infTag));
+      $infs = Traackr\Influencers::tagList(array('tag' => $this->infTag));
       $this->assertCount(1, $infs['influencers']);
       $this->assertTrue(in_array($this->infUid, $infs['influencers']));
-      Traackr\Influencers::tagRemove($this->infUid, $this->infTag);
+      Traackr\Influencers::tagRemove(array(
+         'influencers' => $this->infUid,
+         'tags' => $this->infTag));
 
    } // End function testTagList()
+
+   public function testLookup() {
+
+      $inf = Traackr\Influencers::lookup(array('name' => $this->infName));
+      $this->assertTrue(isset($inf['page_info']), 'No paging info');
+      $this->assertCount(1, $inf['influencers'], 'Found multiple results');
+      $this->assertEquals($this->infUid, $inf['influencers'][0]['uid'], 'Invalid influencer/UID found');
+
+      $inf = Traackr\Influencers::lookup(array('name' => 'xxxXXXxxx'));
+      $this->assertCount(0, $inf['influencers'], 'Results found');
+
+      // Ensure JSON output
+      Traackr\TraackrApi::setJsonOutput(true);
+      $this->assertJsonStringEqualsJsonString(
+         '{
+           "page_info":{
+             "has_more":false,
+             "current_page":0,
+             "next_page":0,
+             "page_count":25,
+             "results_count":1,
+             "total_results_count":1
+           },
+           "influencers":[{
+             "uid":"1395be8293373465ab172b8b1b677e31",
+             "name":"David Chancogne",
+             "description":"Web. Geek: http://traackr-people.tumblr.com. Traackr: http://traackr.com. Propz: http://propz.me",
+             "primary_affiliation":"Traackr",
+             "title":"CTO",
+             "location":"Cambridge, MA, United States",
+             "email":"dchancogne@traackr.com",
+             "thumbnail_url":"http://pbs.twimg.com/profile_images/2678827459/a1d9ca2d94e329636cc753133b98525a.png",
+             "avatar":{
+               "large":"http://pbs.twimg.com/profile_images/2678827459/a1d9ca2d94e329636cc753133b98525a.png",
+               "medium":"http://pbs.twimg.com/profile_images/2678827459/a1d9ca2d94e329636cc753133b98525a_bigger.png",
+               "small":"http://pbs.twimg.com/profile_images/2678827459/a1d9ca2d94e329636cc753133b98525a_normal.png"
+             },
+             "reach":"0.24",
+             "resonance":"0.57",
+             "relevance":"0.0"
+           }]
+         }',
+         Traackr\Influencers::lookup(array('name' => $this->infName)),
+         'Record not extact'
+      );
+
+   } // End function testLookup()
+
+   public function testSearch() {
+
+      $inf = Traackr\Influencers::search(array('keywords' => 'traackr'));
+      $this->assertGreaterThan(0, $inf['influencers'], 'No results found');
+
+      $inf = Traackr\Influencers::search(array('keywords' => 'xxxaaaxxx'));
+      $this->assertCount(0, $inf['influencers'], 'Results found');
+
+   } // End fucntion testSearch()
 
 } // End class InfluencersTest
