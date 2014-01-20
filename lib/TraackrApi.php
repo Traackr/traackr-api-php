@@ -6,6 +6,8 @@ namespace Traackr;
 require(dirname(__FILE__) . '/TraackrApi/TraackrApiObject.php');
 require(dirname(__FILE__) . '/TraackrApi/Influencers.php');
 require(dirname(__FILE__) . '/TraackrApi/Posts.php');
+require(dirname(__FILE__) . '/TraackrApi/Analysis.php');
+require(dirname(__FILE__) . '/TraackrApi/AccountMgmt.php');
 
 // Exceptions
 require(dirname(__FILE__) . '/TraackrApi/Exceptions/TraackrApiException.php');
