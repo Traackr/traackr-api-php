@@ -31,6 +31,7 @@ abstract class TraackrApiObject {
             "Expect:"
         );
         curl_setopt($this->curl, CURLOPT_HTTPHEADER, $curl_headers);
+        curl_setopt($this->curl,CURLOPT_ENCODING , "gzip;q=1.0, deflate;q=0.5, identity;q=0");
 
    } // End constructor
 
