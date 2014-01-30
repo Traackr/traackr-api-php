@@ -5,8 +5,8 @@ namespace Traackr;
 class Influencers extends TraackrApiObject {
 
    /*
-    * Get an influencer data. See second parameter to get channel info in
-    * the response
+    * Get an influencer data.
+    *
     */
    public static function show($uid, $p = array('with_channel' => false)) {
 
@@ -76,7 +76,7 @@ class Influencers extends TraackrApiObject {
          $p['tags'] = is_array($p['tags']) ? implode(',', $p['tags']) : $p['tags'];
       }
 
-      return $inf->post(TraackrApi::$apiBaseUrl.'add/twitter', $p);
+      return $inf->post(TraackrApi::$apiBaseUrl.'influencers/add/twitter', $p);
 
    } // End function attTwitter()
 
