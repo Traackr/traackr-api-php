@@ -110,11 +110,19 @@ class Influencers extends TraackrApiObject {
       $p['all'] = empty($p['all']) ? 'false' : 'true';
 
       $p = $inf->addCustomerKey($p);
-      $inf->checkRequiredParams($p, array('influencers', 'tags', 'customer_key', 'all'));
+      // 'influencers' is not required if 'all' is set to true
+      // by then 'all' has already be converted to a string
+      if ( $p['all'] === 'false' ) {
+         $inf->checkRequiredParams($p, array('influencers', 'tags', 'customer_key', 'all'));
+      } else {
+         $inf->checkRequiredParams($p, array('tags', 'customer_key', 'all'));
+      }
 
       // support for multi params
-      $p['influencers'] = is_array($p['influencers']) ?
-         implode(',', $p['influencers']) : $p['influencers'];
+      if ( !empty($p['influencers']) ) {
+         $p['influencers'] = is_array($p['influencers']) ?
+            implode(',', $p['influencers']) : $p['influencers'];
+      }
       $p['tags'] = is_array($p['tags']) ?
          implode(',', $p['tags']) : $p['tags'];
 

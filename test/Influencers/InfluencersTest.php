@@ -16,6 +16,12 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
 
       $this->savedCustomerKey = Traackr\TraackrApi::getCustomerKey();
 
+      // remove all tags
+      Traackr\Influencers::tagRemove(array(
+         'tags' => $this->infTag,
+         'all' => true)
+      );
+
       // Ensure outout is PHP by default
       Traackr\TraackrApi::setJsonOutput(false);
 
@@ -345,6 +351,24 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
       Traackr\Influencers::tagAdd(array(
          'influencers' => $this->infUid,
          'tags' => $this->infTag));
+
+      try {
+         Traackr\Influencers::tagRemove(array(
+            'tags' => $this->infTag));
+      }
+      catch (Traackr\MissingParameterException $e) {
+         $this->assertInstanceOf('Traackr\MissingParameterException', $e, 'Missing argument missed');
+      }
+      // Make sure exception is not thrown
+      Traackr\Influencers::tagRemove(array(
+         'tags' => $this->infTag,
+         'all' => true));
+      $inf = Traackr\Influencers::show($this->infUid);
+      $this->assertCount(0, $inf['influencer'][$this->infUid]['tags']);
+
+      Traackr\Influencers::tagAdd(array(
+         'influencers' => $this->infUid,
+         'tags' => $this->infTag));
       Traackr\Influencers::tagRemove(array(
          'influencers' => $this->infUid,
          'tags' => $this->infTag));
@@ -399,7 +423,6 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
              "primary_affiliation":"Traackr",
              "title":"CTO",
              "location":"Cambridge, MA, United States",
-             "email":"dchancogne@traackr.com",
              "thumbnail_url":"http://pbs.twimg.com/profile_images/2678827459/a1d9ca2d94e329636cc753133b98525a.png",
              "avatar":{
                "large":"http://pbs.twimg.com/profile_images/2678827459/a1d9ca2d94e329636cc753133b98525a.png",
