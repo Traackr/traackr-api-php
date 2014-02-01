@@ -36,4 +36,11 @@ class PostsTest extends PHPUnit_Framework_TestCase {
 
    } // End function testLookup()
 
+   public function testSearch() {
+
+      $posts = Traackr\Posts::search(array('keywords' => array('traackr', '"content marketing"')));
+      $this->assertTrue(isset($posts['posts']), 'No posts found');
+
+   } // End function testSearch()
+
 } // End class PostsTest
