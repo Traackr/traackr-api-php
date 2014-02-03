@@ -2,7 +2,7 @@
 
 namespace Traackr;
 
-class TraackrAPiException extends \Exception {
+class TraackrApiException extends \Exception {
 
 
 } // End class TraackrApiException
