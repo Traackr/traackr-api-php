@@ -15,7 +15,7 @@ You can clone this GitHub repository to get the latest version of the code.
 
 This library is also available via Composer if that's what you use to manage your dependencies. To do this, simply add this to your `composer.json` file:
 
-	"minimin-stability": "dev"",
+	"minimum-stability": "dev",
 	"require": {
 		"traackr/traackr-api-php": "dev-master"
 	}
