@@ -34,15 +34,19 @@ final class TraackrApi {
    public function __construct() {
 
       // Get ENV values for API Key and Customer keys is defined
-     if ( isset($_ENV['TRAACKR_API_KEY']) ) {
-        TraackrApi::setApiKey($_ENV['TRAACKR_API_KEY']);
-     }
-     if ( isset($_ENV['TRAACKR_CUSTOMER_KEY']) ) {
+      if ( isset($_ENV['TRAACKR_API_KEY']) ) {
+         TraackrApi::setApiKey($_ENV['TRAACKR_API_KEY']);
+      }
+      if ( isset($_ENV['TRAACKR_CUSTOMER_KEY']) ) {
          TraackrApi::setCustomerKey($_ENV['TRAACKR_CUSTOMER_KEY']);
-     }
-     if ( isset($_ENV['TRAACKR_API_URL']) ) {
-      self::$apiBaseUrl = $_ENV['TRAACKR_API_URL'];
-     }
+      }
+      if ( isset($_ENV['TRAACKR_API_URL']) ) {
+         self::$apiBaseUrl = $_ENV['TRAACKR_API_URL'];
+      }
+
+      if ( strrpos(self::$apiBaseUrl, '/') !== strlen(self::$apiBaseUrl)-1 ) {
+         self::$apiBaseUrl .= '/';
+      }
 
    } // End constructor
 
