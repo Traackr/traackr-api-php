@@ -50,7 +50,7 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
              "email":"dchancogne@traackr.com",
              "thumbnail_url":"http://pbs.twimg.com/profile_images/2678827459/a1d9ca2d94e329636cc753133b98525a.png",
              "avatar":{"large":"http://pbs.twimg.com/profile_images/2678827459/a1d9ca2d94e329636cc753133b98525a.png","medium":"http://pbs.twimg.com/profile_images/2678827459/a1d9ca2d94e329636cc753133b98525a_bigger.png","small":"http://pbs.twimg.com/profile_images/2678827459/a1d9ca2d94e329636cc753133b98525a_normal.png"},
-             "reach":"0.24","resonance":"0.57",
+             "reach":"0.25","resonance":"0.57",
              "tags":[]
             }
          }}',
@@ -69,7 +69,7 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
              "email":"dchancogne@traackr.com",
              "thumbnail_url":"http://pbs.twimg.com/profile_images/2678827459/a1d9ca2d94e329636cc753133b98525a.png",
              "avatar":{"large":"http://pbs.twimg.com/profile_images/2678827459/a1d9ca2d94e329636cc753133b98525a.png","medium":"http://pbs.twimg.com/profile_images/2678827459/a1d9ca2d94e329636cc753133b98525a_bigger.png","small":"http://pbs.twimg.com/profile_images/2678827459/a1d9ca2d94e329636cc753133b98525a_normal.png"},
-             "reach":"0.24","resonance":"0.57"
+             "reach":"0.25","resonance":"0.57"
             }
          }}',
          Traackr\Influencers::show($this->infUid)
@@ -249,7 +249,7 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
                  "medium":"http://pbs.twimg.com/profile_images/2678827459/a1d9ca2d94e329636cc753133b98525a_bigger.png",
                  "small":"http://pbs.twimg.com/profile_images/2678827459/a1d9ca2d94e329636cc753133b98525a_normal.png"
                },
-               "reach":"0.24",
+               "reach":"0.25",
                "resonance":"0.57"
              }
            }
@@ -429,7 +429,7 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
                "medium":"http://pbs.twimg.com/profile_images/2678827459/a1d9ca2d94e329636cc753133b98525a_bigger.png",
                "small":"http://pbs.twimg.com/profile_images/2678827459/a1d9ca2d94e329636cc753133b98525a_normal.png"
              },
-             "reach":"0.24",
+             "reach":"0.25",
              "resonance":"0.57",
              "relevance":"0.0"
            }]
