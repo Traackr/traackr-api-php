@@ -87,10 +87,10 @@ abstract class TraackrApiObject {
          // $this->log('cUrl HTTP error: '.$httpcode, LOG_WARNING);
          if ( $httpcode == "404" ) {
             $info = curl_getinfo($this->curl);
-            throw new NotFoundException('API resource not found (HTTP 404): '.$info['url']);
+            throw new NotFoundException('API resource not found (HTTP 404): '.$info['url'], $httpcode);
          }
          else {
-            throw new TraackrApiException('API HTTP Error (HTTP '.$httpcode.'): '.$curl_exec);
+            throw new TraackrApiException('API HTTP Error (HTTP '.$httpcode.'): '.$curl_exec, $httpcode);
          }
          return false;
       }

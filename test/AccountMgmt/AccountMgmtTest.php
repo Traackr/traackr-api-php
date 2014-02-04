@@ -33,6 +33,7 @@ class AccountMgmtTest extends PHPUnit_Framework_TestCase {
       }
       catch (Traackr\TraackrApiException $e) {
          $this->assertEquals($e->getMessage(), 'API HTTP Error (HTTP 400): Customer key exists for given api_key/customer_name');
+         $this->assertEquals($e->getCode(), 400);
       }
 
    } // End function testCreateCustomerKey()
