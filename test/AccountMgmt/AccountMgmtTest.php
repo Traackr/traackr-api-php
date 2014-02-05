@@ -32,7 +32,7 @@ class AccountMgmtTest extends PHPUnit_Framework_TestCase {
          Traackr\AccountMgmt::customerkeyCreate(array('customer_name' => 'traackr-api-test'));
       }
       catch (Traackr\TraackrApiException $e) {
-         $this->assertEquals($e->getMessage(), 'API HTTP Error (HTTP 400): Customer key exists for given api_key/customer_name');
+         $this->assertEquals($e->getMessage(), 'Missing or Invalid argument/parameter (HTTP 400): Customer key exists for given api_key/customer_name');
          $this->assertEquals($e->getCode(), 400);
       }
 
@@ -70,6 +70,16 @@ class AccountMgmtTest extends PHPUnit_Framework_TestCase {
          'tags' => $this->infTag));
 
    } // End function testTagList()
+
+   /**
+    * @expectedException Traackr\InvalidCustomerKeyException
+    */
+   public function testSTagListInvalidCustomerKey() {
+
+      Traackr\TraackrApi::setCustomerKey('xxxRandomInvalidCustomerKeyxxxx');
+      Traackr\AccountMgmt::tagList();
+
+   } // End function testShowNotFound()
 
 
 } // End class AccountMgmt

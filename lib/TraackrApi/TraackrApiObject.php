@@ -84,13 +84,35 @@ abstract class TraackrApiObject {
       }
       $httpcode = curl_getinfo($this->curl, CURLINFO_HTTP_CODE);
       if( $httpcode != "200" ) {
+         $info = curl_getinfo($this->curl);
          // $this->log('cUrl HTTP error: '.$httpcode, LOG_WARNING);
-         if ( $httpcode == "404" ) {
-            $info = curl_getinfo($this->curl);
-            throw new NotFoundException('API resource not found (HTTP 404): '.$info['url'], $httpcode);
+         if ( $httpcode == "400") {
+            // Let's try to see if it's a bad customer key
+            if ( $curl_exec === "Customer key not found" ) {
+               throw new InvalidCustomerKeyException(
+                  'Invalid Customer Key (HTTP 400): '.$curl_exec,
+                  $httpcode);
+            }
+            else {
+               throw new MissingParameterException(
+                  'Missing or Invalid argument/parameter (HTTP 400): '.$curl_exec,
+                  $httpcode);
+            }
+         }
+         elseif ( $httpcode == "403") {
+            throw new InvalidApiKeyException(
+               'Invalid API key (HTTP 403): '.$curl_exec,
+               $httpcode);
+         }
+         elseif ( $httpcode == "404" ) {
+            throw new NotFoundException(
+               'API resource not found (HTTP 404): '.$info['url'],
+               $httpcode);
          }
          else {
-            throw new TraackrApiException('API HTTP Error (HTTP '.$httpcode.'): '.$curl_exec, $httpcode);
+            throw new TraackrApiException(
+               'API HTTP Error (HTTP '.$httpcode.'): '.$curl_exec,
+               $httpcode);
          }
          return false;
       }

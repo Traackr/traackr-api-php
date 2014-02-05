@@ -12,6 +12,7 @@ require(dirname(__FILE__) . '/TraackrApi/AccountMgmt.php');
 // Exceptions
 require(dirname(__FILE__) . '/TraackrApi/Exceptions/TraackrApiException.php');
 require(dirname(__FILE__) . '/TraackrApi/Exceptions/NotFoundException.php');
+require(dirname(__FILE__) . '/TraackrApi/Exceptions/InvalidApiKeyException.php');
 require(dirname(__FILE__) . '/TraackrApi/Exceptions/InvalidCustomerKeyException.php');
 require(dirname(__FILE__) . '/TraackrApi/Exceptions/MissingParameterException.php');
 
