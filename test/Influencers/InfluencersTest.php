@@ -6,6 +6,7 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
 
    private $infUid = '1395be8293373465ab172b8b1b677e31';
    private $infTag = 'traackr-api-test';
+   private $infTagUTF8 = 'påverkare marknadsföring traackr-api-test';
    private $infName = 'David Chancogne';
 
    private $infUid2 = 'ae1955b0f92037c895e5bfdd259a1304';
@@ -18,7 +19,7 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
 
       // remove all tags
       Traackr\Influencers::tagRemove(array(
-         'tags' => $this->infTag,
+         'tags' => array($this->infTag, $this->infTagUTF8),
          'all' => true)
       );
 
@@ -50,7 +51,7 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
              "email":"dchancogne@traackr.com",
              "thumbnail_url":"http://pbs.twimg.com/profile_images/2678827459/a1d9ca2d94e329636cc753133b98525a.png",
              "avatar":{"large":"http://pbs.twimg.com/profile_images/2678827459/a1d9ca2d94e329636cc753133b98525a.png","medium":"http://pbs.twimg.com/profile_images/2678827459/a1d9ca2d94e329636cc753133b98525a_bigger.png","small":"http://pbs.twimg.com/profile_images/2678827459/a1d9ca2d94e329636cc753133b98525a_normal.png"},
-             "reach":"0.25","resonance":"0.57",
+             "reach":"0.25","resonance":"0.56",
              "tags":[]
             }
          }}',
@@ -69,7 +70,7 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
              "email":"dchancogne@traackr.com",
              "thumbnail_url":"http://pbs.twimg.com/profile_images/2678827459/a1d9ca2d94e329636cc753133b98525a.png",
              "avatar":{"large":"http://pbs.twimg.com/profile_images/2678827459/a1d9ca2d94e329636cc753133b98525a.png","medium":"http://pbs.twimg.com/profile_images/2678827459/a1d9ca2d94e329636cc753133b98525a_bigger.png","small":"http://pbs.twimg.com/profile_images/2678827459/a1d9ca2d94e329636cc753133b98525a_normal.png"},
-             "reach":"0.25","resonance":"0.57"
+             "reach":"0.25","resonance":"0.56"
             }
          }}',
          Traackr\Influencers::show($this->infUid)
@@ -250,7 +251,7 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
                  "small":"http://pbs.twimg.com/profile_images/2678827459/a1d9ca2d94e329636cc753133b98525a_normal.png"
                },
                "reach":"0.25",
-               "resonance":"0.57"
+               "resonance":"0.56"
              }
            }
          }',
@@ -285,6 +286,7 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
       $inf = Traackr\Influencers::show($this->infUid);
       $this->assertCount(0, $inf['influencer'][$this->infUid]['tags']);
 
+      // Test regular ASCII tag
       Traackr\Influencers::tagAdd(array(
          'influencers' => $this->infUid,
          'tags' => $this->infTag));
@@ -295,6 +297,18 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
       Traackr\Influencers::tagRemove(array(
          'influencers' => $this->infUid,
          'tags' => $this->infTag));
+
+      // Test UTF-8 tag
+      Traackr\Influencers::tagAdd(array(
+         'influencers' => $this->infUid,
+         'tags' => $this->infTagUTF8));
+      $inf = Traackr\Influencers::show($this->infUid);
+      $this->assertCount(1, $inf['influencer'][$this->infUid]['tags'], 'UTF-8 tag not found');
+      $this->assertTrue(in_array($this->infTagUTF8, $inf['influencer'][$this->infUid]['tags']), 'UTF-8 tag not found');
+
+      Traackr\Influencers::tagRemove(array(
+         'influencers' => $this->infUid,
+         'tags' => $this->infTagUTF8));
 
       $inf = Traackr\Influencers::show($this->infUid);
       $this->assertCount(0, $inf['influencer'][$this->infUid]['tags']);
@@ -430,7 +444,7 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
                "small":"http://pbs.twimg.com/profile_images/2678827459/a1d9ca2d94e329636cc753133b98525a_normal.png"
              },
              "reach":"0.25",
-             "resonance":"0.57",
+             "resonance":"0.56",
              "relevance":"0.0"
            }]
          }',

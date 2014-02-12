@@ -19,19 +19,25 @@ abstract class TraackrApiObject {
       curl_setopt($this->curl, CURLOPT_CONNECTTIMEOUT, self::$connectionTimeout);
       curl_setopt($this->curl, CURLOPT_TIMEOUT, self::$timeout);
 
-      // Adding some headers to force no caching.
       $curl_headers = array(
-            "accept-charset" => "utf-8",
-            "Cache-Control: no-cache",
-            "Pragma: no-cache",
-            //some proxies throw a "417" error for CURL calls; CURL is supposed
-            //to retry the call, but doesn't, so just set "Expect" to nothing to
-            //avoid this (this ensures that CURL doesn't set it to an unrecognized
-            //value under the covers)
-            "Expect:"
+         // Adding some headers to force no caching.
+         "Cache-Control: no-cache",
+         "Pragma: no-cache",
+         //some proxies throw a "417" error for CURL calls; CURL is supposed
+         //to retry the call, but doesn't, so just set "Expect" to nothing to
+         //avoid this (this ensures that CURL doesn't set it to an unrecognized
+         //value under the covers)
+         "Expect:",
+
+         // Sets request headers. This are important to be UTF-8 compliant
+         // To ensure that POST parameters (passed in the body) are UTF-8 encoded:
+         "Content-Type: application/x-www-form-urlencoded;charset=utf-8",
+         // To Ensure the server sends back UTF-8 text
+         "Accept-Charset: utf-8",
+         "Accept: text/plain"
         );
         curl_setopt($this->curl, CURLOPT_HTTPHEADER, $curl_headers);
-        curl_setopt($this->curl,CURLOPT_ENCODING , "gzip;q=1.0, deflate;q=0.5, identity;q=0.1");
+        curl_setopt($this->curl, CURLOPT_ENCODING , "gzip;q=1.0, deflate;q=0.5, identity;q=0.1");
 
    } // End constructor
 
@@ -59,20 +65,9 @@ abstract class TraackrApiObject {
 
    private function call($decode) {
 
-      // Sets request headers. This are important to be UTF-8 compliant
-      //
-      // To ensure that POST parameters (passed in the body) are UTF-8 encoded:
-      // "Content-Type: application/x-www-form-urlencoded ; charset=UTF-8"
-      //
-      // To Ensure the server sends back UTF-8 text
-      // "Accept-Charset: utf-8",
-      // "Accept: text/plain",
-      curl_setopt($this->curl, CURLOPT_HTTPHEADER, array (
-         // "Content-Type: application/x-www-form-urlencoded ; charset=utf-8",
-         "Accept-Charset: utf-8",
-         "Accept: text/plain"
-      ));
+      // Make the call!
       $curl_exec = curl_exec($this->curl);
+
       if( $curl_exec === false ) {
          // $this->log('cUrl error: '.curl_error($this->ch), LOG_WARNING);
          $info = curl_getinfo($this->curl);
