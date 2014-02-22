@@ -4,7 +4,7 @@ namespace Traackr;
 
 class Posts extends TraackrApiObject {
 
-   public function lookup($p = array(
+   public static function lookup($p = array(
       'lang' => 'all',
       'include_entities' => false,
       'count' => 25, 'page' => 0) ) {
@@ -37,7 +37,7 @@ class Posts extends TraackrApiObject {
 
    } // End function lookup()
 
-   public function search($p = array(
+   public static function search($p = array(
       'lang' => 'all',
       'include_keyword_matches' => false,
       'include_entities' => false,

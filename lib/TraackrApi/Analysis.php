@@ -4,7 +4,7 @@ namespace Traackr;
 
 class Analysis extends TraackrApiObject {
 
-   public function toplinks($p = array('min_linkbacks' => 10, 'count' => 5)) {
+   public static function toplinks($p = array('min_linkbacks' => 10, 'count' => 5)) {
 
       $analysis = new Analysis();
       $p = $analysis->addCustomerKey($p);

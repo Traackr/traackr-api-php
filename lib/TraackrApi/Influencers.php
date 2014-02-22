@@ -145,7 +145,7 @@ class Influencers extends TraackrApiObject {
    } // End function tagList()
 
 
-   public function lookup($p = array(
+   public static function lookup($p = array(
       'gender' => 'all',
       'count' => 25, 'page' => 0,
       'sort' => 'name', 'sort_order' => 'asc')) {
@@ -167,7 +167,7 @@ class Influencers extends TraackrApiObject {
 
    } // End function lookup()
 
-   public function search($p = array('lang' => 'all', 'count' => 25)) {
+   public static function search($p = array('lang' => 'all', 'count' => 25)) {
 
       $inf = new Influencers();
       $p = $inf->addCustomerKey($p);
