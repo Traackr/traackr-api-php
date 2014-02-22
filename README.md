@@ -31,8 +31,8 @@ You will need an API key to make use this library. Contact api@traackr.com to ge
 
 You include this library with:
 
-	require_once('lib/TraackrApi.php');
-
+    require_once('lib/TraackrApi.php');
+    
 If you are using Componser the autoload functionality should automatically load the appropriate PHP files (i.e. `require 'vendor/autoload.php'` will load the library files).
 
 ### Set your API key ###
@@ -47,6 +47,9 @@ Some calls require a Customer Key (see [documentation](http://iodocs.traackr.com
 
 The client library will take care of including your customer key when needed.
 
+> Note that you can also specify your API key and customer key via environment variables. See the unit tests section.
+
+
 ### API calls ###
 
 All API calls map to static functions with parameters matching the API call parameters (see [documentation](http://iodocs.traackr.com)). For instance to call `/influencers/show` you can use:
@@ -56,6 +59,8 @@ All API calls map to static functions with parameters matching the API call para
 
 Unit Tests
 ----------
+
+### Setup ###
 
 To run unit tests, you will need to install dependencies required by this project.
 First, install Composer locally:
@@ -68,11 +73,24 @@ Then install dependencies:
 	$ php composer.phar install
 
 
-Before you run unit tests, you need to specify an API key and a Customer key. These 2 values can be specified via ENV variables (so they don't have to be hardcoded on the unit tests).
+### Running the tests ###
+
+The unit tests come with a public API key that you can use to run the unit tests. However the API key provided in the unit tests is only allowed to access read-only end points (i.e. API calls that do not add, modify or delete any data).  
+To run these read-only tests you can execute:
+
+    ./bin/phpunit --group read-only test
+    
+If you try to run the entire test suite with this public API key you will get errors when trying to access functions that change data.
+
+### Running the entire test suite ###
+
+To run the entire test suite you will need an API key that has full access to the API. You can request one by emailing [api-support@traackr.com](maitto:api-support@traackr.com).
+
+Before you run unit tests, you need to specify an API key and a Customer key. These 2 values can be specified via ENV variables (so they don't have to be hardcoded in the unit tests).
 
 	# export TRAACKR_API_KEY=<your-api-key>
 	# export TARACKR_CUSTOMER_KEY=<your-customer-key>
-
+	
 Run the entire test suite:
 
 	./bin/phpunit test
