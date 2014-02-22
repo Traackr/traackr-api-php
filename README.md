@@ -1,5 +1,6 @@
 Traackr API - PHP Client
 ========================
+[![Build Status](https://travis-ci.org/Traackr/traackr-api-php.png?branch=master)](https://travis-ci.org/Traackr/traackr-api-php)
 
 Introduction
 ------------
