@@ -1,7 +1,5 @@
 <?php
 
-require_once(dirname(__FILE__) . '/../../lib/TraackrApi.php');
-
 class PostsTest extends PHPUnit_Framework_TestCase {
 
    private $infUid = '1395be8293373465ab172b8b1b677e31';
@@ -24,10 +22,13 @@ class PostsTest extends PHPUnit_Framework_TestCase {
    } // End functiuon tearDown()
 
 
+   /**
+    * @group read-only
+    */
    public function testLookup() {
 
       $posts = Traackr\Posts::lookup(array('influencers' => $this->infUid));
-      $this->assertTrue(isset($posts['page_info']), 'No paging info');
+      $this->assertArrayHasKey('page_info', $posts, 'No paging info');
       $this->assertGreaterThan(0, $posts['posts'], 'No results found');
       $this->assertEquals($this->infUid, $posts['posts'][0]['influencer_uid'], 'Invalid influencer author found');
 
@@ -36,10 +37,13 @@ class PostsTest extends PHPUnit_Framework_TestCase {
 
    } // End function testLookup()
 
+   /**
+    * @group read-only
+    */
    public function testSearch() {
 
       $posts = Traackr\Posts::search(array('keywords' => array('traackr', '"content marketing"')));
-      $this->assertTrue(isset($posts['posts']), 'No posts found');
+      $this->assertArrayHasKey('posts', $posts, 'No posts found');
 
    } // End function testSearch()
 

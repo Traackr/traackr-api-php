@@ -1,7 +1,5 @@
 <?php
 
-require_once(dirname(__FILE__) . '/../../lib/TraackrApi.php');
-
 class AnalysisTest extends PHPUnit_Framework_TestCase {
 
    private $infUid = '1395be8293373465ab172b8b1b677e31';
@@ -10,6 +8,7 @@ class AnalysisTest extends PHPUnit_Framework_TestCase {
    private $infUid2 = 'ae1955b0f92037c895e5bfdd259a1304';
 
    private $savedCustomerKey;
+
 
    public function setUp() {
 
@@ -26,10 +25,15 @@ class AnalysisTest extends PHPUnit_Framework_TestCase {
 
    } // End functiuon tearDown()
 
+
+   /**
+    * @group read-only
+    */
    public function testToplinks() {
 
       $infs = array($this->infUid, $this->infUid2);
       $posts = Traackr\Analysis::toplinks(array('influencers' => $infs));
+      $this->assertArrayHasKey('links', $posts);
       $this->assertCount(5, $posts['links']);
       $this->assertTrue(in_array($posts['links'][0]['linkbacks'][0]['influencer_uid'], $infs));
 
@@ -41,6 +45,7 @@ class AnalysisTest extends PHPUnit_Framework_TestCase {
    } // End function toplinksTest()
 
    /**
+    * @group read-only
     * @expectedException Traackr\MissingParameterException
     */
    public function testToplinksMissingParameter() {
