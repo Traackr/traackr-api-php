@@ -13,27 +13,13 @@ class AnalysisTest extends PHPUnit_Framework_TestCase {
 
 
    public function setUp() {
-
       $this->savedCustomerKey = Traackr\TraackrApi::getCustomerKey();
-
       // Ensure outout is PHP by default
-      Traackr\TraackrApi::setJsonOutput(false);
-      $tagAddParams = array( 
-         'influencers' => array($this->infUid, $this->infUid2),
-         'tags' => array($this->testTag)
-      );
-      Traackr\Influencers::tagAdd($tagAddParams);
-
+      Traackr\TraackrApi::setJsonOutput(false);      
    } // End function setUp()
 
    public function tearDown() {
-
       Traackr\TraackrApi::setCustomerKey($this->savedCustomerKey);
-      $tagRemoveParams = array( 
-         'all' => true,
-         'tags' => array($this->testTag)
-      );
-      Traackr\Influencers::tagRemove($tagRemoveParams);
    } // End functiuon tearDown()
 
 
@@ -55,7 +41,19 @@ class AnalysisTest extends PHPUnit_Framework_TestCase {
 
    } // End function toplinksTest()
 
+   /**
+    * Tests that the same topLinks information is returned when looking up links for
+    * influencers by tags or by influencer uids
+    */
    public function testParams() {
+
+      // Add Tags
+      $tagAddParams = array( 
+         'influencers' => array($this->infUid, $this->infUid2),
+         'tags' => array($this->testTag)
+      );
+      Traackr\Influencers::tagAdd($tagAddParams);
+
       $infs = array($this->infUid, $this->infUid2);
       $tags = array($this->testTag);
 
@@ -68,5 +66,12 @@ class AnalysisTest extends PHPUnit_Framework_TestCase {
       $posts1 = Traackr\Analysis::toplinks(array('influencers' => $infs));
       $posts2 = Traackr\Analysis::toplinks(array('tags' => $tags));
       $this->assertJsonStringEqualsJsonString($posts1, $posts2);
+
+      // Remove Tags
+      $tagRemoveParams = array( 
+         'all' => true,
+         'tags' => array($this->testTag)
+      );
+      Traackr\Influencers::tagRemove($tagRemoveParams);
    }
 } // End class AnalysisTest
