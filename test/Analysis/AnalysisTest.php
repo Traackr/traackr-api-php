@@ -9,6 +9,8 @@ class AnalysisTest extends PHPUnit_Framework_TestCase {
 
    private $infUid2 = 'ae1955b0f92037c895e5bfdd259a1304';
 
+   private $testTag = 'TraackrApiPhpAnalysisTestTag';
+
    private $savedCustomerKey;
 
    public function setUp() {
@@ -17,13 +19,22 @@ class AnalysisTest extends PHPUnit_Framework_TestCase {
 
       // Ensure outout is PHP by default
       Traackr\TraackrApi::setJsonOutput(false);
+      $tagAddParams = array( 
+         'influencers' => array($this->infUid, $this->infUid2),
+         'tags' => array($this->testTag)
+      );
+      Traackr\Influencers::tagAdd($tagAddParams);
 
    } // End function setUp()
 
    public function tearDown() {
 
       Traackr\TraackrApi::setCustomerKey($this->savedCustomerKey);
-
+      $tagRemoveParams = array( 
+         'all' => true,
+         'tags' => array($this->testTag)
+      );
+      Traackr\Influencers::tagRemove($tagRemoveParams);
    } // End functiuon tearDown()
 
    public function testToplinks() {
@@ -40,14 +51,18 @@ class AnalysisTest extends PHPUnit_Framework_TestCase {
 
    } // End function toplinksTest()
 
-   /**
-    * @expectedException Traackr\MissingParameterException
-    */
-   public function testToplinksMissingParameter() {
+   public function testParams() {
+      $infs = array($this->infUid, $this->infUid2);
+      $tags = array($this->testTag);
 
-      Traackr\Analysis::toplinks();
+      // First test that we have top links to compare
+      $posts = Traackr\Analysis::toplinks(array('influencers' => $infs));      
+      $this->assertCount(5, $posts['links']);
+      $this->assertTrue(in_array($posts['links'][0]['linkbacks'][0]['influencer_uid'], $infs));
 
-   } // End function testShowMissingParameter()
-
-
+      Traackr\TraackrApi::setJsonOutput(true);
+      $posts1 = Traackr\Analysis::toplinks(array('influencers' => $infs));
+      $posts2 = Traackr\Analysis::toplinks(array('tags' => $tags));
+      $this->assertJsonStringEqualsJsonString($posts1, $posts2);
+   }
 } // End class AnalysisTest
