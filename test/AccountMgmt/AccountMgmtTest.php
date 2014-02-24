@@ -1,7 +1,5 @@
 <?php
 
-require_once(dirname(__FILE__) . '/../../lib/TraackrApi.php');
-
 class AccountMgmtTest extends PHPUnit_Framework_TestCase {
 
    private $infUid = '1395be8293373465ab172b8b1b677e31';
@@ -9,6 +7,7 @@ class AccountMgmtTest extends PHPUnit_Framework_TestCase {
    private $infName = 'David Chancogne';
 
    private $savedCustomerKey;
+
 
    public function setUp() {
 

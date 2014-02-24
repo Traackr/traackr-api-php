@@ -1,7 +1,5 @@
 <?php
 
-require_once(dirname(__FILE__) . '/../../lib/TraackrApi.php');
-
 class InfluencersTest extends PHPUnit_Framework_TestCase {
 
    private $infUid = '1395be8293373465ab172b8b1b677e31';
@@ -13,15 +11,24 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
 
    private $savedCustomerKey;
 
+
    public function setUp() {
 
       $this->savedCustomerKey = Traackr\TraackrApi::getCustomerKey();
 
-      // remove all tags
-      Traackr\Influencers::tagRemove(array(
-         'tags' => array($this->infTag, $this->infTagUTF8),
-         'all' => true)
-      );
+      // Try to remove all existing tags
+      // when run with @read-ony group this APi call might not be allowed
+      // so cactch expcetion and ignore
+      try {
+         // remove all tags
+         Traackr\Influencers::tagRemove(array(
+            'tags' => array($this->infTag, $this->infTagUTF8),
+            'all' => true)
+         );
+      }
+      catch (Traackr\TraackrApiException $e) {
+         // Ignore
+      }
 
       // Ensure outout is PHP by default
       Traackr\TraackrApi::setJsonOutput(false);
@@ -32,66 +39,88 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
 
       Traackr\TraackrApi::setCustomerKey($this->savedCustomerKey);
 
-   } // End functiuon tearDown()
+   } // End function tearDown()
 
 
+
+   public function testShowWithTags() {
+
+      $inf = Traackr\Influencers::show($this->infUid);
+      // Check result is there
+      $this->assertArrayHasKey('influencer', $inf,
+         'No influencer found');
+      $this->assertArrayHasKey($this->infUid, $inf['influencer'],
+         'Invalid influencer found');
+      // Check appropriate fields are present
+      $this->assertArrayHasKey('uid', $inf['influencer'][$this->infUid],
+         'UID filed is missing');
+      $this->assertArrayHasKey('name', $inf['influencer'][$this->infUid],
+         'Name field missing');
+      $this->assertArrayHasKey('description', $inf['influencer'][$this->infUid],
+         'Description field missing');
+      $this->assertArrayHasKey('title', $inf['influencer'][$this->infUid],
+         'Title field missing');
+      $this->assertArrayHasKey('location', $inf['influencer'][$this->infUid],
+         'Location field missing');
+      $this->assertArrayHasKey('avatar', $inf['influencer'][$this->infUid],
+         'Avatar field missing');
+      $this->assertArrayHasKey('reach', $inf['influencer'][$this->infUid],
+         'Reach field missing');
+      $this->assertArrayHasKey('resonance', $inf['influencer'][$this->infUid],
+         'Resonance field missing');
+      $this->assertArrayNotHasKey('channels', $inf['influencer'][$this->infUid],
+         'Channels field should not have be returned');
+      $this->assertArrayHasKey('tags', $inf['influencer'][$this->infUid],
+         'Tags field should not have be returned');
+      // Check some values
+      $this->assertEquals($this->infUid, $inf['influencer'][$this->infUid]['uid'],
+         'Incorrect UID');
+      $this->assertEquals($this->infName, $inf['influencer'][$this->infUid]['name'],
+         'Incorrect name');
+
+   } // End function testShowWithTags()
+
+   /**
+    * @group read-only
+    */
    public function testShow() {
 
-      // Ensure JSON output
-      Traackr\TraackrApi::setJsonOutput(true);
-
-      $this->assertJsonStringEqualsJsonString(
-         '{"influencer":{"1395be8293373465ab172b8b1b677e31":
-            {"uid":"1395be8293373465ab172b8b1b677e31",
-             "name":"David Chancogne",
-             "description":"Web. Geek: http://traackr-people.tumblr.com. Traackr: http://traackr.com. Propz: http://propz.me",
-             "primary_affiliation":"Traackr",
-             "title":"CTO",
-             "location":"Cambridge, MA, United States",
-             "email":"dchancogne@traackr.com",
-             "thumbnail_url":"http://pbs.twimg.com/profile_images/2678827459/a1d9ca2d94e329636cc753133b98525a.png",
-             "avatar":{"large":"http://pbs.twimg.com/profile_images/2678827459/a1d9ca2d94e329636cc753133b98525a.png","medium":"http://pbs.twimg.com/profile_images/2678827459/a1d9ca2d94e329636cc753133b98525a_bigger.png","small":"http://pbs.twimg.com/profile_images/2678827459/a1d9ca2d94e329636cc753133b98525a_normal.png"},
-             "reach":"0.25","resonance":"0.56",
-             "tags":[]
-            }
-         }}',
-         Traackr\Influencers::show($this->infUid)
-      );
-
+      // Unsetting customer key so 'tags' are not returned
       Traackr\TraackrApi::setCustomerKey('');
-      $this->assertJsonStringEqualsJsonString(
-         '{"influencer":{"1395be8293373465ab172b8b1b677e31":
-            {"uid":"1395be8293373465ab172b8b1b677e31",
-             "name":"David Chancogne",
-             "description":"Web. Geek: http://traackr-people.tumblr.com. Traackr: http://traackr.com. Propz: http://propz.me",
-             "primary_affiliation":"Traackr",
-             "title":"CTO",
-             "location":"Cambridge, MA, United States",
-             "email":"dchancogne@traackr.com",
-             "thumbnail_url":"http://pbs.twimg.com/profile_images/2678827459/a1d9ca2d94e329636cc753133b98525a.png",
-             "avatar":{"large":"http://pbs.twimg.com/profile_images/2678827459/a1d9ca2d94e329636cc753133b98525a.png","medium":"http://pbs.twimg.com/profile_images/2678827459/a1d9ca2d94e329636cc753133b98525a_bigger.png","small":"http://pbs.twimg.com/profile_images/2678827459/a1d9ca2d94e329636cc753133b98525a_normal.png"},
-             "reach":"0.25","resonance":"0.56"
-            }
-         }}',
-         Traackr\Influencers::show($this->infUid)
-      );
-
-      // Revert back to PHP output
-      Traackr\TraackrApi::setJsonOutput(false);
       $inf = Traackr\Influencers::show($this->infUid);
-      $this->assertTrue(isset($inf['influencer']),
-         'Unable to find "influencer" field');
-      $this->assertTrue(isset($inf['influencer'][$this->infUid]),
-         'Unable to find matchiung UID field');
-      $this->assertFalse(isset($inf['influencer'][$this->infUid]['channels']),
-         'Channels should not have been returned');
+      // Check result is there
+      $this->assertArrayHasKey('influencer', $inf,
+         'No influencer found');
+      $this->assertArrayHasKey($this->infUid, $inf['influencer'],
+         'Invalid influencer found');
+      // Check appropriate fields are present
+      $this->assertArrayHasKey('uid', $inf['influencer'][$this->infUid],
+         'UID filed is missing');
+      $this->assertArrayHasKey('name', $inf['influencer'][$this->infUid],
+         'Name field missing');
+      $this->assertArrayHasKey('description', $inf['influencer'][$this->infUid],
+         'Description field missing');
+      $this->assertArrayHasKey('title', $inf['influencer'][$this->infUid], '
+         Title field missing');
+      $this->assertArrayHasKey('location', $inf['influencer'][$this->infUid],
+         'Location field missing');
+      $this->assertArrayHasKey('avatar', $inf['influencer'][$this->infUid],
+         'Avatar field missing');
+      $this->assertArrayHasKey('reach', $inf['influencer'][$this->infUid],
+         'Reach field missing');
+      $this->assertArrayHasKey('resonance', $inf['influencer'][$this->infUid],
+         'Resonance field missing');
+      $this->assertArrayNotHasKey('tags', $inf['influencer'][$this->infUid],
+         'Tags field should not have been returned');
+      // Check some values
       $this->assertEquals($this->infUid, $inf['influencer'][$this->infUid]['uid'],
-         'Unable to find matching "uid" field');
-      $this->assertEquals('David Chancogne', $inf['influencer'][$this->infUid]['name'],
-         'Unable to find matching "name" field');
+         'Incorrect UID');
+      $this->assertEquals($this->infName, $inf['influencer'][$this->infUid]['name'],
+         'Incorrect name');
 
+      // show influencer w/ channels
       $inf = Traackr\Influencers::show($this->infUid, array('with_channels' => true) );
-      $this->assertTrue(isset($inf['influencer'][$this->infUid]['channels']),
+      $this->assertArrayHasKey('channels', $inf['influencer'][$this->infUid],
          'Channels not returned');
       $twitter = array_values(array_filter($inf['influencer'][$this->infUid]['channels'],
          function($elm) { return $elm['root_domain'] == 'twitter';}));
@@ -107,6 +136,7 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
    } // End function testShow()
 
    /**
+    * @group read-only
     * @expectedException Traackr\NotFoundException
     */
    public function testShowNotFound() {
@@ -116,6 +146,7 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
    } // End function testShowNotFound()
 
    /**
+    * @group read-only
     * @expectedException Traackr\MissingParameterException
     */
    public function testShowMissingParameter() {
@@ -125,99 +156,92 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
    } // End function testShowMissingParameter()
 
 
+   /**
+    * @group read-only
+    */
    public function testConnections() {
 
-      // Ensure JSON output
-      Traackr\TraackrApi::setJsonOutput(true);
+      $to = Traackr\Influencers::connections($this->infUid, 'to');
+      // Check some fields
+      $this->assertArrayHasKey('influencer', $to,
+         'No influencer found');
+      $this->assertArrayHasKey($this->infUid, $to['influencer'],
+         'Invalid influencer found');
+      $this->assertArrayHasKey('uid', $to['influencer'][$this->infUid],
+         'No UID field found');
+      $this->assertArrayHasKey('connections_to', $to['influencer'][$this->infUid],
+         'No connections_to field found');
+      $this->assertArrayNotHasKey('connections_from', $to['influencer'][$this->infUid],
+         'connections_from field found');
+      // Check some values
+      $this->assertEquals($this->infUid, $to['influencer'][$this->infUid]['uid'],
+         'UID does not match');
+      $this->assertInternalType('array', $to['influencer'][$this->infUid]['connections_to'],
+         'connections_to is not a array');
+      $this->assertCount(2, $to['influencer'][$this->infUid]['connections_to'],
+         'Different number of conections_to then expected');
+      // Check connections
+      $this->assertArrayHasKey('type', $to['influencer'][$this->infUid]['connections_to'][0],
+         'connections_to has no type');
+      $type = $to['influencer'][$this->infUid]['connections_to'][0]['type'];
+      $this->assertTrue($type == 'TRAACKR' || $type == "TWITTER_USER",
+         'Invalid type');
+      $this->assertArrayHasKey('native_id', $to['influencer'][$this->infUid]['connections_to'][0],
+         'connections_to has no native_id');
+      $this->assertArrayHasKey('connection_score', $to['influencer'][$this->infUid]['connections_to'][0],
+         'connections_to has no connection_score');
+      $this->assertArrayHasKey('connection_metrics', $to['influencer'][$this->infUid]['connections_to'][0],
+         'connections_to has no connection_metrics');
 
-      $this->assertJsonStringEqualsJsonString(
-         '{
-           "influencer":{
-             "1395be8293373465ab172b8b1b677e31":{
-               "uid":"1395be8293373465ab172b8b1b677e31",
-               "connections_to":[{
-                 "type":"TRAACKR",
-                 "native_id":"ae1955b0f92037c895e5bfdd259a1304",
-                 "connection_score":"199",
-                 "connection_metrics":{
-                   "mention_percent_frequency":"0.12",
-                   "retweet_percent_frequency":"0.0",
-                   "mention_frequency":"11",
-                   "mention_count":"18",
-                   "retweet_frequency":"0",
-                   "retweet_count":"0"
-                 }
-               },{
-                 "type":"TWITTER_USER",
-                 "native_id":"influence_this",
-                 "connection_score":"16",
-                 "connection_metrics":{
-                   "mention_percent_frequency":"0.04",
-                   "retweet_percent_frequency":"0.0",
-                   "mention_frequency":"4",
-                   "mention_count":"4",
-                   "retweet_frequency":"0",
-                   "retweet_count":"0"
-                 }
-               }]
-             }
-           }
-         }',
-         Traackr\Influencers::connections($this->infUid, 'to')
-      );
 
-      $this->assertJsonStringEqualsJsonString(
-         '{
-           "influencer":{
-             "1395be8293373465ab172b8b1b677e31":{
-               "uid":"1395be8293373465ab172b8b1b677e31",
-               "connections_from":[]
-             }
-           }
-         }',
-         Traackr\Influencers::connections($this->infUid, 'from')
-      );
+      $from = Traackr\Influencers::connections($this->infUid, 'from');
+      // Check some fields
+      $this->assertArrayHasKey('influencer', $from,
+         'No influencer found');
+      $this->assertArrayHasKey($this->infUid, $from['influencer'],
+         'Invalid influencer found');
+      $this->assertArrayHasKey('uid', $from['influencer'][$this->infUid],
+         'No UID field found');
+      $this->assertArrayHasKey('connections_from', $from['influencer'][$this->infUid],
+         'No connections_from field found');
+      $this->assertArrayNotHasKey('connections_to', $from['influencer'][$this->infUid],
+         'connections_to field found');
+      // Check some values
+      $this->assertEquals($this->infUid, $from['influencer'][$this->infUid]['uid'],
+         'UID does not match');
+      $this->assertInternalType('array', $from['influencer'][$this->infUid]['connections_from'],
+         'connections_from is not a array');
+      $this->assertCount(0, $from['influencer'][$this->infUid]['connections_from'],
+         'Different number of conections_from then expected');
 
-      $this->assertJsonStringEqualsJsonString(
-         '{
-           "influencer":{
-             "1395be8293373465ab172b8b1b677e31":{
-               "uid":"1395be8293373465ab172b8b1b677e31",
-               "connections_to":[{
-                 "type":"TRAACKR",
-                 "native_id":"ae1955b0f92037c895e5bfdd259a1304",
-                 "connection_score":"199",
-                 "connection_metrics":{
-                   "mention_percent_frequency":"0.12",
-                   "retweet_percent_frequency":"0.0",
-                   "mention_frequency":"11",
-                   "mention_count":"18",
-                   "retweet_frequency":"0",
-                   "retweet_count":"0"
-                 }
-               },{
-                 "type":"TWITTER_USER",
-                 "native_id":"influence_this",
-                 "connection_score":"16",
-                 "connection_metrics":{
-                   "mention_percent_frequency":"0.04",
-                   "retweet_percent_frequency":"0.0",
-                   "mention_frequency":"4",
-                   "mention_count":"4",
-                   "retweet_frequency":"0",
-                   "retweet_count":"0"
-                 }
-               }],
-               "connections_from":[]
-             }
-           }
-         }',
-         Traackr\Influencers::connections($this->infUid)
-      );
+      $connections = Traackr\Influencers::connections($this->infUid);
+      // Check some fields
+      $this->assertArrayHasKey('influencer', $connections,
+         'No influencer found');
+      $this->assertArrayHasKey($this->infUid, $connections['influencer'],
+         'Invalid influencer found');
+      $this->assertArrayHasKey('uid', $connections['influencer'][$this->infUid],
+         'No UID field found');
+      $this->assertArrayHasKey('connections_from', $connections['influencer'][$this->infUid],
+         'No connections_from field found');
+      $this->assertArrayHasKey('connections_to', $connections['influencer'][$this->infUid],
+         'No connections_to field found');
+      // Check some values
+      $this->assertEquals($this->infUid, $connections['influencer'][$this->infUid]['uid'],
+         'UID does not match');
+      $this->assertInternalType('array', $connections['influencer'][$this->infUid]['connections_from'],
+         'connections_from is not a array');
+       $this->assertInternalType('array', $connections['influencer'][$this->infUid]['connections_to'],
+         'connections_to is not a array');
+      $this->assertCount(0, $connections['influencer'][$this->infUid]['connections_from'],
+         'Different number of conections_from then expected');
+      $this->assertCount(2, $connections['influencer'][$this->infUid]['connections_to'],
+         'Different number of conections_to then expected');
 
    } // End function testConnections
 
    /**
+    * @group read-only
     * @expectedException Traackr\NotFoundException
     */
    public function testConnectionsNotFound() {
@@ -228,40 +252,49 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
    } // End function testConnectionsNotFound()
 
 
+   /**
+    * @group read-only
+    */
    public function testLookupTwitter() {
 
-      // Ensure JSON output
-      Traackr\TraackrApi::setJsonOutput(true);
+      $twitterHandle = 'dchancogne';
 
-      $this->assertJsonStringEqualsJsonString(
-         '{
-           "influencer":{
-             "dchancogne":{
-               "uid":"1395be8293373465ab172b8b1b677e31",
-               "name":"David Chancogne",
-               "description":"Web. Geek: http://traackr-people.tumblr.com. Traackr: http://traackr.com. Propz: http://propz.me",
-               "primary_affiliation":"Traackr",
-               "title":"CTO",
-               "location":"Cambridge, MA, United States",
-               "email":"dchancogne@traackr.com",
-               "thumbnail_url":"http://pbs.twimg.com/profile_images/2678827459/a1d9ca2d94e329636cc753133b98525a.png",
-               "avatar":{
-                 "large":"http://pbs.twimg.com/profile_images/2678827459/a1d9ca2d94e329636cc753133b98525a.png",
-                 "medium":"http://pbs.twimg.com/profile_images/2678827459/a1d9ca2d94e329636cc753133b98525a_bigger.png",
-                 "small":"http://pbs.twimg.com/profile_images/2678827459/a1d9ca2d94e329636cc753133b98525a_normal.png"
-               },
-               "reach":"0.25",
-               "resonance":"0.56"
-             }
-           }
-         }',
-         Traackr\Influencers::lookupTwitter('dchancogne')
-      );
+      $inf = Traackr\Influencers::lookupTwitter($twitterHandle);
+      // Check result is there
+      $this->assertArrayHasKey('influencer', $inf,
+         'No influencer found');
+      $this->assertArrayHasKey($twitterHandle, $inf['influencer'],
+         'Invalid influencer found');
+      // Check appropriate fields are present
+      $this->assertArrayHasKey('uid', $inf['influencer'][$twitterHandle],
+         'UID filed is missing');
+      $this->assertArrayHasKey('name', $inf['influencer'][$twitterHandle],
+         'Name field missing');
+      $this->assertArrayHasKey('description', $inf['influencer'][$twitterHandle],
+         'Description field missing');
+      $this->assertArrayHasKey('title', $inf['influencer'][$twitterHandle],
+         'Title field missing');
+      $this->assertArrayHasKey('location', $inf['influencer'][$twitterHandle],
+         'Location field missing');
+      $this->assertArrayHasKey('avatar', $inf['influencer'][$twitterHandle],
+         'Avatar field missing');
+      $this->assertArrayHasKey('reach', $inf['influencer'][$twitterHandle],
+         'Reach field missing');
+      $this->assertArrayHasKey('resonance', $inf['influencer'][$twitterHandle],
+         'Resonance field missing');
+      $this->assertArrayNotHasKey('channels', $inf['influencer'][$twitterHandle],
+         'Channels should not have be returned');
+      $this->assertArrayNotHasKey('tags', $inf['influencer'][$twitterHandle],
+         'Tags field missing');
+      // Check some values
+      $this->assertEquals($this->infUid, $inf['influencer'][$twitterHandle]['uid'],
+         'Incorrect UID');
+      $this->assertEquals($this->infName, $inf['influencer'][$twitterHandle]['name'],
+         'Incorrect name');
 
       // NOTE
       // Disable customer key so that 'show' doe not return tags b/c lookupTwitter doesn't currently
       Traackr\TraackrApi::setCustomerKey('');
-      Traackr\TraackrApi::setJsonOutput(false);
       $inf = Traackr\Influencers::show($this->infUid);
       $twitter = Traackr\Influencers::lookupTwitter('dchancogne');
       $this->assertJsonStringEqualsJsonString(
@@ -272,6 +305,7 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
    } // End function testLookupTwitter()
 
    /**
+    * @group read-only
     * @expectedException Traackr\NotFoundException
     */
    public function testLookupTwitterNotFound() {
@@ -408,52 +442,57 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
 
    } // End function testTagList()
 
+   /**
+    * @group read-only
+    */
    public function testLookup() {
-
-      $inf = Traackr\Influencers::lookup(array('name' => $this->infName));
-      $this->assertTrue(isset($inf['page_info']), 'No paging info');
-      $this->assertCount(1, $inf['influencers'], 'Found multiple results');
-      $this->assertEquals($this->infUid, $inf['influencers'][0]['uid'], 'Invalid influencer/UID found');
 
       $inf = Traackr\Influencers::lookup(array('name' => 'xxxXXXxxx'));
       $this->assertCount(0, $inf['influencers'], 'Results found');
 
-      // Ensure JSON output
-      Traackr\TraackrApi::setJsonOutput(true);
-      $this->assertJsonStringEqualsJsonString(
-         '{
-           "page_info":{
-             "has_more":false,
-             "current_page":0,
-             "next_page":0,
-             "page_count":25,
-             "results_count":1,
-             "total_results_count":1
-           },
-           "influencers":[{
-             "uid":"1395be8293373465ab172b8b1b677e31",
-             "name":"David Chancogne",
-             "description":"Web. Geek: http://traackr-people.tumblr.com. Traackr: http://traackr.com. Propz: http://propz.me",
-             "primary_affiliation":"Traackr",
-             "title":"CTO",
-             "location":"Cambridge, MA, United States",
-             "thumbnail_url":"http://pbs.twimg.com/profile_images/2678827459/a1d9ca2d94e329636cc753133b98525a.png",
-             "avatar":{
-               "large":"http://pbs.twimg.com/profile_images/2678827459/a1d9ca2d94e329636cc753133b98525a.png",
-               "medium":"http://pbs.twimg.com/profile_images/2678827459/a1d9ca2d94e329636cc753133b98525a_bigger.png",
-               "small":"http://pbs.twimg.com/profile_images/2678827459/a1d9ca2d94e329636cc753133b98525a_normal.png"
-             },
-             "reach":"0.25",
-             "resonance":"0.56",
-             "relevance":"0.0"
-           }]
-         }',
-         Traackr\Influencers::lookup(array('name' => $this->infName)),
-         'Record not extact'
-      );
+      $inf = Traackr\Influencers::lookup(array('name' => $this->infName));
+      // Check results format
+      $this->assertArrayHasKey('page_info', $inf, 'No paging info');
+      $this->assertArrayHasKey('influencers', $inf, 'No influencers info');
+      // Should only have found 1 result
+      $this->assertCount(1, $inf['influencers'], 'Found multiple results');
+      // Check some values
+      //
+      $this->assertEquals($this->infUid, $inf['influencers'][0]['uid'],
+         'Invalid influencer/UID found');
+
+      // Check appropriate fields are present
+      $this->assertArrayHasKey('uid', $inf['influencers'][0],
+         'UID filed is missing');
+      $this->assertArrayHasKey('name', $inf['influencers'][0],
+         'Name field missing');
+      $this->assertArrayHasKey('description', $inf['influencers'][0],
+         'Description field missing');
+      $this->assertArrayHasKey('title', $inf['influencers'][0],
+         'Title field missing');
+      $this->assertArrayHasKey('location', $inf['influencers'][0],
+         'Location field missing');
+      $this->assertArrayHasKey('avatar', $inf['influencers'][0],
+         'Avatar field missing');
+      $this->assertArrayHasKey('reach', $inf['influencers'][0],
+         'Reach field missing');
+      $this->assertArrayHasKey('resonance', $inf['influencers'][0],
+         'Resonance field missing');
+      $this->assertArrayNotHasKey('channels', $inf['influencers'][0],
+         'Channels should not have be returned');
+      $this->assertArrayNotHasKey('tags', $inf['influencers'][0],
+         'Tags field missing');
+      // Check some values
+      $this->assertEquals($this->infUid, $inf['influencers'][0]['uid'],
+         'Incorrect UID');
+      $this->assertEquals($this->infName, $inf['influencers'][0]['name'],
+         'Incorrect name');
 
    } // End function testLookup()
 
+   /**
+    * @group read-only
+    */
    public function testSearch() {
 
       $inf = Traackr\Influencers::search(array('keywords' => 'traackr'));
