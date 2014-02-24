@@ -440,6 +440,21 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
          'influencers' => $this->infUid,
          'tags' => $this->infTag));
 
+      // Test finding multiple infs with prefix
+      Traackr\Influencers::tagAdd(array(
+         'influencers' => $this->infUid,
+         'tags' => $this->infTag));
+      Traackr\Influencers::tagAdd(array(
+         'influencers' => $this->infUid2,
+         'tags' => $this->infTag.'inf2'));
+      $infs = Traackr\Influencers::tagList(array('tag' => $this->infTag, 'is_prefix' => false));
+      $this->assertCount(1, $infs['influencers']);
+      $infs = Traackr\Influencers::tagList(array('tag' => $this->infTag, 'is_prefix' => true));
+      $this->assertCount(2, $infs['influencers']);
+      Traackr\Influencers::tagRemove(array(
+         'influencers' => array($this->infUid, $this->infUid2),
+         'tags' => array($this->infTag, $this->infTag.'inf2')));
+
    } // End function testTagList()
 
    /**
