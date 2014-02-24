@@ -131,14 +131,15 @@ class Influencers extends TraackrApiObject {
    } // End function tagRemove()
 
 
-   public static function tagList($p = array()) {
+   public static function tagList($p = array('is_prefix' => false)) {
 
       $inf = new Influencers();
 
-      $p = $inf->addCustomerKey($p);
-      $inf->checkRequiredParams($p, array('tag', 'customer_key'));
+      // Sanatize default values
+      $p['is_prefix'] = empty($p['is_prefix']) ? 'false' : 'true';
 
-      // $p['tag'] = is_array($p['tag']) ? implode(',', $p['tag']) : $p['tag'];
+      $p = $inf->addCustomerKey($p);
+      $inf->checkRequiredParams($p, array('tag', 'is_prefix', 'customer_key'));
 
       return $inf->get(TraackrApi::$apiBaseUrl.'influencers/tag/list', $p);
 
