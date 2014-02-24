@@ -9,8 +9,6 @@ class Analysis extends TraackrApiObject {
       $analysis = new Analysis();
       $p = $analysis->addCustomerKey($p);
 
-      $analysis->checkRequiredParams($p, array('influencers'));
-
       // support for multi params
       if ( isset($p['influencers']) ) {
          $p['influencers'] = is_array($p['influencers']) ?
