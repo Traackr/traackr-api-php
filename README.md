@@ -5,8 +5,8 @@ Traackr API - PHP Client
 Introduction
 ------------
 
-This is a PHP implementation of the Traackr API.
-For documentation on the Traackr API, see: [http://iodocs.traackr.com/](http://iodocs.traackr.com/)
+This is a PHP implementation of the Traackr API. Documentation for this PHP client is available here: [http://traackr.github.io/traackr-api-docs](http://traackr.github.io/traackr-api-docs).  
+For documentation for the Traackr API itself, see: [http://iodocs.traackr.com/](http://iodocs.traackr.com/).
 
 
 Installation
