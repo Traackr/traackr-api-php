@@ -32,8 +32,8 @@ You will need an API key to make use this library. Contact api@traackr.com to ge
 You include this library with:
 
     require_once('lib/TraackrApi.php');
-    
-If you are using Componser the autoload functionality should automatically load the appropriate PHP files (i.e. `require 'vendor/autoload.php'` will load the library files).
+
+If you are using Composer the autoload functionality should automatically load the appropriate PHP files (i.e. `require 'vendor/autoload.php'` will load the library files).
 
 ### Set your API key ###
 
@@ -79,7 +79,7 @@ The unit tests come with a public API key that you can use to run the unit tests
 To run these read-only tests you can execute:
 
     ./bin/phpunit --group read-only test
-    
+
 If you try to run the entire test suite with this public API key you will get errors when trying to access functions that change data.
 
 ### Running the entire test suite ###
@@ -90,8 +90,7 @@ Before you run unit tests, you need to specify an API key and a Customer key. Th
 
 	# export TRAACKR_API_KEY=<your-api-key>
 	# export TARACKR_CUSTOMER_KEY=<your-customer-key>
-	
+
 Run the entire test suite:
 
 	./bin/phpunit test
-
