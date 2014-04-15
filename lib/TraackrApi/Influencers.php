@@ -196,6 +196,7 @@ class Influencers extends TraackrApiObject {
          $p['root_urls_exclusive'] = is_array($p['root_urls_exclusive']) ?
             implode(',', $p['root_urls_exclusive']) : $p['root_urls_exclusive'];
       }
+      $p['is_tag_prefix'] = empty($p['is_tag_prefix']) ? 'false' : 'true';
 
        return $inf->get(TraackrApi::$apiBaseUrl.'influencers/search', $p);
 
