@@ -508,13 +508,18 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
    /**
     * @group read-only
     */
-   public function testSearch() {
+   public function testSearchRO() {
 
       $inf = Traackr\Influencers::search(array('keywords' => 'traackr'));
       $this->assertGreaterThan(0, $inf['influencers'], 'No results found');
 
       $inf = Traackr\Influencers::search(array('keywords' => 'xxxaaaxxx'));
       $this->assertCount(0, $inf['influencers'], 'Results found');
+
+   } // End function testSearchRO()
+
+
+   public function testSearch() {
 
       Traackr\Influencers::tagAdd(array(
          'influencers' => $this->infUid,
@@ -528,7 +533,7 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
       Traackr\Influencers::tagRemove(array(
          'influencers' => $this->infUid,
          'tags' => $this->infTag));
-         
-   } // End fucntion testSearch()
+
+   } // End function testSearch()
 
 } // End class InfluencersTest
