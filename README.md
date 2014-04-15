@@ -89,7 +89,7 @@ To run the entire test suite you will need an API key that has full access to th
 Before you run unit tests, you need to specify an API key and a Customer key. These 2 values can be specified via ENV variables (so they don't have to be hardcoded in the unit tests).
 
 	# export TRAACKR_API_KEY=<your-api-key>
-	# export TARACKR_CUSTOMER_KEY=<your-customer-key>
+	# export TRAACKR_CUSTOMER_KEY=<your-customer-key>
 
 Run the entire test suite:
 

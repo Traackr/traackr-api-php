@@ -178,7 +178,7 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
          'UID does not match');
       $this->assertInternalType('array', $to['influencer'][$this->infUid]['connections_to'],
          'connections_to is not a array');
-      $this->assertCount(1, $to['influencer'][$this->infUid]['connections_to'],
+      $this->assertCount(2, $to['influencer'][$this->infUid]['connections_to'],
          'Different number of conections_to then expected');
       // Check connections
       $this->assertArrayHasKey('type', $to['influencer'][$this->infUid]['connections_to'][0],
@@ -235,7 +235,7 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
          'connections_to is not a array');
       $this->assertCount(0, $connections['influencer'][$this->infUid]['connections_from'],
          'Different number of conections_from then expected');
-      $this->assertCount(1, $connections['influencer'][$this->infUid]['connections_to'],
+      $this->assertCount(2, $connections['influencer'][$this->infUid]['connections_to'],
          'Different number of conections_to then expected');
 
    } // End function testConnections
@@ -516,6 +516,19 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
       $inf = Traackr\Influencers::search(array('keywords' => 'xxxaaaxxx'));
       $this->assertCount(0, $inf['influencers'], 'Results found');
 
+      Traackr\Influencers::tagAdd(array(
+         'influencers' => $this->infUid,
+         'tags' => $this->infTag));
+      // Finds result with prefix
+      $inf = Traackr\Influencers::search(array('keywords' => 'traackr', 'tags' => 'traackr-api-', 'is_tag_prefix' => true));
+      $this->assertGreaterThan(0, $inf['influencers'], 'No results found');
+      // No result with exact tag match
+      $inf = Traackr\Influencers::search(array('keywords' => 'traackr', 'tags' => 'traackr-api-', 'is_tag_prefix' => false));
+      $this->assertCount(0, $inf['influencers'], 'Results found');
+      Traackr\Influencers::tagRemove(array(
+         'influencers' => $this->infUid,
+         'tags' => $this->infTag));
+         
    } // End fucntion testSearch()
 
 } // End class InfluencersTest

@@ -171,8 +171,12 @@ class Influencers extends TraackrApiObject {
    public static function search($p = array('lang' => 'all', 'count' => 25)) {
 
       $inf = new Influencers();
+
+      // Sanatize default values
+      $p['is_tag_prefix'] = empty($p['is_tag_prefix']) ? 'false' : 'true';
+
       $p = $inf->addCustomerKey($p);
-      $inf->checkRequiredParams($p, array('keywords'));
+      $inf->checkRequiredParams($p, array('keywords', 'is_tag_prefix'));
 
       // support for multi params
       $p['keywords'] = is_array($p['keywords']) ?
@@ -197,7 +201,6 @@ class Influencers extends TraackrApiObject {
          $p['root_urls_exclusive'] = is_array($p['root_urls_exclusive']) ?
             implode(',', $p['root_urls_exclusive']) : $p['root_urls_exclusive'];
       }
-      $p['is_tag_prefix'] = empty($p['is_tag_prefix']) ? 'false' : 'true';
 
        return $inf->get(TraackrApi::$apiBaseUrl.'influencers/search', $p);
 
