@@ -460,7 +460,7 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
    /**
     * @group read-only
     */
-   public function testLookup() {
+   public function testLookupRO() {
 
       $inf = Traackr\Influencers::lookup(array('name' => 'xxxXXXxxx'));
       $this->assertCount(0, $inf['influencers'], 'Results found');
@@ -472,7 +472,6 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
       // Should only have found 1 result
       $this->assertCount(1, $inf['influencers'], 'Found multiple results');
       // Check some values
-      //
       $this->assertEquals($this->infUid, $inf['influencers'][0]['uid'],
          'Invalid influencer/UID found');
 
@@ -505,6 +504,23 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
 
    } // End function testLookup()
 
+   public function testLookup() {
+
+      Traackr\Influencers::tagAdd(array(
+         'influencers' => $this->infUid,
+         'tags' => $this->infTag));
+      // Finds result with prefix
+      $inf = Traackr\Influencers::lookup(array('tags' => 'traackr-api-', 'is_tag_prefix' => true));
+      $this->assertCount(1, $inf['influencers'], 'No results found');
+      // No result with exact tag match
+      $inf = Traackr\Influencers::lookup(array('tags' => 'traackr-api-', 'is_tag_prefix' => false));
+      $this->assertCount(0, $inf['influencers'], 'Results found');
+      Traackr\Influencers::tagRemove(array(
+         'influencers' => $this->infUid,
+         'tags' => $this->infTag));
+
+   } // End function testLookup()
+   
    /**
     * @group read-only
     */

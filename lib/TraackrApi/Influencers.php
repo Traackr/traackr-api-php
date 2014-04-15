@@ -147,11 +147,16 @@ class Influencers extends TraackrApiObject {
 
 
    public static function lookup($p = array(
+      'is_tag_prefix' => false,
       'gender' => 'all',
       'count' => 25, 'page' => 0,
       'sort' => 'name', 'sort_order' => 'asc')) {
 
       $inf = new Influencers();
+
+      // Sanatize default values
+      $p['is_tag_prefix'] = empty($p['is_tag_prefix']) ? 'false' : 'true';
+      
       $p = $inf->addCustomerKey($p);
 
       // support for multi params
@@ -168,7 +173,11 @@ class Influencers extends TraackrApiObject {
 
    } // End function lookup()
 
-   public static function search($p = array('lang' => 'all', 'count' => 25)) {
+   public static function search($p = array(
+      'is_tag_prefix' => false,
+      'gender' => 'all',
+      'lang' => 'all',
+      'count' => 25)) {
 
       $inf = new Influencers();
 
@@ -176,7 +185,7 @@ class Influencers extends TraackrApiObject {
       $p['is_tag_prefix'] = empty($p['is_tag_prefix']) ? 'false' : 'true';
 
       $p = $inf->addCustomerKey($p);
-      $inf->checkRequiredParams($p, array('keywords', 'is_tag_prefix'));
+      $inf->checkRequiredParams($p, array('keywords'));
 
       // support for multi params
       $p['keywords'] = is_array($p['keywords']) ?
