@@ -508,7 +508,8 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
 
       Traackr\Influencers::tagAdd(array(
          'influencers' => $this->infUid,
-         'tags' => $this->infTag));
+         'tags' => $this->infTag,
+         'strict' => true));
       // Finds result with prefix
       $inf = Traackr\Influencers::lookup(array('tags' => 'traackr-api-', 'is_tag_prefix' => true));
       $this->assertCount(1, $inf['influencers'], 'No results found');
@@ -520,7 +521,7 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
          'tags' => $this->infTag));
 
    } // End function testLookup()
-   
+
    /**
     * @group read-only
     */
