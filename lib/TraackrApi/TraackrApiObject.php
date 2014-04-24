@@ -139,6 +139,7 @@ abstract class TraackrApiObject {
       // Sets URL
       curl_setopt($this->curl, CURLOPT_URL, $url);
       // Make call
+      // sprintf('Calling (GET): %s ', $url);
       return $this->call(!TraackrAPI::isJsonOutput());
 
    } // End function doGet()
@@ -147,18 +148,21 @@ abstract class TraackrApiObject {
 
       // POST call
       curl_setopt($this->curl, CURLOPT_POST, 1);
-      // Sets URL
-      curl_setopt($this->curl, CURLOPT_URL, $url);
+
       // Build Parameters
       // Add API key parameter if not present
       if ( !isset($params[PARAM_API_KEY]) ) {
          $params[PARAM_API_KEY] = TraackrApi::getApiKey();
       }
+      // API key always passed as a query string even for POST
+      $url .= "?".PARAM_API_KEY.'='.$params[PARAM_API_KEY];
+      // Sets URL
+      curl_setopt($this->curl, CURLOPT_URL, $url);
+      // Stes params
       $http_param_query = http_build_query($params);
       curl_setopt($this->curl, CURLOPT_POSTFIELDS, $http_param_query);
       // Make call
-      // $this->log(sprintf('Calling (POST): %s [%s]', $url, $http_param_query), LOG_DEBUG);
-      sprintf('Calling (POST): %s [%s]', $url, $http_param_query);
+      // sprintf('Calling (POST): %s [%s]', $url, $http_param_query);
       return $this->call(!TraackrAPI::isJsonOutput());
 
    } // End functuion doPost()
