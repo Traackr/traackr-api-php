@@ -522,7 +522,7 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
       // Test tags_exclusive
       Traackr\Influencers::tagAdd(array(
          'influencers' => $this->infUid2,
-         'tags' => [$this->infTag,  $this->infTag2]));
+         'tags' => array($this->infTag,  $this->infTag2) ));
       sleep(1); // Make sure tag operation is done indexing
       $infs = Traackr\Influencers::lookup(array('tags' => $this->infTag));
       $this->assertCount(2, $infs['influencers'], 'Unexpected results found');
@@ -530,8 +530,8 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
       $this->assertCount(1, $infs['influencers'], 'Unexpected results found');
 
       Traackr\Influencers::tagRemove(array(
-         'influencers' => [$this->infUid, $this->infUid2],
-         'tags' => [$this->infTag, $this->infTag2]));
+         'influencers' => array($this->infUid, $this->infUid2),
+         'tags' => array($this->infTag, $this->infTag2) ));
 
    } // End function testLookup()
 
@@ -565,7 +565,7 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
       // Test tags_exclusive
       Traackr\Influencers::tagAdd(array(
          'influencers' => $this->infUid2,
-         'tags' => [$this->infTag,  $this->infTag2]));
+         'tags' => array($this->infTag,  $this->infTag2) ));
       sleep(1); // Make sure tag operation is done indexing
       $infs = Traackr\Influencers::search(array('keywords' => 'traackr', 'tags' => $this->infTag));
       $this->assertCount(2, $infs['influencers'], 'No results found');
@@ -574,7 +574,7 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
 
       Traackr\Influencers::tagRemove(array(
          'influencers' => [$this->infUid, $this->infUid2],
-         'tags' => [$this->infTag, $this->infTag2]));
+         'tags' => array($this->infTag, $this->infTag2) ));
 
    } // End function testSearch()
 
