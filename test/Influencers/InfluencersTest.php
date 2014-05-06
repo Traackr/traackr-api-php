@@ -573,7 +573,7 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
       $this->assertCount(1, $infs['influencers'], 'Results found');
 
       Traackr\Influencers::tagRemove(array(
-         'influencers' => [$this->infUid, $this->infUid2],
+         'influencers' => array($this->infUid, $this->infUid2),
          'tags' => array($this->infTag, $this->infTag2) ));
 
    } // End function testSearch()
