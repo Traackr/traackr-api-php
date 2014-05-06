@@ -4,6 +4,7 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
 
    private $infUid = '1395be8293373465ab172b8b1b677e31';
    private $infTag = 'traackr-api-test';
+   private $infTag2 = 'inf-tag-test';
    private $infTagUTF8 = 'påverkare marknadsföring traackr-api-test';
    private $infName = 'David Chancogne';
 
@@ -22,7 +23,7 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
       try {
          // remove all tags
          Traackr\Influencers::tagRemove(array(
-            'tags' => array($this->infTag, $this->infTagUTF8),
+            'tags' => array($this->infTag, $this->infTag2, $this->infTagUTF8),
             'all' => true)
          );
       }
@@ -510,15 +511,27 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
          'influencers' => $this->infUid,
          'tags' => $this->infTag,
          'strict' => true));
+      sleep(1); // Make sure tag operation is done indexing
       // Finds result with prefix
       $inf = Traackr\Influencers::lookup(array('tags' => 'traackr-api-', 'is_tag_prefix' => true));
-      $this->assertCount(1, $inf['influencers'], 'No results found');
+      $this->assertCount(1, $inf['influencers'], 'Unexpected results found');
       // No result with exact tag match
       $inf = Traackr\Influencers::lookup(array('tags' => 'traackr-api-', 'is_tag_prefix' => false));
-      $this->assertCount(0, $inf['influencers'], 'Results found');
+      $this->assertCount(0, $inf['influencers'], 'Unexpected results found');
+
+      // Test tags_exclusive
+      Traackr\Influencers::tagAdd(array(
+         'influencers' => $this->infUid2,
+         'tags' => [$this->infTag,  $this->infTag2]));
+      sleep(1); // Make sure tag operation is done indexing
+      $infs = Traackr\Influencers::lookup(array('tags' => $this->infTag));
+      $this->assertCount(2, $infs['influencers'], 'Unexpected results found');
+      $infs = Traackr\Influencers::lookup(array('tags' => $this->infTag, 'tags_exclusive' => $this->infTag2));
+      $this->assertCount(1, $infs['influencers'], 'Unexpected results found');
+
       Traackr\Influencers::tagRemove(array(
-         'influencers' => $this->infUid,
-         'tags' => $this->infTag));
+         'influencers' => [$this->infUid, $this->infUid2],
+         'tags' => [$this->infTag, $this->infTag2]));
 
    } // End function testLookup()
 
@@ -541,15 +554,27 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
       Traackr\Influencers::tagAdd(array(
          'influencers' => $this->infUid,
          'tags' => $this->infTag));
+      sleep(1); // Make sure tag operation is done indexing
       // Finds result with prefix
       $inf = Traackr\Influencers::search(array('keywords' => 'traackr', 'tags' => 'traackr-api-', 'is_tag_prefix' => true));
       $this->assertGreaterThan(0, $inf['influencers'], 'No results found');
       // No result with exact tag match
       $inf = Traackr\Influencers::search(array('keywords' => 'traackr', 'tags' => 'traackr-api-', 'is_tag_prefix' => false));
       $this->assertCount(0, $inf['influencers'], 'Results found');
+
+      // Test tags_exclusive
+      Traackr\Influencers::tagAdd(array(
+         'influencers' => $this->infUid2,
+         'tags' => [$this->infTag,  $this->infTag2]));
+      sleep(1); // Make sure tag operation is done indexing
+      $infs = Traackr\Influencers::search(array('keywords' => 'traackr', 'tags' => $this->infTag));
+      $this->assertCount(2, $infs['influencers'], 'No results found');
+      $infs = Traackr\Influencers::search(array('keywords' => 'traackr', 'tags' => $this->infTag, 'tags_exclusive' =>$this->infTag2));
+      $this->assertCount(1, $infs['influencers'], 'Results found');
+
       Traackr\Influencers::tagRemove(array(
-         'influencers' => $this->infUid,
-         'tags' => $this->infTag));
+         'influencers' => [$this->infUid, $this->infUid2],
+         'tags' => [$this->infTag, $this->infTag2]));
 
    } // End function testSearch()
 

@@ -156,7 +156,7 @@ class Influencers extends TraackrApiObject {
 
       // Sanatize default values
       $p['is_tag_prefix'] = empty($p['is_tag_prefix']) ? 'false' : 'true';
-      
+
       $p = $inf->addCustomerKey($p);
 
       // support for multi params
@@ -167,6 +167,10 @@ class Influencers extends TraackrApiObject {
       if ( isset($p['tags']) ) {
          $p['tags'] = is_array($p['tags']) ?
             implode(',', $p['tags']) : $p['tags'];
+      }
+      if ( isset($p['tags_exclusive']) ) {
+         $p['tags_exclusive'] = is_array($p['tags_exclusive']) ?
+            implode(',', $p['tags_exclusive']) : $p['tags_exclusive'];
       }
 
       return $inf->get(TraackrApi::$apiBaseUrl.'influencers/lookup', $p);
@@ -197,6 +201,10 @@ class Influencers extends TraackrApiObject {
       if ( isset($p['tags']) ) {
          $p['tags'] = is_array($p['tags']) ?
             implode(',', $p['tags']) : $p['tags'];
+      }
+      if ( isset($p['tags_exclusive']) ) {
+         $p['tags_exclusive'] = is_array($p['tags_exclusive']) ?
+            implode(',', $p['tags_exclusive']) : $p['tags_exclusive'];
       }
       if ( isset($p['exlcusion_keywords']) ) {
          $p['exclusion_keywords'] = is_array($p['exclusion_keywords']) ?
