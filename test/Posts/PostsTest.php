@@ -38,6 +38,18 @@ class PostsTest extends PHPUnit_Framework_TestCase {
    } // End function testLookup()
 
    /**
+    * @group read only
+    * @expectedException Traackr\MissingParameterException
+    */
+   public function testSearchInvalidParameter() {
+      Traackr\Posts::search(array(
+         'keywords' => array('traackr', '"content marketing"'),
+         'include_keyword_matches' => false,
+         'enable_keyword_aggregation' => true
+      ));
+   }
+   
+   /**
     * @group read-only
     */
    public function testSearch() {

@@ -5,6 +5,7 @@ namespace Traackr;
 class Posts extends TraackrApiObject {
 
    public static function lookup($p = array(
+      'is_tag_prefix' => false,
       'lang' => 'all',
       'include_entities' => false,
       'count' => 25, 'page' => 0) ) {
@@ -13,6 +14,7 @@ class Posts extends TraackrApiObject {
       $p = $posts->addCustomerKey($p);
 
       // Sanatize default values
+      $p['is_tag_prefix'] = empty($p['is_tag_prefix']) ? 'false' : 'true';
       $p['include_entities'] = empty($p['include_entities']) ? 'false' : 'true';
 
       // support for multi params
@@ -38,9 +40,16 @@ class Posts extends TraackrApiObject {
    } // End function lookup()
 
    public static function search($p = array(
+      'is_tag_prefix' => false,
       'lang' => 'all',
       'include_keyword_matches' => false,
       'include_entities' => false,
+      'enable_keyword_aggregation' => false,
+      'enable_influencer_aggregation' => false,
+      'enable_domain_aggregation' => false,
+      'enable_monthly_aggregation' => false,
+      'enable_weekly_aggregation' => false,
+      'enable_daily_aggregation' => false,
       'count' => 25, 'page' => 0, 'sort' => 'date') ) {
 
       $posts = new Posts();
@@ -49,8 +58,21 @@ class Posts extends TraackrApiObject {
 
 
       // Sanatize default values
+      $p['is_tag_prefix'] = empty($p['is_tag_prefix']) ? 'false' : 'true';
+      $p['include_entities'] = empty($p['include_entities']) ? 'false' : 'true';
       $p['include_keyword_matches'] = empty($p['include_keyword_matches']) ? 'false' : 'true';
       $p['include_entities'] = empty($p['include_entities']) ? 'false' : 'true';
+      $p['enable_keyword_aggregation'] = empty($p['enable_keyword_aggregation']) ? 'false' : 'true';
+      $p['enable_influencer_aggregation'] = empty($p['enable_influencer_aggregation']) ? 'false' : 'true';
+      $p['enable_domain_aggregation'] = empty($p['enable_domain_aggregation']) ? 'false' : 'true';
+      $p['enable_monthly_aggregation'] = empty($p['enable_monthly_aggregation']) ? 'false' : 'true';
+      $p['enable_weekly_aggregation'] = empty($p['enable_weekly_aggregation']) ? 'false' : 'true';
+      $p['enable_daily_aggregation'] = empty($p['enable_daily_aggregation']) ? 'false' : 'true';
+
+      // Validate business requirements
+      if ( $p['enable_keyword_aggregation'] && !$p['include_keyword_matches'] ) {
+         throw new MissingParameterException("'include_keyword_matches' needs to be set to true for 'keyword_aggregation' to work");
+      }
 
       // support for multi params
       $p['keywords'] = is_array($p['keywords']) ?
