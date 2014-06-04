@@ -70,7 +70,7 @@ class Posts extends TraackrApiObject {
       $p['enable_daily_aggregation'] = empty($p['enable_daily_aggregation']) ? 'false' : 'true';
 
       // Validate business requirements
-      if ( $p['enable_keyword_aggregation'] && !$p['include_keyword_matches'] ) {
+      if ( $p['enable_keyword_aggregation'] === 'true' && $p['include_keyword_matches'] === 'false' ) {
          throw new MissingParameterException("'include_keyword_matches' needs to be set to true for 'keyword_aggregation' to work");
       }
 

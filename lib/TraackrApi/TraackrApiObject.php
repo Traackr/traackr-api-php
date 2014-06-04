@@ -129,9 +129,11 @@ abstract class TraackrApiObject {
       // call from a previous request
       curl_setopt($this->curl, CURLOPT_POST, 0);
       // Add API key parameter if not present
-      if ( !isset($params[PARAM_API_KEY]) ) {
-         $params[PARAM_API_KEY] = TraackrApi::getApiKey();
+      $api_key = TraackrApi::getApiKey();
+      if ( !isset($params[PARAM_API_KEY]) && !empty($api_key) ) {
+         $params[PARAM_API_KEY] = $api_key;
       }
+
       // Add params if needed
       if ( !empty($params) ) {
          $url .= "?".http_build_query($params);
@@ -151,11 +153,14 @@ abstract class TraackrApiObject {
 
       // Build Parameters
       // Add API key parameter if not present
-      if ( !isset($params[PARAM_API_KEY]) ) {
-         $params[PARAM_API_KEY] = TraackrApi::getApiKey();
+      $api_key = TraackrApi::getApiKey();
+      if ( !isset($params[PARAM_API_KEY]) && !empty($api_key) ) {
+         $params[PARAM_API_KEY] = $api_key;
       }
       // API key always passed as a query string even for POST
-      $url .= "?".PARAM_API_KEY.'='.$params[PARAM_API_KEY];
+      if ( !empty($params[PARAM_API_KEY]) ) {
+         $url .= "?".PARAM_API_KEY.'='.$params[PARAM_API_KEY];
+      }
       // Sets URL
       curl_setopt($this->curl, CURLOPT_URL, $url);
       // Stes params

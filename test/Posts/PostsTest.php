@@ -38,6 +38,7 @@ class PostsTest extends PHPUnit_Framework_TestCase {
    } // End function testLookup()
 
    /**
+     * If keyword_aggregation is enable, keyword_matches must be set to true
     * @group read only
     * @expectedException Traackr\MissingParameterException
     */
@@ -48,7 +49,7 @@ class PostsTest extends PHPUnit_Framework_TestCase {
          'enable_keyword_aggregation' => true
       ));
    }
-   
+
    /**
     * @group read-only
     */
