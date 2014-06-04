@@ -236,7 +236,7 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
          'connections_to is not a array');
       $this->assertCount(0, $connections['influencer'][$this->infUid]['connections_from'],
          'Different number of conections_from then expected');
-      $this->assertCount(2, $connections['influencer'][$this->infUid]['connections_to'],
+      $this->assertCount(1, $connections['influencer'][$this->infUid]['connections_to'],
          'Different number of conections_to then expected');
 
    } // End function testConnections
