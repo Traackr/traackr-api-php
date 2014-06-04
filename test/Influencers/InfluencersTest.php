@@ -179,7 +179,7 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
          'UID does not match');
       $this->assertInternalType('array', $to['influencer'][$this->infUid]['connections_to'],
          'connections_to is not a array');
-      $this->assertCount(2, $to['influencer'][$this->infUid]['connections_to'],
+      $this->assertCount(1, $to['influencer'][$this->infUid]['connections_to'],
          'Different number of conections_to then expected');
       // Check connections
       $this->assertArrayHasKey('type', $to['influencer'][$this->infUid]['connections_to'][0],
