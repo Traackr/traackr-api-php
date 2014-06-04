@@ -98,7 +98,7 @@ class Posts extends TraackrApiObject {
             implode(',', $p['root_urls_exclusive']) : $p['root_urls_exclusive'];
       }
 
-       return $posts->get(TraackrApi::$apiBaseUrl.'posts/search', $p);
+       return $posts->post(TraackrApi::$apiBaseUrl.'posts/search', $p);
 
    } // End function lookup()
 
