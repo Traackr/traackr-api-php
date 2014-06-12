@@ -206,7 +206,7 @@ class Influencers extends TraackrApiObject {
          $p['tags_exclusive'] = is_array($p['tags_exclusive']) ?
             implode(',', $p['tags_exclusive']) : $p['tags_exclusive'];
       }
-      if ( isset($p['exlcusion_keywords']) ) {
+      if ( isset($p['exclusion_keywords']) ) {
          $p['exclusion_keywords'] = is_array($p['exclusion_keywords']) ?
             implode(',', $p['exclusion_keywords']) : $p['exclusion_keywords'];
       }

@@ -85,7 +85,7 @@ class Posts extends TraackrApiObject {
          $p['tags'] = is_array($p['tags']) ?
             implode(',', $p['tags']) : $p['tags'];
       }
-      if ( isset($p['exlcusion_keywords']) ) {
+      if ( isset($p['exclusion_keywords']) ) {
          $p['exclusion_keywords'] = is_array($p['exclusion_keywords']) ?
             implode(',', $p['exclusion_keywords']) : $p['exclusion_keywords'];
       }
