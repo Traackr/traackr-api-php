@@ -149,6 +149,7 @@ class Influencers extends TraackrApiObject {
    public static function lookup($p = array(
       'is_tag_prefix' => false,
       'gender' => 'all',
+      'enable_tags_aggregation' => false,
       'count' => 25, 'page' => 0,
       'sort' => 'name', 'sort_order' => 'asc')) {
 
@@ -156,6 +157,7 @@ class Influencers extends TraackrApiObject {
 
       // Sanatize default values
       $p['is_tag_prefix'] = empty($p['is_tag_prefix']) ? 'false' : 'true';
+      $p['enable_tags_aggregation'] = empty($p['enable_tags_aggregation']) ? 'false' : 'true';
 
       $p = $inf->addCustomerKey($p);
 

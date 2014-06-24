@@ -179,7 +179,10 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
          'UID does not match');
       $this->assertInternalType('array', $to['influencer'][$this->infUid]['connections_to'],
          'connections_to is not a array');
-      $this->assertCount(1, $to['influencer'][$this->infUid]['connections_to'],
+      // 2 tests to make it work in QA and PROD
+      $this->assertGreaterThanOrEqual(1, sizeof($to['influencer'][$this->infUid]['connections_to']),
+         'Different number of conections_to then expected');
+      $this->assertLessThanOrEqual(2, sizeof($to['influencer'][$this->infUid]['connections_to']),
          'Different number of conections_to then expected');
       // Check connections
       $this->assertArrayHasKey('type', $to['influencer'][$this->infUid]['connections_to'][0],
@@ -236,8 +239,12 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
          'connections_to is not a array');
       $this->assertCount(0, $connections['influencer'][$this->infUid]['connections_from'],
          'Different number of conections_from then expected');
-      $this->assertCount(1, $connections['influencer'][$this->infUid]['connections_to'],
+      // 2 tests to make it work in QA and PROD
+      $this->assertGreaterThanOrEqual(1, sizeof($connections['influencer'][$this->infUid]['connections_to']),
          'Different number of conections_to then expected');
+      $this->assertLessThanOrEqual(2, sizeof($connections['influencer'][$this->infUid]['connections_to']),
+         'Different number of conections_to then expected');
+
 
    } // End function testConnections
 
@@ -518,6 +525,15 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
       // No result with exact tag match
       $inf = Traackr\Influencers::lookup(array('tags' => 'traackr-api-', 'is_tag_prefix' => false));
       $this->assertCount(0, $inf['influencers'], 'Unexpected results found');
+      // Test tags aggreagation
+      $inf = Traackr\Influencers::lookup(array(
+         'tags' => 'traackr-api-',
+         'is_tag_prefix' => true,
+         'enable_tags_aggregation' => true));
+      $this->assertArrayHasKey('aggregations', $inf, 'Missing aggregation data');
+      $this->assertCount(1, $inf['aggregations']['tags']['buckets'], 'Invalid number of aggregation buckets in result');
+      $this->assertEquals($this->infTag,  $inf['aggregations']['tags']['buckets'][0]['key'], 'Invalid buckets');
+      $this->assertEquals(1,  $inf['aggregations']['tags']['buckets'][0]['count'], 'Invalid tag aggregation count');
 
       // Test tags_exclusive
       Traackr\Influencers::tagAdd(array(
@@ -533,7 +549,7 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
          'influencers' => array($this->infUid, $this->infUid2),
          'tags' => array($this->infTag, $this->infTag2) ));
 
-   } // End function testLookup()
+   } // End function testLookupRO()
 
    /**
     * @group read-only
