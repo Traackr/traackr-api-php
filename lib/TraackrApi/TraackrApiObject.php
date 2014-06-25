@@ -207,7 +207,9 @@ abstract class TraackrApiObject {
       }
       // Sets URL
       curl_setopt($this->curl, CURLOPT_URL, $url);
-      // Stes params
+      
+      // Prepare and set params
+      $params = $this->prepareParameters($params);
       $http_param_query = http_build_query($params);
       curl_setopt($this->curl, CURLOPT_POSTFIELDS, $http_param_query);
       // Sets URL

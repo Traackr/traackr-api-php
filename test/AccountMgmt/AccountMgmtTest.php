@@ -80,10 +80,26 @@ class AccountMgmtTest extends PHPUnit_Framework_TestCase {
 
    } // End function testShowNotFound()
 
-   public function testCustomerkeyDelete() {
+   public function testCreateAndDeleteKey() {
+      // Create Customer Key
+      $create_response = Traackr\AccountMgmt::customerkeyCreate(array('customer_name' => 'some_unknown_customer_for_a_customer_key'));
+      $this->assertNotEmpty($create_response);
+      $this->assertNotEmpty($create_response['customer_key']);
+      $customer_key = $create_response['customer_key'];
+
+      // Delete Customer Key
+      $delete_response = Traackr\AccountMgmt::customerkeyDelete(array('customer_key' => $customer_key));
+      $this->assertNotEmpty($delete_response);
+      $this->assertNotEmpty($delete_response['status']);
+      $status = $delete_response['status']; 
+      $this->assertEquals($status, 'ok');        
+   } // End function testCreateAndDeleteKey()
+
+
+   public function testCustomerkeyDeleteMissingKey() {
 
       try {
-         Traackr\AccountMgmt::customerkeyDelete(array('customer_key' => 'abcdefg12345'));
+         Traackr\AccountMgmt::customerkeyDelete(array('customer_key' => 'some_unknown_customer_for_a_customer_key'));
       }
       catch (Traackr\TraackrApiException $e) {
          $this->assertEquals($e->getMessage(), 'Invalid Customer Key (HTTP 400): Customer key not found');
