@@ -5,6 +5,7 @@ class AccountMgmtTest extends PHPUnit_Framework_TestCase {
    private $infUid = '1395be8293373465ab172b8b1b677e31';
    private $infTag = 'traackr-api-test';
    private $infName = 'David Chancogne';
+   private $createdCustomerKey;
 
    private $savedCustomerKey;
 
@@ -80,6 +81,9 @@ class AccountMgmtTest extends PHPUnit_Framework_TestCase {
 
    } // End function testShowNotFound()
 
+   /**
+    * Tests create and delete customer key
+    */
    public function testCreateAndDeleteKey() {
       // Create Customer Key
       $create_response = Traackr\AccountMgmt::customerkeyCreate(array('customer_name' => 'some_unknown_customer_for_a_customer_key'));
@@ -92,20 +96,15 @@ class AccountMgmtTest extends PHPUnit_Framework_TestCase {
       $this->assertNotEmpty($delete_response);
       $this->assertNotEmpty($delete_response['status']);
       $status = $delete_response['status']; 
-      $this->assertEquals($status, 'ok');        
-   } // End function testCreateAndDeleteKey()
-
-
-   public function testCustomerkeyDeleteMissingKey() {
+      $this->assertEquals($status, 'ok');   
 
       try {
-         Traackr\AccountMgmt::customerkeyDelete(array('customer_key' => 'some_unknown_customer_for_a_customer_key'));
+         Traackr\AccountMgmt::customerkeyDelete(array('customer_key' => $customer_key ));
       }
       catch (Traackr\TraackrApiException $e) {
          $this->assertEquals($e->getMessage(), 'Invalid Customer Key (HTTP 400): Customer key not found');
          $this->assertEquals($e->getCode(), 400);
-      }
-
-   } // End function testCustomerkeyDelete()
+      }      
+   } // End function testCreateAndDeleteKey()
 
 } // End class AccountMgmt
