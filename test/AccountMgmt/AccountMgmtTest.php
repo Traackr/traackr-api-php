@@ -80,5 +80,16 @@ class AccountMgmtTest extends PHPUnit_Framework_TestCase {
 
    } // End function testShowNotFound()
 
+   public function testCustomerkeyDelete() {
+
+      try {
+         Traackr\AccountMgmt::customerkeyDelete(array('customer_key' => 'abcdefg12345'));
+      }
+      catch (Traackr\TraackrApiException $e) {
+         $this->assertEquals($e->getMessage(), 'Invalid Customer Key (HTTP 400): Customer key not found');
+         $this->assertEquals($e->getCode(), 400);
+      }
+
+   } // End function testCustomerkeyDelete()
 
 } // End class AccountMgmt
