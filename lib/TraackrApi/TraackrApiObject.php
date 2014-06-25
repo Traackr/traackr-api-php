@@ -192,5 +192,34 @@ abstract class TraackrApiObject {
 
    } // End functuion doPost()
 
+   // Support for HTTP DELETE Methods
+   public function delete($url, $params = array()) {
+
+      // Build Parameters
+      // Add API key parameter if not present
+      $api_key = TraackrApi::getApiKey();
+      if ( !isset($params[PARAM_API_KEY]) && !empty($api_key) ) {
+         $params[PARAM_API_KEY] = $api_key;
+      }
+      // API key always passed as a query string even for POST
+      if ( !empty($params[PARAM_API_KEY]) ) {
+         $url .= "?".PARAM_API_KEY.'='.$params[PARAM_API_KEY];
+      }
+      // Sets URL
+      curl_setopt($this->curl, CURLOPT_URL, $url);
+      
+      // Prepare and set params
+      $params = $this->prepareParameters($params);
+      $http_param_query = http_build_query($params);
+      curl_setopt($this->curl, CURLOPT_POSTFIELDS, $http_param_query);
+      // Sets URL
+      curl_setopt($this->curl, CURLOPT_URL, $url);
+      // Set Custom Request for DELETE
+      curl_setopt($this->curl, CURLOPT_CUSTOMREQUEST, 'DELETE');      
+      // Make call
+      // sprintf('Calling (DELETE): %s ', $url);
+      return $this->call(!TraackrAPI::isJsonOutput());
+
+   } // End function delete()
 
 } // End class TraackrAPI
