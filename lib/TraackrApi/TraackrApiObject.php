@@ -63,6 +63,21 @@ abstract class TraackrApiObject {
 
    } // End function addCustomerKey()
 
+   // Prepare parameters before any GET or POST call.
+   // For now any pass-thru parameter passed as a true or false boolease
+   // is converted to a string since that's what the API expects
+   private function prepareParameters($params) {
+
+      foreach ( $params as $key => $value ) {
+         if ( $params[$key] === true ) $params[$key] = 'true';
+         if ( $params[$key] === false ) $params[$key] = 'false';
+      } // End params loop
+
+      return $params;
+
+   } // End function prepareParameters()
+
+
    private function call($decode) {
 
       // Make the call!
@@ -136,6 +151,8 @@ abstract class TraackrApiObject {
 
       // Add params if needed
       if ( !empty($params) ) {
+         // Prepare params
+         $params = $this->prepareParameters($params);
          $url .= "?".http_build_query($params);
       }
       // Sets URL
@@ -163,7 +180,10 @@ abstract class TraackrApiObject {
       }
       // Sets URL
       curl_setopt($this->curl, CURLOPT_URL, $url);
-      // Stes params
+
+      // Prepare params
+      $params = $this->prepareParameters($params);
+      // Sets params
       $http_param_query = http_build_query($params);
       curl_setopt($this->curl, CURLOPT_POSTFIELDS, $http_param_query);
       // Make call
