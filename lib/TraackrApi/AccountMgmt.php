@@ -32,6 +32,16 @@ class AccountMgmt extends TraackrApiObject {
 
    } // End function tagList()
 
+   // Delete Customer Key Endpoint
+   public static function customerKeyDelete($p = array()) {
 
+      $account = new AccountMgmt();
+
+      // Check required parameters
+      $account->checkRequiredParams($p, array('customer_key'));
+
+      return $account->delete(TraackrApi::$apiBaseUrl.'account_mgmt/customerkey/delete', $p);
+
+   } // End function customerKeyDelete()
 
 } // End class AccountMgmt
