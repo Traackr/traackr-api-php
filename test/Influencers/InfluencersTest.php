@@ -558,6 +558,18 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
 
       $inf = Traackr\Influencers::search(array('keywords' => 'traackr'));
       $this->assertGreaterThan(0, $inf['influencers'], 'No results found');
+      $this->assertArrayHasKey('audience', $inf['influencers'][0], 'Audience metric missing');
+
+      // With audience aggregation
+      $inf = Traackr\Influencers::search(array('keywords' => 'traackr', 'enable_audience_aggregation' => true));
+      $this->assertArrayHasKey('aggregations', $inf,
+         'Audience aggregation missing');
+      $this->assertArrayHasKey('audienceStats', $inf['aggregations'],
+         'Audience aggregation missing');
+      $this->assertGreaterThan(
+         $inf['aggregations']['audienceStats']['min'],
+         $inf['aggregations']['audienceStats']['max'],
+         'Max audience not greater than min audience');
 
       $inf = Traackr\Influencers::search(array('keywords' => 'xxxaaaxxx'));
       $this->assertCount(0, $inf['influencers'], 'Results found');

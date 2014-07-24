@@ -58,8 +58,8 @@ class AnalysisTest extends PHPUnit_Framework_TestCase {
       $tags = array($this->testTag);
 
       // First test that we have top links to compare
-      $posts = Traackr\Analysis::toplinks(array('influencers' => $infs));
-      $this->assertCount(5, $posts['links']);
+      $posts = Traackr\Analysis::toplinks(array('influencers' => $infs, 'count' => 1)); # 1 post
+      $this->assertCount(1, $posts['links']); #just 1 post see above
       $this->assertTrue(in_array($posts['links'][0]['linkbacks'][0]['influencer_uid'], $infs));
 
       Traackr\TraackrApi::setJsonOutput(true);

@@ -192,6 +192,7 @@ class Influencers extends TraackrApiObject {
       'is_tag_prefix' => false,
       'gender' => 'all',
       'lang' => 'all',
+      'enable_audience_aggregation' => false,
       'count' => 25)) {
 
       $inf = new Influencers();
@@ -199,6 +200,7 @@ class Influencers extends TraackrApiObject {
       // Sanatize default values
       // $p['is_tag_prefix'] = empty($p['is_tag_prefix']) ? 'false' : 'true';
       $p['is_tag_prefix'] = $inf->convertBool($p['is_tag_prefix']);
+      $p['enable_audience_aggregation'] = $inf->convertBool($p['enable_audience_aggregation']);
 
       $p = $inf->addCustomerKey($p);
       $inf->checkRequiredParams($p, array('keywords'));
