@@ -15,9 +15,9 @@ class Posts extends TraackrApiObject {
 
       // Sanatize default values
       // $p['is_tag_prefix'] = empty($p['is_tag_prefix']) ? 'false' : 'true';
-      $p['is_tag_prefix'] = $this->convertBool($p['is_tag_prefix']);
+      $p['is_tag_prefix'] = $posts->convertBool($p['is_tag_prefix']);
       // $p['include_entities'] = empty($p['include_entities']) ? 'false' : 'true';
-      $p['include_entities'] = $this->convertBool($p['include_entities']);
+      $p['include_entities'] = $posts->convertBool($p['include_entities']);
 
       // support for multi params
       if ( isset($p['influencers']) ) {
@@ -60,23 +60,23 @@ class Posts extends TraackrApiObject {
 
       // Sanatize default values
       // $p['is_tag_prefix'] = empty($p['is_tag_prefix']) ? 'false' : 'true';
-      $p['is_tag_prefix'] = $this->convertBool($p['is_tag_prefix']);
+      $p['is_tag_prefix'] = $posts->convertBool($p['is_tag_prefix']);
       // $p['include_keyword_matches'] = empty($p['include_keyword_matches']) ? 'false' : 'true';
-      $p['include_keyword_matches'] = $this->convertBool($p['include_keyword_matches']);
+      $p['include_keyword_matches'] = $posts->convertBool($p['include_keyword_matches']);
       // $p['include_entities'] = empty($p['include_entities']) ? 'false' : 'true';
-      $p['include_entities'] = $this->convertBool($p['include_entities']);
+      $p['include_entities'] = $posts->convertBool($p['include_entities']);
       // $p['enable_keyword_aggregation'] = empty($p['enable_keyword_aggregation']) ? 'false' : 'true';
-      $p['enable_keyword_aggregation'] = $this->convertBool($p['enable_keyword_aggregation']);
+      $p['enable_keyword_aggregation'] = $posts->convertBool($p['enable_keyword_aggregation']);
       // $p['enable_influencer_aggregation'] = empty($p['enable_influencer_aggregation']) ? 'false' : 'true';
-      $p['enable_influencer_aggregation'] = $this->convertBool($p['enable_influencer_aggregation']);
+      $p['enable_influencer_aggregation'] = $posts->convertBool($p['enable_influencer_aggregation']);
       // $p['enable_domain_aggregation'] = empty($p['enable_domain_aggregation']) ? 'false' : 'true';
-      $p['enable_domain_aggregation'] = $this->convertBool($p['enable_domain_aggregation']);
+      $p['enable_domain_aggregation'] = $posts->convertBool($p['enable_domain_aggregation']);
       // $p['enable_monthly_aggregation'] = empty($p['enable_monthly_aggregation']) ? 'false' : 'true';
-      $p['enable_monthly_aggregation'] = $this->convertBool($p['enable_monthly_aggregation']);
+      $p['enable_monthly_aggregation'] = $posts->convertBool($p['enable_monthly_aggregation']);
       // $p['enable_weekly_aggregation'] = empty($p['enable_weekly_aggregation']) ? 'false' : 'true';
-      $p['enable_weekly_aggregation'] = $this->convertBool($p['enable_weekly_aggregation']);
+      $p['enable_weekly_aggregation'] = $posts->convertBool($p['enable_weekly_aggregation']);
       // $p['enable_daily_aggregation'] = empty($p['enable_daily_aggregation']) ? 'false' : 'true';
-      $p['enable_daily_aggregation'] = $this->convertBool($p['enable_daily_aggregation']);
+      $p['enable_daily_aggregation'] = $posts->convertBool($p['enable_daily_aggregation']);
 
       // Validate business requirements
       if ( $p['enable_keyword_aggregation'] === 'true' && $p['include_keyword_matches'] === 'false' ) {
