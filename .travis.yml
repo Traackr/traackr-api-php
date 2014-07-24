@@ -10,3 +10,6 @@ before_script:
 
 script:
   - bin/phpunit --group read-only test
+
+notifications:
+  slack: traackr:uCvPkzPufVG9zKPpIu5AtG7M
