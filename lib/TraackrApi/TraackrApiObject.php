@@ -69,9 +69,12 @@ abstract class TraackrApiObject {
     * Boolean type should be passed to the API but this function will also
     * handle their string representation ('true' and 'false')
     */
-   protected function convertBool($bool){
+   protected function convertBool($params, $key){
 
-      if ( !isset($bool) ) return 'false';
+      // Does key even exists?
+      if ( !isset($params[$key]) ) return 'false';
+
+      $bool = $params[$key];
 
       if ( is_bool($bool) ) return $bool ? 'true' : 'false';
 
@@ -226,7 +229,7 @@ abstract class TraackrApiObject {
       }
       // Sets URL
       curl_setopt($this->curl, CURLOPT_URL, $url);
-      
+
       // Prepare and set params
       $params = $this->prepareParameters($params);
       $http_param_query = http_build_query($params);
@@ -234,7 +237,7 @@ abstract class TraackrApiObject {
       // Sets URL
       curl_setopt($this->curl, CURLOPT_URL, $url);
       // Set Custom Request for DELETE
-      curl_setopt($this->curl, CURLOPT_CUSTOMREQUEST, 'DELETE');      
+      curl_setopt($this->curl, CURLOPT_CUSTOMREQUEST, 'DELETE');
       // Make call
       // sprintf('Calling (DELETE): %s ', $url);
       return $this->call(!TraackrAPI::isJsonOutput());
