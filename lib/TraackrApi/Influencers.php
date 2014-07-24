@@ -8,7 +8,7 @@ class Influencers extends TraackrApiObject {
     * Get an influencer data.
     *
     */
-   public static function show($uid, $p = array('with_channel' => false)) {
+   public static function show($uid, $p = array('with_channels' => false)) {
 
       if ( empty($uid) ) {
          throw new MissingParameterException("Missing Influencer UID parameter.");
