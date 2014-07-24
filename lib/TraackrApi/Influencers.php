@@ -14,7 +14,9 @@ class Influencers extends TraackrApiObject {
          throw new MissingParameterException("Missing Influencer UID parameter.");
       }
       //Sanatize default values
-      $p['with_channels'] = empty($p['with_channels']) ? 'false' : 'true';
+      // $p['with_channels'] = empty($p['with_channels']) ? 'false' : 'true';
+      $p['with_channels'] = $this->convertBool($p['with_channels'])
+
 
       $inf = new Influencers();
       // Add customer key + check required params
@@ -86,7 +88,8 @@ class Influencers extends TraackrApiObject {
       $inf = new Influencers();
 
       // Sanatize default values
-      $p['strict'] = empty($p['strict']) ? 'false' : 'true';
+      // $p['strict'] = empty($p['strict']) ? 'false' : 'true';
+      $p['strict'] = $this->convertBool($p['strict']);
 
       $p = $inf->addCustomerKey($p);
       $inf->checkRequiredParams($p, array('influencers', 'tags', 'customer_key', 'strict'));
@@ -107,7 +110,8 @@ class Influencers extends TraackrApiObject {
       $inf = new Influencers();
 
       // Sanatize default values
-      $p['all'] = empty($p['all']) ? 'false' : 'true';
+      // $p['all'] = empty($p['all']) ? 'false' : 'true';
+      $p['all'] = $this->convertBool($p['all']);
 
       $p = $inf->addCustomerKey($p);
       // 'influencers' is not required if 'all' is set to true
@@ -136,7 +140,8 @@ class Influencers extends TraackrApiObject {
       $inf = new Influencers();
 
       // Sanatize default values
-      $p['is_prefix'] = empty($p['is_prefix']) ? 'false' : 'true';
+      // $p['is_prefix'] = empty($p['is_prefix']) ? 'false' : 'true';
+      $p['is_prefix'] = $this->convertBool($p['is_prefix']);
 
       $p = $inf->addCustomerKey($p);
       $inf->checkRequiredParams($p, array('tag', 'is_prefix', 'customer_key'));
@@ -156,8 +161,10 @@ class Influencers extends TraackrApiObject {
       $inf = new Influencers();
 
       // Sanatize default values
-      $p['is_tag_prefix'] = empty($p['is_tag_prefix']) ? 'false' : 'true';
-      $p['enable_tags_aggregation'] = empty($p['enable_tags_aggregation']) ? 'false' : 'true';
+      // $p['is_tag_prefix'] = empty($p['is_tag_prefix']) ? 'false' : 'true';
+      $p['is_tag_prefix'] = $this->convertBool($p['is_tag_prefix']);
+      // $p['enable_tags_aggregation'] = empty($p['enable_tags_aggregation']) ? 'false' : 'true';
+      $p['enable_tags_aggregation'] = $this->convertBool($p['enable_tags_aggregation']);
 
       $p = $inf->addCustomerKey($p);
 
@@ -188,7 +195,8 @@ class Influencers extends TraackrApiObject {
       $inf = new Influencers();
 
       // Sanatize default values
-      $p['is_tag_prefix'] = empty($p['is_tag_prefix']) ? 'false' : 'true';
+      // $p['is_tag_prefix'] = empty($p['is_tag_prefix']) ? 'false' : 'true';
+      $p['is_tag_prefix'] = $this->convertBool($p['is_tag_prefix']);
 
       $p = $inf->addCustomerKey($p);
       $inf->checkRequiredParams($p, array('keywords'));

@@ -45,6 +45,7 @@ abstract class TraackrApiObject {
 
       foreach ($fields as $f) {
 
+         // empty(false) returns true so need extra test for that
          if ( empty($params[$f]) && !(isset($params[$f]) && is_bool($params[$f])) ) {
             throw new MissingParameterException('Missing parameter: '.$f);
          }
@@ -62,6 +63,24 @@ abstract class TraackrApiObject {
       return $params;
 
    } // End function addCustomerKey()
+
+   /*
+    * Make best attempt at converting booleans.
+    * Boolean type should be passed to the API but this function will also
+    * handle their string representation ('true' and 'false')
+    */
+   protected function convertBool($bool){
+
+      if ( !isset($bool) ) return 'false';
+
+      if ( is_bool($bool) ) return $bool ? 'true' : 'false';
+
+      if ( strtolower($bool) === 'true' ) return 'true';
+
+      return 'false';
+
+   } // End functiuon convertBool
+
 
    // Prepare parameters before any GET or POST call.
    // For now any pass-thru parameter passed as a true or false boolease
