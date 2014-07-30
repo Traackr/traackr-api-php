@@ -510,6 +510,18 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
       $this->assertEquals($this->infName, $inf['influencers'][0]['name'],
          'Incorrect name');
 
+      // With country aggregations
+      // Test tags aggreagation
+      $inf = Traackr\Influencers::lookup(array(
+         'name' => 'John',
+         'enable_country_aggregation' => true));
+      $this->assertArrayHasKey('aggregations', $inf, 'Country aggregation missing');
+      $this->assertArrayHasKey('countryIsoCode', $inf['aggregations'], 'Country Aggregation: Country ISO key missing');
+      $this->assertArrayHasKey('buckets', $inf['aggregations']['countryIsoCode'], 'Country Aggregation: buckets key missing');
+      $this->assertNotEmpty($inf['aggregations']['countryIsoCode']['buckets'], 'No country aggregations found');
+      $this->assertGreaterThan(0, $inf['aggregations']['countryIsoCode']['buckets'][0]['count'], 'There should be more than zero matches for the first country');
+
+
    } // End function testLookup()
 
    public function testLookup() {
@@ -571,7 +583,15 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
          $inf['aggregations']['audienceStats']['max'],
          'Max audience not greater than min audience');
 
-      $inf = Traackr\Influencers::search(array('keywords' => 'xxxaaaxxx'));
+      // With country aggregations
+      $inf = Traackr\Influencers::search(array('keywords' => 'traackr', 'enable_country_aggregation' => true));
+      $this->assertArrayHasKey('aggregations', $inf, 'Country aggregation missing');
+      $this->assertArrayHasKey('countryIsoCode', $inf['aggregations'], 'Country Aggregation: Country ISO key missing');
+      $this->assertArrayHasKey('buckets', $inf['aggregations']['countryIsoCode'], 'Country Aggregation: buckets key missing');
+      $this->assertNotEmpty($inf['aggregations']['countryIsoCode']['buckets'], 'No country aggregations found');
+      $this->assertGreaterThan(0, $inf['aggregations']['countryIsoCode']['buckets'][0]['count'], 'There should be more than zero matches for the first country');
+
+      $inf = Traackr\Influencers::search(array('keywords' => 'xxxaaaxxx'));      
       $this->assertCount(0, $inf['influencers'], 'Results found');
 
    } // End function testSearchRO()
