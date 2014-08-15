@@ -2,7 +2,7 @@
 
 class AnalysisTest extends PHPUnit_Framework_TestCase {
 
-   private $infUid = '1395be8293373465ab172b8b1b677e31';
+   private $infUid = 'ee62ec2b3657e0a44e30d3b7f086273d';
    private $infName = 'David Chancogne';
 
    private $infUid2 = 'ae1955b0f92037c895e5bfdd259a1304';
