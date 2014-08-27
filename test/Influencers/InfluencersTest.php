@@ -521,6 +521,15 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
       $this->assertNotEmpty($inf['aggregations']['countryIsoCode']['buckets'], 'No country aggregations found');
       $this->assertGreaterThan(0, $inf['aggregations']['countryIsoCode']['buckets'][0]['count'], 'There should be more than zero matches for the first country');
 
+      // Lookup By Email
+      $inf = Traackr\Influencers::search(array('keywords' => 'traackr', 'emails' => array('dchancogne@traackr.com', 'paul@traackr.com', 'paul@seedsforhope.org')));
+      $this->assertGreaterThan(0, $inf['influencers'], 'No results found');
+      $this->assertEquals(2, count($inf['influencers']), 'Two results should have been found');
+
+      // Lookup By Email String
+      $inf = Traackr\Influencers::search(array('keywords' => 'traackr', 'emails' => 'dchancogne@traackr.com,paul@traackr.com,paul@seedsforhope.org'));
+      $this->assertGreaterThan(0, $inf['influencers'], 'No results found');
+      $this->assertEquals(2, count($inf['influencers']), 'Two results should have been found');
 
    } // End function testLookup()
 
@@ -594,6 +603,15 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
       $inf = Traackr\Influencers::search(array('keywords' => 'xxxaaaxxx'));      
       $this->assertCount(0, $inf['influencers'], 'Results found');
 
+      // Search Email
+      $inf = Traackr\Influencers::search(array('keywords' => 'traackr', 'emails' => array('dchancogne@traackr.com')));
+      $this->assertGreaterThan(0, $inf['influencers'], 'No results found');
+      $this->assertEquals('David Chancogne', $inf['influencers'][0]['name'], 'Name does not match expected result by email address: dchancogne@traackr.com');
+
+      // Search Email (Emails param is string, not array)
+      $inf = Traackr\Influencers::search(array('keywords' => 'traackr', 'emails' => 'dchancogne@traackr.com'));
+      $this->assertGreaterThan(0, $inf['influencers'], 'No results found');
+      $this->assertEquals('David Chancogne', $inf['influencers'][0]['name'], 'Name does not match expected result by email address: dchancogne@traackr.com');
    } // End function testSearchRO()
 
 
