@@ -2,6 +2,10 @@
 
 namespace Traackr;
 
+// Interfaces
+require(dirname(__FILE__) . '/ApiCacheInterface.php');
+require(dirname(__FILE__) . '/ApiLoggerInterface.php');
+
 // Objects
 require(dirname(__FILE__) . '/TraackrApi/TraackrApiObject.php');
 require(dirname(__FILE__) . '/TraackrApi/Influencers.php');
@@ -31,6 +35,9 @@ final class TraackrApi {
    private static $customerKey = '';
 
    private static $jsonOutput = false;
+   
+   private static $cacheEnvelope = null;
+   private static $logger = null;
 
    public function __construct() {
 
@@ -89,5 +96,28 @@ final class TraackrApi {
 
    } // End function isJsonOutput()
 
+   public static function getCacheEnvelope() {
+
+      return self::$cacheEnvelope;
+   
+   }
+   
+   public static function setCacheEnvelope(ApiCacheInterface $obj) {
+
+      self::$cacheEnvelope = $obj;
+   
+   }
+
+   public static function getLogger() {
+
+      return self::$logger;
+   
+   }
+   
+   public static function setLogger(ApiLoggerInterface $obj) {
+
+      self::$logger = $obj;
+   
+   }
 
 } // End class TraackrApi

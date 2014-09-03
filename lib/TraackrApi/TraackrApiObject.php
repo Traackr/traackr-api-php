@@ -100,7 +100,33 @@ abstract class TraackrApiObject {
    } // End function prepareParameters()
 
 
-   private function call($decode) {
+   //there's no such thing as curl_getopt, so we have to pass url in
+   private function call($decode, $url) {
+
+      //read from cache
+      $cacheEnvelope = TraackrAPI::getCacheEnvelope();
+      if ($cacheEnvelope) {
+      
+         $curl_exec = $cacheEnvelope->read(md5($url));
+         
+         if ($curl_exec) {
+
+            $logger = TraackrAPI::getLogger();
+            if ($logger) {
+               $logger->error('Found in cache: ' . $url);
+            }
+
+            //same code as below
+            if ( $decode ) {
+               $rez = json_decode($curl_exec, true);
+            }
+            else {
+               $rez = $curl_exec;
+            }
+            return is_null($rez)? false : $rez;
+
+         }
+      }
 
       // Make the call!
       $curl_exec = curl_exec($this->curl);
@@ -149,6 +175,16 @@ abstract class TraackrApiObject {
          return false;
       }
 
+      //write to cache
+      if ($cacheEnvelope) {
+         $cachedData = $cacheEnvelope->write(md5($url), $curl_exec);
+         
+         $logger = TraackrAPI::getLogger();
+         if ($logger) {
+            $logger->error('Wrote to cache: ' . $url);
+         }
+      }
+
       // API MUST return UTF8
       if ( $decode ) {
          $rez = json_decode($curl_exec, true);
@@ -181,7 +217,7 @@ abstract class TraackrApiObject {
       curl_setopt($this->curl, CURLOPT_URL, $url);
       // Make call
       // sprintf('Calling (GET): %s ', $url);
-      return $this->call(!TraackrAPI::isJsonOutput());
+      return $this->call(!TraackrAPI::isJsonOutput(), $url);
 
    } // End function doGet()
 
@@ -210,7 +246,7 @@ abstract class TraackrApiObject {
       curl_setopt($this->curl, CURLOPT_POSTFIELDS, $http_param_query);
       // Make call
       // sprintf('Calling (POST): %s [%s]', $url, $http_param_query);
-      return $this->call(!TraackrAPI::isJsonOutput());
+      return $this->call(!TraackrAPI::isJsonOutput(), $url . '|' . $http_param_query); //just tack the encoded post params to end
 
    } // End functuion doPost()
 
@@ -240,7 +276,7 @@ abstract class TraackrApiObject {
       curl_setopt($this->curl, CURLOPT_CUSTOMREQUEST, 'DELETE');
       // Make call
       // sprintf('Calling (DELETE): %s ', $url);
-      return $this->call(!TraackrAPI::isJsonOutput());
+      return $this->call(!TraackrAPI::isJsonOutput(), $url); //should we be passing url for caching in "DELETE"?
 
    } // End function delete()
 
