@@ -100,21 +100,20 @@ abstract class TraackrApiObject {
    } // End function prepareParameters()
 
 
-   //there's no such thing as curl_getopt, so we have to pass url in
-   private function call($decode, $url) {
+   //there's no such thing as curl_getopt, so we have to pass $cacheKey in
+   private function call($decode, $cacheKey, $custKey) {
 
       //read from cache
       $cacheEnvelope = TraackrAPI::getCacheEnvelope();
-      if ($cacheEnvelope) {
+      //$isCacheable used further down; assign inline here
+      if ($cacheEnvelope && ($isCacheable = $cacheEnvelope->isCacheable($cacheKey))) {
       
-         $curl_exec = $cacheEnvelope->read(md5($url));
+         $curl_exec = $cacheEnvelope->read(md5($cacheKey), $custKey);
          
          if ($curl_exec) {
 
             $logger = TraackrAPI::getLogger();
-            if ($logger) {
-               $logger->error('Found in cache: ' . $url);
-            }
+            $logger->debug('Found in cache: ' . $cacheKey);
 
             //same code as below
             if ( $decode ) {
@@ -175,13 +174,28 @@ abstract class TraackrApiObject {
          return false;
       }
 
-      //write to cache
+      //expire/write-to cache
       if ($cacheEnvelope) {
-         $cachedData = $cacheEnvelope->write(md5($url), $curl_exec);
+      
+         //these are the actions that can manually expire the cache
+         if (strpos($cacheKey, '/influencers/add/twitter') !== false
+               || strpos($cacheKey, '/influencers/tag/add') !== false
+               || strpos($cacheKey, '/influencers/tag/remove') !== false
+               || strpos($cacheKey, '/account_mgmt/customerkey/create') !== false
+               || strpos($cacheKey, '/account_mgmt/customerkey/delete') !== false
+            ) {
+
+            $cacheEnvelope->expire($custKey);
+
+         }
+
+         if ($isCacheable) {
+
+            $cachedData = $cacheEnvelope->write(md5($cacheKey), $curl_exec, $custKey);
+
+            $logger = TraackrAPI::getLogger();
+            $logger->debug('Wrote to cache: ' . $cacheKey);
          
-         $logger = TraackrAPI::getLogger();
-         if ($logger) {
-            $logger->error('Wrote to cache: ' . $url);
          }
       }
 
@@ -217,7 +231,8 @@ abstract class TraackrApiObject {
       curl_setopt($this->curl, CURLOPT_URL, $url);
       // Make call
       // sprintf('Calling (GET): %s ', $url);
-      return $this->call(!TraackrAPI::isJsonOutput(), $url);
+      $custKey = (!empty($params['customer_key']) ? $params['customer_key'] : '');
+      return $this->call(!TraackrAPI::isJsonOutput(), /*'GET|' .*/ $url, $custKey);
 
    } // End function doGet()
 
@@ -246,7 +261,8 @@ abstract class TraackrApiObject {
       curl_setopt($this->curl, CURLOPT_POSTFIELDS, $http_param_query);
       // Make call
       // sprintf('Calling (POST): %s [%s]', $url, $http_param_query);
-      return $this->call(!TraackrAPI::isJsonOutput(), $url . '|' . $http_param_query); //just tack the encoded post params to end
+      $custKey = (!empty($params['customer_key']) ? $params['customer_key'] : '');
+      return $this->call(!TraackrAPI::isJsonOutput(), /*'POST|' .*/ $url . '?' /* just use a ? so that it's treated/keyed like a really long GET */ . $http_param_query, $custKey); //just tack the encoded post params to end
 
    } // End functuion doPost()
 
@@ -276,7 +292,8 @@ abstract class TraackrApiObject {
       curl_setopt($this->curl, CURLOPT_CUSTOMREQUEST, 'DELETE');
       // Make call
       // sprintf('Calling (DELETE): %s ', $url);
-      return $this->call(!TraackrAPI::isJsonOutput(), $url); //should we be passing url for caching in "DELETE"?
+      $custKey = (!empty($params['customer_key']) ? $params['customer_key'] : '');
+      return $this->call(!TraackrAPI::isJsonOutput(), /*'DELETE|' .*/ $url, $custKey); //should we be passing url for caching in "DELETE"?
 
    } // End function delete()
 

@@ -25,6 +25,16 @@ define('PARAM_CUSTOMER_KEY', 'customer_key');
 
 new TraackrApi();
 
+class DefaultApiLogger implements ApiLoggerInterface
+{
+   public function debug($string) {
+      //do nothing
+   }
+   public function error($string) {
+      //do nothing
+   }
+}
+
 final class TraackrApi {
 
 
@@ -109,6 +119,10 @@ final class TraackrApi {
    }
 
    public static function getLogger() {
+
+      if (empty(self::$logger)) {
+         self::$logger = new DefaultApiLogger();
+      }
 
       return self::$logger;
    
