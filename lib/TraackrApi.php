@@ -110,13 +110,13 @@ final class TraackrApi {
 
       return self::$cacheEnvelope;
    
-   }
+   } // End function getCacheEnvelope()
    
    public static function setCacheEnvelope(ApiCacheInterface $obj) {
 
       self::$cacheEnvelope = $obj;
    
-   }
+   } // End function setCacheEnvelope()
 
    public static function getLogger() {
 
@@ -126,12 +126,12 @@ final class TraackrApi {
 
       return self::$logger;
    
-   }
+   } // End function getLogger()
    
    public static function setLogger(ApiLoggerInterface $obj) {
 
       self::$logger = $obj;
    
-   }
+   } // End function setLogger()
 
 } // End class TraackrApi
