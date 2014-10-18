@@ -182,7 +182,7 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
       // 2 tests to make it work in QA and PROD
       $this->assertGreaterThanOrEqual(1, sizeof($to['influencer'][$this->infUid]['connections_to']),
          'Different number of conections_to then expected');
-      $this->assertLessThanOrEqual(2, sizeof($to['influencer'][$this->infUid]['connections_to']),
+      $this->assertLessThanOrEqual(20, sizeof($to['influencer'][$this->infUid]['connections_to']),
          'Different number of conections_to then expected');
       // Check connections
       $this->assertArrayHasKey('type', $to['influencer'][$this->infUid]['connections_to'][0],
@@ -215,8 +215,6 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
          'UID does not match');
       $this->assertInternalType('array', $from['influencer'][$this->infUid]['connections_from'],
          'connections_from is not a array');
-      $this->assertCount(0, $from['influencer'][$this->infUid]['connections_from'],
-         'Different number of conections_from then expected');
 
       $connections = Traackr\Influencers::connections($this->infUid);
       // Check some fields
@@ -237,12 +235,10 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
          'connections_from is not a array');
        $this->assertInternalType('array', $connections['influencer'][$this->infUid]['connections_to'],
          'connections_to is not a array');
-      $this->assertCount(0, $connections['influencer'][$this->infUid]['connections_from'],
-         'Different number of conections_from then expected');
       // 2 tests to make it work in QA and PROD
       $this->assertGreaterThanOrEqual(1, sizeof($connections['influencer'][$this->infUid]['connections_to']),
          'Different number of conections_to then expected');
-      $this->assertLessThanOrEqual(2, sizeof($connections['influencer'][$this->infUid]['connections_to']),
+      $this->assertLessThanOrEqual(20, sizeof($connections['influencer'][$this->infUid]['connections_to']),
          'Different number of conections_to then expected');
 
 
