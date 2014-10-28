@@ -185,7 +185,7 @@ class Influencers extends TraackrApiObject {
          $p['emails'] = is_array($p['emails']) ?
             implode(',', $p['emails']) : $p['emails'];
       }
-      return $inf->get(TraackrApi::$apiBaseUrl.'influencers/lookup', $p);
+      return $inf->post(TraackrApi::$apiBaseUrl.'influencers/lookup', $p);
 
    } // End function lookup()
 
@@ -238,8 +238,8 @@ class Influencers extends TraackrApiObject {
          $p['emails'] = is_array($p['emails']) ?
             implode(',', $p['emails']) : $p['emails'];
       }
-      return $inf->get(TraackrApi::$apiBaseUrl.'influencers/search', $p);
+      return $inf->post(TraackrApi::$apiBaseUrl.'influencers/search', $p);
 
-   } // End function lookup()
+   } // End function search()
 
 } // End class Influencer

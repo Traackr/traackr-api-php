@@ -98,7 +98,7 @@ class Posts extends TraackrApiObject {
 
        return $posts->post(TraackrApi::$apiBaseUrl.'posts/search', $p);
 
-   } // End function lookup()
+   } // End function search()
 
 
 } // End clas Posts
