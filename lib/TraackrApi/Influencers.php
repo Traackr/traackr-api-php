@@ -81,7 +81,27 @@ class Influencers extends TraackrApiObject {
 
       return $inf->post(TraackrApi::$apiBaseUrl.'influencers/add/twitter', $p);
 
-   } // End function attTwitter()
+   } // End function addTwitter()
+
+
+   /*
+    * Add influencer by name and primary URL
+    */
+   public static function add($p = array()) {
+
+      $inf = new Influencers();
+
+      $p = $inf->addCustomerKey($p);
+      $inf->checkRequiredParams($p, array('name', 'url', 'customer_key'));
+
+      // support multi params
+      if ( !empty($p['tags']) ) {
+         $p['tags'] = is_array($p['tags']) ? implode(',', $p['tags']) : $p['tags'];
+      }
+
+      return $inf->post(TraackrApi::$apiBaseUrl.'influencers/add', $p);
+
+   } // End function add()
 
 
    public static function tagAdd($p = array('strict' => false)) {
