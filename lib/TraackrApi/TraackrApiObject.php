@@ -180,7 +180,8 @@ abstract class TraackrApiObject {
       // Sets URL
       curl_setopt($this->curl, CURLOPT_URL, $url);
       // Make call
-      // sprintf('Calling (GET): %s ', $url);
+      $logger = TraackrAPI::getLogger();
+      $logger->debug('Calling (GET): ' . $url);
       return $this->call(!TraackrAPI::isJsonOutput());
 
    } // End function doGet()
@@ -209,7 +210,8 @@ abstract class TraackrApiObject {
       $http_param_query = http_build_query($params);
       curl_setopt($this->curl, CURLOPT_POSTFIELDS, $http_param_query);
       // Make call
-      // sprintf('Calling (POST): %s [%s]', $url, $http_param_query);
+      $logger = TraackrAPI::getLogger();
+      $logger->debug('Calling (POST): ' . $url . ' [' . $http_param_query . ']');
       return $this->call(!TraackrAPI::isJsonOutput());
 
    } // End functuion doPost()
@@ -239,7 +241,8 @@ abstract class TraackrApiObject {
       // Set Custom Request for DELETE
       curl_setopt($this->curl, CURLOPT_CUSTOMREQUEST, 'DELETE');
       // Make call
-      // sprintf('Calling (DELETE): %s ', $url);
+      $logger = TraackrAPI::getLogger();
+      $logger->debug('Calling (DELETE): ' . $url);
       return $this->call(!TraackrAPI::isJsonOutput());
 
    } // End function delete()

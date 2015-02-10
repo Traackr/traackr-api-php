@@ -2,6 +2,9 @@
 
 namespace Traackr;
 
+// Interfaces
+require(dirname(__FILE__) . '/ApiLoggerInterface.php');
+
 // Objects
 require(dirname(__FILE__) . '/TraackrApi/TraackrApiObject.php');
 require(dirname(__FILE__) . '/TraackrApi/Influencers.php');
@@ -21,6 +24,16 @@ define('PARAM_CUSTOMER_KEY', 'customer_key');
 
 new TraackrApi();
 
+class DefaultApiLogger implements ApiLoggerInterface
+{
+   public function debug($string) {
+      //do nothing
+   }
+   public function error($string) {
+      //do nothing
+   }
+}
+
 final class TraackrApi {
 
 
@@ -31,6 +44,8 @@ final class TraackrApi {
    private static $customerKey = '';
 
    private static $jsonOutput = false;
+
+   private static $logger = null;
 
    public function __construct() {
 
@@ -89,5 +104,20 @@ final class TraackrApi {
 
    } // End function isJsonOutput()
 
+   public static function getLogger() {
+
+      if (empty(self::$logger)) {
+         self::$logger = new DefaultApiLogger();
+      }
+
+      return self::$logger;
+   
+   } // End function getLogger()
+   
+   public static function setLogger(ApiLoggerInterface $obj) {
+
+      self::$logger = $obj;
+   
+   } // End function setLogger()
 
 } // End class TraackrApi
