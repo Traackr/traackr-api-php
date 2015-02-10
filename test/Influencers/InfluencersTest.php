@@ -182,7 +182,7 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
       // 2 tests to make it work in QA and PROD
       $this->assertGreaterThanOrEqual(1, sizeof($to['influencer'][$this->infUid]['connections_to']),
          'Different number of conections_to then expected');
-      $this->assertLessThanOrEqual(2, sizeof($to['influencer'][$this->infUid]['connections_to']),
+      $this->assertLessThanOrEqual(20, sizeof($to['influencer'][$this->infUid]['connections_to']),
          'Different number of conections_to then expected');
       // Check connections
       $this->assertArrayHasKey('type', $to['influencer'][$this->infUid]['connections_to'][0],
@@ -215,8 +215,6 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
          'UID does not match');
       $this->assertInternalType('array', $from['influencer'][$this->infUid]['connections_from'],
          'connections_from is not a array');
-      $this->assertCount(0, $from['influencer'][$this->infUid]['connections_from'],
-         'Different number of conections_from then expected');
 
       $connections = Traackr\Influencers::connections($this->infUid);
       // Check some fields
@@ -237,12 +235,10 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
          'connections_from is not a array');
        $this->assertInternalType('array', $connections['influencer'][$this->infUid]['connections_to'],
          'connections_to is not a array');
-      $this->assertCount(0, $connections['influencer'][$this->infUid]['connections_from'],
-         'Different number of conections_from then expected');
       // 2 tests to make it work in QA and PROD
       $this->assertGreaterThanOrEqual(1, sizeof($connections['influencer'][$this->infUid]['connections_to']),
          'Different number of conections_to then expected');
-      $this->assertLessThanOrEqual(2, sizeof($connections['influencer'][$this->infUid]['connections_to']),
+      $this->assertLessThanOrEqual(20, sizeof($connections['influencer'][$this->infUid]['connections_to']),
          'Different number of conections_to then expected');
 
 
@@ -511,7 +507,6 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
          'Incorrect name');
 
       // With country aggregations
-      // Test tags aggreagation
       $inf = Traackr\Influencers::lookup(array(
          'name' => 'John',
          'enable_country_aggregation' => true));
@@ -520,6 +515,14 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
       $this->assertArrayHasKey('buckets', $inf['aggregations']['countryIsoCode'], 'Country Aggregation: buckets key missing');
       $this->assertNotEmpty($inf['aggregations']['countryIsoCode']['buckets'], 'No country aggregations found');
       $this->assertGreaterThan(0, $inf['aggregations']['countryIsoCode']['buckets'][0]['count'], 'There should be more than zero matches for the first country');
+
+      // With audience aggregations
+      $inf = Traackr\Influencers::lookup(array(
+         'name' => 'John',
+         'enable_audience_aggregation' => true));
+      $this->assertArrayHasKey('aggregations', $inf, 'Audience aggregation missing');
+      $this->assertArrayHasKey('audienceStats', $inf['aggregations'], 'Audience Aggregation: Audience Stats key missing');
+      $this->assertNotEmpty($inf['aggregations']['audienceStats'], 'No audience aggregations found');
 
       // Lookup By Email
       $inf = Traackr\Influencers::search(array('keywords' => 'traackr', 'emails' => array('dchancogne@traackr.com', 'paul@traackr.com', 'paul@seedsforhope.org')));
@@ -599,6 +602,12 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
       $this->assertArrayHasKey('buckets', $inf['aggregations']['countryIsoCode'], 'Country Aggregation: buckets key missing');
       $this->assertNotEmpty($inf['aggregations']['countryIsoCode']['buckets'], 'No country aggregations found');
       $this->assertGreaterThan(0, $inf['aggregations']['countryIsoCode']['buckets'][0]['count'], 'There should be more than zero matches for the first country');
+
+      // With audience aggregations
+      $inf = Traackr\Influencers::search(array('keywords' => 'traackr', 'enable_audience_aggregation' => true));
+      $this->assertArrayHasKey('aggregations', $inf, 'Audience aggregation missing');
+      $this->assertArrayHasKey('audienceStats', $inf['aggregations'], 'Audience Aggregation: Audience Stats key missing');
+      $this->assertNotEmpty($inf['aggregations']['audienceStats'], 'No audience aggregations found');
 
       $inf = Traackr\Influencers::search(array('keywords' => 'xxxaaaxxx'));      
       $this->assertCount(0, $inf['influencers'], 'Results found');

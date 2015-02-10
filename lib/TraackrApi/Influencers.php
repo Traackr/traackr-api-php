@@ -81,7 +81,27 @@ class Influencers extends TraackrApiObject {
 
       return $inf->post(TraackrApi::$apiBaseUrl.'influencers/add/twitter', $p);
 
-   } // End function attTwitter()
+   } // End function addTwitter()
+
+
+   /*
+    * Add influencer by name and primary URL
+    */
+   public static function add($p = array()) {
+
+      $inf = new Influencers();
+
+      $p = $inf->addCustomerKey($p);
+      $inf->checkRequiredParams($p, array('name', 'url', 'customer_key'));
+
+      // support multi params
+      if ( !empty($p['tags']) ) {
+         $p['tags'] = is_array($p['tags']) ? implode(',', $p['tags']) : $p['tags'];
+      }
+
+      return $inf->post(TraackrApi::$apiBaseUrl.'influencers/add', $p);
+
+   } // End function add()
 
 
    public static function tagAdd($p = array('strict' => false)) {
@@ -154,6 +174,7 @@ class Influencers extends TraackrApiObject {
       'gender' => 'all',
       'enable_tags_aggregation' => false,
       'enable_country_aggregation' => false,
+      'enable_audience_aggregation' => false,
       'count' => 25, 'page' => 0,
       'sort' => 'name', 'sort_order' => 'asc')) {
 
@@ -163,6 +184,7 @@ class Influencers extends TraackrApiObject {
       $p['is_tag_prefix'] = $inf->convertBool($p, 'is_tag_prefix');
       $p['enable_tags_aggregation'] = $inf->convertBool($p, 'enable_tags_aggregation');
       $p['enable_country_aggregation'] = $inf->convertBool($p, 'enable_country_aggregation');
+      $p['enable_audience_aggregation'] = $inf->convertBool($p, 'enable_audience_aggregation');
 
       $p = $inf->addCustomerKey($p);
 
@@ -183,7 +205,7 @@ class Influencers extends TraackrApiObject {
          $p['emails'] = is_array($p['emails']) ?
             implode(',', $p['emails']) : $p['emails'];
       }
-      return $inf->get(TraackrApi::$apiBaseUrl.'influencers/lookup', $p);
+      return $inf->post(TraackrApi::$apiBaseUrl.'influencers/lookup', $p);
 
    } // End function lookup()
 
@@ -236,8 +258,8 @@ class Influencers extends TraackrApiObject {
          $p['emails'] = is_array($p['emails']) ?
             implode(',', $p['emails']) : $p['emails'];
       }
-      return $inf->get(TraackrApi::$apiBaseUrl.'influencers/search', $p);
+      return $inf->post(TraackrApi::$apiBaseUrl.'influencers/search', $p);
 
-   } // End function lookup()
+   } // End function search()
 
 } // End class Influencer
