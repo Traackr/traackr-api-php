@@ -105,19 +105,21 @@ abstract class TraackrApiObject {
       // Make the call!
       $curl_exec = curl_exec($this->curl);
 
+      $logger = TraackrAPI::getLogger();
+
       if( $curl_exec === false ) {
-         // $this->log('cUrl error: '.curl_error($this->ch), LOG_WARNING);
+         $logger->error('cUrl error: ' . curl_error($this->ch));
          $info = curl_getinfo($this->curl);
          throw new TraackrApiException('API call failed ('.$info['url'].'): '.curl_error($this->curl));
       }
       if ( is_null($curl_exec) ) {
-         // $this->log('cUrl error: Return was null', LOG_WARNING);
+         $logger->error('cUrl error: Return was null');
          throw new TraackrApiException('API call failed. Response was null.');
       }
       $httpcode = curl_getinfo($this->curl, CURLINFO_HTTP_CODE);
       if( $httpcode != "200" ) {
          $info = curl_getinfo($this->curl);
-         // $this->log('cUrl HTTP error: '.$httpcode, LOG_WARNING);
+         $logger->error('cUrl HTTP error: ' . $httpcode);
          if ( $httpcode == "400") {
             // Let's try to see if it's a bad customer key
             if ( $curl_exec === "Customer key not found" ) {
