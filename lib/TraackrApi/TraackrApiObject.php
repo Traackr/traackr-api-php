@@ -108,7 +108,7 @@ abstract class TraackrApiObject {
       $logger = TraackrAPI::getLogger();
 
       if( $curl_exec === false ) {
-         $logger->error('cUrl error: ' . curl_error($this->ch));
+         $logger->error('cUrl error: ' . curl_error($this->curl));
          $info = curl_getinfo($this->curl);
          throw new TraackrApiException('API call failed ('.$info['url'].'): '.curl_error($this->curl));
       }
