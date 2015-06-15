@@ -49,8 +49,6 @@ final class TraackrApi {
    private static $cacheEnvelope = null;
    private static $logger = null;
 
-   private static $logger = null;
-
    public function __construct() {
 
       // Get ENV values for API Key and Customer keys is defined
