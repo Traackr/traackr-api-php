@@ -57,6 +57,34 @@ All API calls map to static functions with parameters matching the API call para
 	Influencers::show(<influencer-uid>);
 
 
+### Logging ###
+
+You can tie the client's internal logging into your own application's logging by creating an implementation of the `ApiLoggingInterface`. Here's an example from CakePHP:
+
+	class ApiLogger implements Traackr\ApiLoggerInterface
+	{
+	   private $parentObj;
+	
+	   public function __construct($obj) {
+	      $this->parentObj = $obj;
+	   }
+	
+	   public function debug($string) {
+	      $this->parentObj->log($string, LOG_DEBUG);
+	   }
+	   
+	   public function error($string) {
+	      $this->parentObj->log($string, LOG_WARNING);
+	   }
+	}
+
+Then, create an instance of your implementation before any API calls are made (e.g. in a constructor):
+
+	Traackr\TraackrApi::setLogger(
+	   new ApiLogger($this)
+	);
+
+
 Unit Tests
 ----------
 

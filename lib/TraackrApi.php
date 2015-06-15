@@ -49,6 +49,8 @@ final class TraackrApi {
    private static $cacheEnvelope = null;
    private static $logger = null;
 
+   private static $logger = null;
+
    public function __construct() {
 
       // Get ENV values for API Key and Customer keys is defined
@@ -105,6 +107,22 @@ final class TraackrApi {
       self::$jsonOutput = $json;
 
    } // End function isJsonOutput()
+
+   public static function getLogger() {
+
+      if (empty(self::$logger)) {
+         self::$logger = new DefaultApiLogger();
+      }
+
+      return self::$logger;
+   
+   } // End function getLogger()
+   
+   public static function setLogger(ApiLoggerInterface $obj) {
+
+      self::$logger = $obj;
+   
+   } // End function setLogger()
 
    public static function getCacheEnvelope() {
 
