@@ -136,20 +136,4 @@ final class TraackrApi {
    
    } // End function setCacheEnvelope()
 
-   public static function getLogger() {
-
-      if (empty(self::$logger)) {
-         self::$logger = new DefaultApiLogger();
-      }
-
-      return self::$logger;
-   
-   } // End function getLogger()
-   
-   public static function setLogger(ApiLoggerInterface $obj) {
-
-      self::$logger = $obj;
-   
-   } // End function setLogger()
-
 } // End class TraackrApi
