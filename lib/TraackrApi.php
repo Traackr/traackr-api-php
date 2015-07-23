@@ -96,7 +96,17 @@ final class TraackrApi {
 
    public static function setExtraHeaders($headers) {
       
-      self::$extraHeaders = $headers;
+      if ( is_string($headers) ) {
+         self::$extraHeaders = array($headers);
+         return true;
+      }
+      else if ( is_array($headers) ) {
+         self::$extraHeaders = $headers;
+         return true;
+      }
+      else {
+         return false;
+      }
 
    } // End function setExtraHeaders()
    
