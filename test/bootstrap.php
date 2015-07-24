@@ -8,3 +8,5 @@ require_once(dirname(__FILE__) . '/../lib/TraackrApi.php');
 if ( !isset($_ENV['TRAACKR_API_KEY']) ) {
    Traackr\TraackrApi::setApiKey('5adab9df789c2147116881f36785f6c3');
 }
+
+Traackr\TraackrApi::setExtraHeaders(array("X-TraackrApp-Session: TraackrAPI-UnitTest"));

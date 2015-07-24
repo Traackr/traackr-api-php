@@ -43,6 +43,8 @@ final class TraackrApi {
 
    private static $customerKey = '';
 
+   private static $extraHeaders = array();
+
    private static $jsonOutput = false;
 
    private static $logger = null;
@@ -90,6 +92,30 @@ final class TraackrApi {
       self::$customerKey = $key;
 
    } // End function setCustomerKey()
+
+
+   public static function setExtraHeaders($headers) {
+      
+      if ( is_string($headers) ) {
+         self::$extraHeaders = array($headers);
+         return true;
+      }
+      else if ( is_array($headers) ) {
+         self::$extraHeaders = $headers;
+         return true;
+      }
+      else {
+         return false;
+      }
+
+   } // End function setExtraHeaders()
+   
+
+   public static function getExtraHeaders() {
+
+      return self::$extraHeaders;
+
+   } // End function getExtraHeaders()
 
 
    public static function isJsonOutput() {
