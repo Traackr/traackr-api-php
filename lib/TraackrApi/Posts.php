@@ -13,9 +13,11 @@ class Posts extends TraackrApiObject {
       $posts = new Posts();
       $p = $posts->addCustomerKey($p);
 
-      // Sanatize default values
+      // Sanitize default values
       $p['is_tag_prefix'] = $posts->convertBool($p, 'is_tag_prefix');
       $p['include_entities'] = $posts->convertBool($p, 'include_entities');
+      $p['include_brand_content'] = $posts->convertBool($p, 'include_brand_content');
+      $p['include_shared_content'] = $posts->convertBool($p, 'include_shared_content');
 
       // support for multi params
       if ( isset($p['influencers']) ) {
@@ -37,7 +39,7 @@ class Posts extends TraackrApiObject {
 
       return $posts->post(TraackrApi::$apiBaseUrl.'posts/lookup', $p);
 
-   } // End function lookup()
+   }
 
    public static function search($p = array(
       'is_tag_prefix' => false,
@@ -56,7 +58,7 @@ class Posts extends TraackrApiObject {
       $p = $posts->addCustomerKey($p);
       $posts->checkRequiredParams($p, array('keywords'));
 
-      // Sanatize default values
+      // Sanitize default values
       $p['is_tag_prefix'] = $posts->convertBool($p, 'is_tag_prefix');
       $p['include_keyword_matches'] = $posts->convertBool($p, 'include_keyword_matches');
       $p['include_entities'] = $posts->convertBool($p, 'include_entities');
@@ -66,6 +68,8 @@ class Posts extends TraackrApiObject {
       $p['enable_monthly_aggregation'] = $posts->convertBool($p, 'enable_monthly_aggregation');
       $p['enable_weekly_aggregation'] = $posts->convertBool($p, 'enable_weekly_aggregation');
       $p['enable_daily_aggregation'] = $posts->convertBool($p, 'enable_daily_aggregation');
+      $p['include_brand_content'] = $posts->convertBool($p, 'include_brand_content');
+      $p['include_shared_content'] = $posts->convertBool($p, 'include_shared_content');
 
       // Validate business requirements
       if ( $p['enable_keyword_aggregation'] === 'true' && $p['include_keyword_matches'] === 'false' ) {
@@ -98,7 +102,5 @@ class Posts extends TraackrApiObject {
 
        return $posts->post(TraackrApi::$apiBaseUrl.'posts/search', $p);
 
-   } // End function search()
-
-
-} // End clas Posts
+   }
+}
