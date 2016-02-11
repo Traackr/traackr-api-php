@@ -7,6 +7,7 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
    private $infTag2 = 'inf-tag-test';
    private $infTagUTF8 = 'påverkare marknadsföring traackr-api-test';
    private $infName = 'David Chancogne';
+   private $channel = 'http://traackr.com/blog';
 
    private $infUid2 = 'ae1955b0f92037c895e5bfdd259a1304';
 
@@ -31,18 +32,16 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
          // Ignore
       }
 
-      // Ensure outout is PHP by default
+      // Ensure output is PHP by default
       Traackr\TraackrApi::setJsonOutput(false);
 
-   } // End function setUp()
+   }
 
    public function tearDown() {
 
       Traackr\TraackrApi::setCustomerKey($this->savedCustomerKey);
 
-   } // End function tearDown()
-
-
+   }
 
    public function testShowWithTags() {
 
@@ -79,7 +78,7 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
       $this->assertEquals($this->infName, $inf['influencer'][$this->infUid]['name'],
          'Incorrect name');
 
-   } // End function testShowWithTags()
+   }
 
    /**
     * @group read-only
@@ -134,7 +133,7 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
       $this->assertCount(2, $infs['influencer'],
          'Incorrected number of influencers returned');
 
-   } // End function testShow()
+   }
 
    /**
     * @group read-only
@@ -144,7 +143,7 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
 
       Traackr\Influencers::show('00000');
 
-   } // End function testShowNotFound()
+   }
 
    /**
     * @group read-only
@@ -154,8 +153,7 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
 
       Traackr\Influencers::show('');
 
-   } // End function testShowMissingParameter()
-
+   }
 
    /**
     * @group read-only
@@ -241,8 +239,7 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
       $this->assertLessThanOrEqual(20, sizeof($connections['influencer'][$this->infUid]['connections_to']),
          'Different number of conections_to then expected');
 
-
-   } // End function testConnections
+   }
 
    /**
     * @group read-only
@@ -253,8 +250,7 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
       Traackr\Influencers::connections('to', '00000');
       Traackr\Influencers::connections('from', '00000');
 
-   } // End function testConnectionsNotFound()
-
+   }
 
    /**
     * @group read-only
@@ -306,7 +302,7 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
          json_encode($twitter['influencer']['dchancogne'])
       );
 
-   } // End function testLookupTwitter()
+   }
 
    /**
     * @group read-only
@@ -316,8 +312,7 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
 
       Traackr\Influencers::lookupTwitter('000RandomHandle000');
 
-   } // End function testLookupTwitterNotFound()
-
+   }
 
    public function testTagAdd() {
 
@@ -393,7 +388,7 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
          'tags' => $this->infTag));
 
 
-   } // End function testTagAdd()
+   }
 
    public function testTagRemove() {
 
@@ -427,7 +422,7 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
       $this->assertCount(0, $inf['influencer'][$this->infUid]['tags']);
       $this->assertTrue(!in_array($this->infTag, $inf['influencer'][$this->infUid]['tags']));
 
-   } // End function testTagRemove()
+   }
 
    public function testTagList() {
 
@@ -459,7 +454,41 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
          'influencers' => array($this->infUid, $this->infUid2),
          'tags' => array($this->infTag, $this->infTag.'inf2')));
 
-   } // End function testTagList()
+   }
+
+   /**
+    * @group experimental
+    */
+   public function testChannelsAdd() {
+      $ownership = 'reference';
+
+      $result = Traackr\Influencers::channelsAdd([
+          'influencer' => $this->infUid,
+          'url' => $this->channel,
+          'ownership' => $ownership
+      ]);
+
+      $this->assertNotEmpty($result['uid']);
+      $this->assertEquals($this->infUid, $result['influencer_uid']);
+      $this->assertEquals('BLOG', $result['platform']);
+   }
+
+   /**
+    * @group experimental
+    */
+   public function testReport() {
+      $reportText = 'Testing PHP client...';
+
+      $result = Traackr\Influencers::report([
+          'influencer' => $this->infUid,
+          'url' => $this->channel,
+          'reportText' => $reportText
+      ]);
+
+      $this->assertEquals($this->infUid, $result['influencer_uid']);
+      $this->assertEquals($this->channel, $result['url']);
+      $this->assertEquals($reportText, $result['reportText']);
+   }
 
    /**
     * @group read-only
@@ -534,7 +563,7 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
       $this->assertGreaterThan(0, $inf['influencers'], 'No results found');
       $this->assertEquals(2, count($inf['influencers']), 'Two results should have been found');
 
-   } // End function testLookup()
+   }
 
    public function testLookup() {
 
@@ -573,7 +602,7 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
          'influencers' => array($this->infUid, $this->infUid2),
          'tags' => array($this->infTag, $this->infTag2) ));
 
-   } // End function testLookupRO()
+   }
 
    /**
     * @group read-only
@@ -609,7 +638,7 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
       $this->assertArrayHasKey('audienceStats', $inf['aggregations'], 'Audience Aggregation: Audience Stats key missing');
       $this->assertNotEmpty($inf['aggregations']['audienceStats'], 'No audience aggregations found');
 
-      $inf = Traackr\Influencers::search(array('keywords' => 'xxxaaaxxx'));      
+      $inf = Traackr\Influencers::search(array('keywords' => 'xxxaaaxxx'));
       $this->assertCount(0, $inf['influencers'], 'Results found');
 
       // Search Email
@@ -621,8 +650,7 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
       $inf = Traackr\Influencers::search(array('keywords' => 'traackr', 'emails' => 'dchancogne@traackr.com'));
       $this->assertGreaterThan(0, $inf['influencers'], 'No results found');
       $this->assertEquals('David Chancogne', $inf['influencers'][0]['name'], 'Name does not match expected result by email address: dchancogne@traackr.com');
-   } // End function testSearchRO()
-
+   }
 
    public function testSearch() {
 
@@ -651,6 +679,6 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
          'influencers' => array($this->infUid, $this->infUid2),
          'tags' => array($this->infTag, $this->infTag2) ));
 
-   } // End function testSearch()
+   }
 
-} // End class InfluencersTest
+}
