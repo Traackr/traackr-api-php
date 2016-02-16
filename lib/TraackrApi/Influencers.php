@@ -4,9 +4,13 @@ namespace Traackr;
 
 class Influencers extends TraackrApiObject {
 
-   /*
-    * Get an influencer data.
+   /**
+    * Get an influencer's data
     *
+    * @param string $uid
+    * @param array $p
+    * @return bool|mixed
+    * @throws MissingParameterException
     */
    public static function show($uid, $p = array('with_channels' => false)) {
 
@@ -17,7 +21,7 @@ class Influencers extends TraackrApiObject {
       // API Object
       $inf = new Influencers();
 
-      //Sanatize default values
+      //Sanitize default values
       $p['with_channels'] = $inf->convertBool($p, 'with_channels');
 
       // Add customer key + check required params
@@ -28,11 +32,15 @@ class Influencers extends TraackrApiObject {
 
       return $inf->get(TraackrApi::$apiBaseUrl.'influencers/show/'.$uid, $p);
 
-   } // End function show()
+   }
 
-
-   /*
-    * Returns an infuencer's connections
+   /**
+    * Returns an influencer's connections
+    *
+    * @param string $uid
+    * @param string $direction
+    * @return bool|mixed
+    * @throws MissingParameterException
     */
    public static function connections($uid, $direction = '') {
 
@@ -46,10 +54,14 @@ class Influencers extends TraackrApiObject {
       return $inf->get(TraackrApi::$apiBaseUrl.'influencers/connections/'.$direction.$uid,
          array());
 
-   } // End function connections()
+   }
 
-   /*
-    * Lopokup Influencer by a Twitter handle
+   /**
+    * Lookup Influencer by a Twitter handle
+    *
+    * @param string $username
+    * @return bool|mixed
+    * @throws MissingParameterException
     */
    public static function lookupTwitter($username) {
 
@@ -61,11 +73,14 @@ class Influencers extends TraackrApiObject {
       return $inf->get(TraackrApi::$apiBaseUrl.'influencers/lookup/twitter/'.$username,
          array());
 
-   } // End function lookupTwitter
+   }
 
-
-   /*
+   /**
     * Add Twitter account
+    *
+    * @param array $p
+    * @return bool|mixed
+    * @throws MissingParameterException
     */
    public static function addTwitter($p = array()) {
 
@@ -81,11 +96,14 @@ class Influencers extends TraackrApiObject {
 
       return $inf->post(TraackrApi::$apiBaseUrl.'influencers/add/twitter', $p);
 
-   } // End function addTwitter()
+   }
 
-
-   /*
+   /**
     * Add influencer by name and primary URL
+    *
+    * @param array $p
+    * @return bool|mixed
+    * @throws MissingParameterException
     */
    public static function add($p = array()) {
 
@@ -101,14 +119,20 @@ class Influencers extends TraackrApiObject {
 
       return $inf->post(TraackrApi::$apiBaseUrl.'influencers/add', $p);
 
-   } // End function add()
+   }
 
-
+   /**
+    * Add a tag to an influencer
+    *
+    * @param array $p
+    * @return bool|mixed
+    * @throws MissingParameterException
+    */
    public static function tagAdd($p = array('strict' => false)) {
 
       $inf = new Influencers();
 
-      // Sanatize default values
+      // Sanitize default values
       $p['strict'] = $inf->convertBool($p, 'strict');
 
       $p = $inf->addCustomerKey($p);
@@ -122,14 +146,20 @@ class Influencers extends TraackrApiObject {
 
       return $inf->post(TraackrApi::$apiBaseUrl.'influencers/tag/add', $p);
 
-   } // End function tagAdd()
+   }
 
-
+   /**
+    * Remove a tag from an influencer
+    *
+    * @param array $p
+    * @return bool|mixed
+    * @throws MissingParameterException
+    */
    public static function tagRemove($p = array('all' => false)) {
 
       $inf = new Influencers();
 
-      // Sanatize default values
+      // Sanitize default values
       $p['all'] = $inf->convertBool($p, 'all');
 
       $p = $inf->addCustomerKey($p);
@@ -151,14 +181,20 @@ class Influencers extends TraackrApiObject {
 
       return $inf->post(TraackrApi::$apiBaseUrl.'influencers/tag/remove', $p);
 
-   } // End function tagRemove()
+   }
 
-
+   /**
+    * Get the tags on an influencer
+    *
+    * @param array $p
+    * @return bool|mixed
+    * @throws MissingParameterException
+    */
    public static function tagList($p = array('is_prefix' => false)) {
 
       $inf = new Influencers();
 
-      // Sanatize default values
+      // Sanitize default values
       $p['is_prefix'] = $inf->convertBool($p, 'is_prefix');
 
       $p = $inf->addCustomerKey($p);
@@ -166,9 +202,14 @@ class Influencers extends TraackrApiObject {
 
       return $inf->get(TraackrApi::$apiBaseUrl.'influencers/tag/list', $p);
 
-   } // End function tagList()
+   }
 
-
+   /**
+    * Lookup influencers
+    *
+    * @param array $p
+    * @return bool|mixed
+    */
    public static function lookup($p = array(
       'is_tag_prefix' => false,
       'gender' => 'all',
@@ -180,7 +221,7 @@ class Influencers extends TraackrApiObject {
 
       $inf = new Influencers();
 
-      // Sanatize default values
+      // Sanitize default values
       $p['is_tag_prefix'] = $inf->convertBool($p, 'is_tag_prefix');
       $p['enable_tags_aggregation'] = $inf->convertBool($p, 'enable_tags_aggregation');
       $p['enable_country_aggregation'] = $inf->convertBool($p, 'enable_country_aggregation');
@@ -207,19 +248,26 @@ class Influencers extends TraackrApiObject {
       }
       return $inf->post(TraackrApi::$apiBaseUrl.'influencers/lookup', $p);
 
-   } // End function lookup()
+   }
 
+   /**
+    * Search for influencers
+    *
+    * @param array $p
+    * @return bool|mixed
+    * @throws MissingParameterException
+    */
    public static function search($p = array(
       'is_tag_prefix' => false,
       'gender' => 'all',
       'lang' => 'all',
       'enable_audience_aggregation' => false,
-      'enable_country_aggregation' => false,      
+      'enable_country_aggregation' => false,
       'count' => 25)) {
 
       $inf = new Influencers();
 
-      // Sanatize default values
+      // Sanitize default values
       $p['is_tag_prefix'] = $inf->convertBool($p, 'is_tag_prefix');
       $p['enable_audience_aggregation'] = $inf->convertBool($p, 'enable_audience_aggregation');
       $p['enable_country_aggregation'] = $inf->convertBool($p, 'enable_country_aggregation');
@@ -260,6 +308,40 @@ class Influencers extends TraackrApiObject {
       }
       return $inf->post(TraackrApi::$apiBaseUrl.'influencers/search', $p);
 
-   } // End function search()
+   }
 
-} // End class Influencer
+   /**
+    * Add a channel URL to an influencer
+    *
+    * @param array $p
+    * @return bool|mixed
+    * @throws MissingParameterException
+    */
+   public static function channelsAdd($p = []) {
+
+      $inf = new Influencers();
+
+      $inf->checkRequiredParams($p, ['influencer', 'url']);
+
+      return $inf->post(TraackrApi::$apiBaseUrl.'influencers/channels/add', $p);
+
+   }
+
+   /**
+    * Report an influencer
+    *
+    * @param array $p
+    * @return bool|mixed
+    * @throws MissingParameterException
+    */
+   public static function report($p = []) {
+
+      $inf = new Influencers();
+
+      $inf->checkRequiredParams($p, ['influencer', 'url']);
+
+      return $inf->post(TraackrApi::$apiBaseUrl.'influencers/report', $p);
+
+   }
+
+}
