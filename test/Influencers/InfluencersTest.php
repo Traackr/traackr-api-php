@@ -456,9 +456,6 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
 
    }
 
-   /**
-    * @group experimental
-    */
    public function testChannelsAdd() {
       $ownership = 'reference';
 
@@ -471,11 +468,12 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
       $this->assertNotEmpty($result['uid']);
       $this->assertEquals($this->infUid, $result['influencer_uid']);
       $this->assertEquals('BLOG', $result['platform']);
+      $this->assertNotEmpty($result['ownership']);
+      $this->assertNotEmpty($result['percentContribution']);
+      $this->assertNotEmpty($result['toBeValidated']);
+      $this->assertNotEmpty($result['toBeRemoved']);
    }
 
-   /**
-    * @group experimental
-    */
    public function testReport() {
       $reportText = 'Testing PHP client...';
 
