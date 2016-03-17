@@ -32,6 +32,30 @@ class AccountMgmt extends TraackrApiObject {
 
    } // End function tagList()
 
+   // Edit Customer Key Endpoint
+   public static function customerKeyEdit($p = array()) {
+
+      $account = new AccountMgmt();
+
+      // Check required parameters
+      $account->checkRequiredParams($p, array('customer_key'));
+
+      return $account->post(TraackrApi::$apiBaseUrl.'account_mgmt/customerkey/edit', $p);
+
+   } // End function customerKeyEdit()
+
+   // View Customer Key Endpoint
+   public static function customerKeyView($p = array()) {
+
+      $account = new AccountMgmt();
+
+      // Check required parameters
+      $account->checkRequiredParams($p, array('customer_key'));
+
+      return $account->get(TraackrApi::$apiBaseUrl.'account_mgmt/customerkey/view', $p);
+
+   } // End function customerKeyView()
+
    // Delete Customer Key Endpoint
    public static function customerKeyDelete($p = array()) {
 
