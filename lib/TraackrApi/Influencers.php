@@ -213,6 +213,7 @@ class Influencers extends TraackrApiObject {
    public static function lookup($p = array(
       'is_tag_prefix' => false,
       'gender' => 'all',
+      'type' => 'person',
       'enable_tags_aggregation' => false,
       'enable_country_aggregation' => false,
       'enable_audience_aggregation' => false,
@@ -260,6 +261,7 @@ class Influencers extends TraackrApiObject {
    public static function search($p = array(
       'is_tag_prefix' => false,
       'gender' => 'all',
+      'type' => 'person',
       'lang' => 'all',
       'enable_audience_aggregation' => false,
       'enable_country_aggregation' => false,
