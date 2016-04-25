@@ -190,7 +190,9 @@ class Influencers extends TraackrApiObject {
     * @return bool|mixed
     * @throws MissingParameterException
     */
-   public static function tagList($p = array('is_prefix' => false)) {
+   public static function tagList($p = array(
+      'is_prefix' => false,
+      'type' => 'person')) {
 
       $inf = new Influencers();
 
