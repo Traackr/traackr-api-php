@@ -38,11 +38,11 @@ class PostsTest extends PHPUnit_Framework_TestCase {
    } // End function testLookup()
 
    /**
-     * If keyword_aggregation is enable, keyword_matches must be set to true
+    * Having a false keyword match param, should still return
+    * valid results, even with keyword aggregation turned on
     * @group read only
-    * @expectedException Traackr\MissingParameterException
     */
-   public function testSearchInvalidParameter() {
+   public function testSearchWithFalseKwMatchParam() {
       $posts = Traackr\Posts::search(array(
          'keywords' => array('traackr', '"content marketing"'),
          'include_keyword_matches' => false,
