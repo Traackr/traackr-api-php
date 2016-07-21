@@ -42,7 +42,7 @@ class PostsTest extends PHPUnit_Framework_TestCase {
     * valid results, even with keyword aggregation turned on
     * @group read only
     */
-   public function testSearchWithFalseKwMatchParam() {
+   public function testSearchWithKeywordAggregations() {
       $posts = Traackr\Posts::search(array(
          'keywords' => array('traackr', '"content marketing"'),
          'include_keyword_matches' => false,
