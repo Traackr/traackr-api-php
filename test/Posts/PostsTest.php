@@ -43,11 +43,12 @@ class PostsTest extends PHPUnit_Framework_TestCase {
     * @expectedException Traackr\MissingParameterException
     */
    public function testSearchInvalidParameter() {
-      Traackr\Posts::search(array(
+      $posts = Traackr\Posts::search(array(
          'keywords' => array('traackr', '"content marketing"'),
          'include_keyword_matches' => false,
          'enable_keyword_aggregation' => true
       ));
+      $this->assertGreaterThan(0, $posts['posts'], 'No results found');
    }
 
    /**

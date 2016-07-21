@@ -71,11 +71,6 @@ class Posts extends TraackrApiObject {
       $p['include_brand_content'] = $posts->convertBool($p, 'include_brand_content');
       $p['include_shared_content'] = $posts->convertBool($p, 'include_shared_content');
 
-      // Validate business requirements
-      if ( $p['enable_keyword_aggregation'] === 'true' && $p['include_keyword_matches'] === 'false' ) {
-         throw new MissingParameterException("'include_keyword_matches' needs to be set to true for 'keyword_aggregation' to work");
-      }
-
       // support for multi params
       $p['keywords'] = is_array($p['keywords']) ?
          implode(',', $p['keywords']) : $p['keywords'];
