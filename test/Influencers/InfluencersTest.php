@@ -8,6 +8,8 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
    private $infTagUTF8 = 'påverkare marknadsföring traackr-api-test';
    private $infName = 'David Chancogne';
    private $channel = 'http://traackr.com/blog';
+   private $infTwitterHandle = 'dchancogne';
+   private $infTwitterId = '7772342';
 
    private $infUid2 = 'ae1955b0f92037c895e5bfdd259a1304';
 
@@ -312,6 +314,43 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
 
       Traackr\Influencers::lookupTwitter('000RandomHandle000');
 
+   }
+
+   public function testAddTwitterByUsername() {
+      $result = Traackr\Influencers::addTwitter([
+         'username' => $this->infTwitterHandle
+      ]);
+
+      $this->assertNotEmpty($result['influencer'][$this->infTwitterHandle]);
+      $this->assertEquals($result['influencer'][$this->infTwitterHandle]['uid'], $this->infUid);
+   }
+
+   public function testAddTwitterByTwitterId() {
+      $result = Traackr\Influencers::addTwitter([
+          'twitter_id' => $this->infTwitterId
+      ]);
+
+      $this->assertNotEmpty($result['influencer'][$this->infTwitterId]);
+      $this->assertEquals($result['influencer'][$this->infTwitterId]['uid'], $this->infUid);
+   }
+
+   /**
+    * @expectedException Traackr\MissingParameterException
+    */
+   public function testAddTwitterByUsernameAndTwitterId() {
+      // this will fail and throw an expected exception
+      $result = Traackr\Influencers::addTwitter([
+         'username' => $this->infTwitterHandle,
+         'twitter_id' => $this->infTwitterId
+      ]);
+   }
+
+   /**
+    * @expectedException Traackr\MissingParameterException
+    */
+   public function testAddTwitterMissingParams() {
+      // this will fail and throw an expected exception
+      $result = Traackr\Influencers::addTwitter([]);
    }
 
    public function testTagAdd() {
