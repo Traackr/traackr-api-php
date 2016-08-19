@@ -92,7 +92,7 @@ class Influencers extends TraackrApiObject {
       // Validate business requirements
       if (empty($p['username']) && empty($p['twitter_id'])) {
          throw new MissingParameterException("Either username or twitter_id must be present");
-      } else if (!empty($p['username']) && !empty($p['twitter_id']) {
+      } else if (!empty($p['username']) && !empty($p['twitter_id'])) {
          throw new MissingParameterException("Only one of username or twitter_id may be present");
       }
 
