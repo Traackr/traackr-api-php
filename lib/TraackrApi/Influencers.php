@@ -15,7 +15,7 @@ class Influencers extends TraackrApiObject {
    public static function show($uid, $p = array('with_channels' => false)) {
 
       if ( empty($uid) ) {
-         throw new MissingParameterException("Missing Influencer UID parameter.");
+         throw new MissingParameterException("Missing Influencer UID parameter");
       }
 
       // API Object
@@ -87,7 +87,14 @@ class Influencers extends TraackrApiObject {
       $inf = new Influencers();
 
       $p = $inf->addCustomerKey($p);
-      $inf->checkRequiredParams($p, array('username', 'customer_key'));
+      $inf->checkRequiredParams($p, array('customer_key'));
+
+      // Validate business requirements
+      if (empty($p['username']) && empty($p['twitter_id'])) {
+         throw new MissingParameterException("Either username or twitter_id must be present");
+      } else if (!empty($p['username']) && !empty($p['twitter_id'])) {
+         throw new MissingParameterException("Only one of username or twitter_id may be present");
+      }
 
       // support multi params
       if ( !empty($p['tags']) ) {
