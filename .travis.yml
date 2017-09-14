@@ -1,15 +1,14 @@
 language: php
-
 php:
-  - 5.5
-  - 5.6
-
+- 5.5
+- 5.6
 before_script:
-  - wget http://getcomposer.org/composer.phar
-  - php composer.phar install
-
+- wget http://getcomposer.org/composer.phar
+- php composer.phar install
 script:
-  - bin/phpunit --group read-only test
-
+- bin/phpunit --group read-only test
 notifications:
   slack: traackr:uCvPkzPufVG9zKPpIu5AtG7M
+env:
+  global:
+    secure: TWPqjT+NNvu2L0ECdoI2B9JlBwGz0QNbQDrE6l7S3LhTd35vog/Lk64FeU92I0sXiu+dN/YP2wRDpSN0ixUGuEw4YwPbpdJmyVaA2jKb7TKG6zXiR0Pw4a8QDsEi0F2bvmRDXRCSsIgR7B8lZXjriE21obul10bJJ17/BKyQktg=
