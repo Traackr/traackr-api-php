@@ -53,7 +53,6 @@ final class TraackrApi {
 
       // Get ENV values for API Key and Customer keys is defined
       if ( getenv('TRAACKR_API_KEY') !== FALSE ) {
-         echo "TraackrApi: Using API key from env";
          TraackrApi::setApiKey(getenv('TRAACKR_API_KEY'));
       }
       if ( getenv('TRAACKR_CUSTOMER_KEY') !== FALSE ) {
