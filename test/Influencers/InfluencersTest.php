@@ -662,11 +662,11 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
       $inf = Traackr\Influencers::search(array('keywords' => 'traackr', 'enable_audience_aggregation' => true));
       $this->assertArrayHasKey('aggregations', $inf,
          'Audience aggregation missing');
-      $this->assertArrayHasKey('audienceStats', $inf['aggregations'],
+      $this->assertArrayHasKey('audienceStatsTotal', $inf['aggregations'],
          'Audience aggregation missing');
       $this->assertGreaterThan(
-         $inf['aggregations']['audienceStats']['min'],
-         $inf['aggregations']['audienceStats']['max'],
+         $inf['aggregations']['audienceStatsTotal']['min'],
+         $inf['aggregations']['audienceStatsTotal']['max'],
          'Max audience not greater than min audience');
 
       // With country aggregations
@@ -680,8 +680,8 @@ class InfluencersTest extends PHPUnit_Framework_TestCase {
       // With audience aggregations
       $inf = Traackr\Influencers::search(array('keywords' => 'traackr', 'enable_audience_aggregation' => true));
       $this->assertArrayHasKey('aggregations', $inf, 'Audience aggregation missing');
-      $this->assertArrayHasKey('audienceStats', $inf['aggregations'], 'Audience Aggregation: Audience Stats key missing');
-      $this->assertNotEmpty($inf['aggregations']['audienceStats'], 'No audience aggregations found');
+      $this->assertArrayHasKey('audienceStatsTotal', $inf['aggregations'], 'Audience Aggregation: Audience Stats key missing');
+      $this->assertNotEmpty($inf['aggregations']['audienceStatsTotal'], 'No audience aggregations found');
 
       $inf = Traackr\Influencers::search(array('keywords' => 'xxxaaaxxx'));
       $this->assertCount(0, $inf['influencers'], 'Results found');
