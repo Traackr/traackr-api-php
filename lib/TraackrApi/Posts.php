@@ -28,6 +28,10 @@ class Posts extends TraackrApiObject {
          $p['tags'] = is_array($p['tags']) ?
             implode(',', $p['tags']) : $p['tags'];
       }
+      if ( isset($p['tags_exclusive']) ) {
+         $p['tags_exclusive'] = is_array($p['tags_exclusive']) ?
+            implode(',', $p['tags_exclusive']) : $p['tags_exclusive'];
+      }
       if ( isset($p['root_urls_inclusive']) ) {
          $p['root_urls_inclusive'] = is_array($p['root_urls_inclusive']) ?
                implode(',', $p['root_urls_inclusive']) : $p['root_urls_inclusive'];
@@ -81,6 +85,10 @@ class Posts extends TraackrApiObject {
       if ( isset($p['tags']) ) {
          $p['tags'] = is_array($p['tags']) ?
             implode(',', $p['tags']) : $p['tags'];
+      }
+      if ( isset($p['tags_exclusive']) ) {
+         $p['tags_exclusive'] = is_array($p['tags_exclusive']) ?
+            implode(',', $p['tags_exclusive']) : $p['tags_exclusive'];
       }
       if ( isset($p['exclusion_keywords']) ) {
          $p['exclusion_keywords'] = is_array($p['exclusion_keywords']) ?
