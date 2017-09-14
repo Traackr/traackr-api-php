@@ -53,6 +53,7 @@ final class TraackrApi {
 
       // Get ENV values for API Key and Customer keys is defined
       if ( isset($_ENV['TRAACKR_API_KEY']) ) {
+         echo "TraackrApi: Using API key from env";
          TraackrApi::setApiKey($_ENV['TRAACKR_API_KEY']);
       }
       if ( isset($_ENV['TRAACKR_CUSTOMER_KEY']) ) {
@@ -95,7 +96,7 @@ final class TraackrApi {
 
 
    public static function setExtraHeaders($headers) {
-      
+
       if ( is_string($headers) ) {
          self::$extraHeaders = array($headers);
          return true;
@@ -109,7 +110,7 @@ final class TraackrApi {
       }
 
    } // End function setExtraHeaders()
-   
+
 
    public static function getExtraHeaders() {
 
@@ -137,13 +138,13 @@ final class TraackrApi {
       }
 
       return self::$logger;
-   
+
    } // End function getLogger()
-   
+
    public static function setLogger(ApiLoggerInterface $obj) {
 
       self::$logger = $obj;
-   
+
    } // End function setLogger()
 
 } // End class TraackrApi
