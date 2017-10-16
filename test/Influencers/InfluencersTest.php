@@ -229,7 +229,7 @@ class InfluencersTest extends PHPUnit_Framework_TestCase
         $twitter = Traackr\Influencers::lookupTwitter('7772342', 'TWITTER_ID');
         $this->assertJsonStringEqualsJsonString(
             json_encode($inf['influencer'][$this->infUid]),
-            json_encode($twitter['influencer']['dchancogne'])
+            json_encode($twitter['influencer']['7772342'])
         );
     }
 
