@@ -596,6 +596,7 @@ class InfluencersTest extends PHPUnit_Framework_TestCase
     /**
      * @group audience
      * @group error-check
+     * @group read-only
      * @expectedException Traackr\MissingParameterException
      * @expectedExceptionMessage Missing parameter: audience
      */
@@ -607,6 +608,7 @@ class InfluencersTest extends PHPUnit_Framework_TestCase
     /**
      * @group audience
      * @group error-check
+     * @group read-only
      * @expectedException Traackr\MissingParameterException
      * @expectedExceptionMessage Missing or Invalid argument/parameter (HTTP 400): Malformed request parameter {audience}
      */
