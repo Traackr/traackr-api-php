@@ -261,6 +261,46 @@ class Influencers extends TraackrApiObject
     }
 
     /**
+     * Search for influencers based on audience criteria
+     *
+     * @param array $p
+     * @return bool|mixed
+     * @throws MissingParameterException
+     */
+    public static function searchAudience($p = [
+        'audience' => '{"network": "twitter"}',
+        'influencers' => null,
+        'tags' => null,
+        'tags_exclusive' => null,
+        'is_tag_prefix' => false,
+        'count' => 25])
+    {
+        $inf = new Influencers();
+
+        // Sanitize default values
+        $p['is_tag_prefix'] = $inf->convertBool($p, 'is_tag_prefix');
+
+        $p = $inf->addCustomerKey($p);
+        $inf->checkRequiredParams($p, ['audience']);
+
+        if (isset($p['influencers'])) {
+            $p['influencers'] = is_array($p['influencers']) ?
+                implode(',', $p['influencers']) : $p['influencers'];
+        }
+
+        if (isset($p['tags'])) {
+            $p['tags'] = is_array($p['tags']) ? implode(',', $p['tags']) : $p['tags'];
+        }
+
+        if (isset($p['tags_exclusive'])) {
+            $p['tags_exclusive'] = is_array($p['tags_exclusive']) ?
+                implode(',', $p['tags_exclusive']) : $p['tags_exclusive'];
+        }
+
+        return $inf->post(TraackrApi::$apiBaseUrl . 'influencers/search/audience', $p);
+    }
+
+    /**
      * Search for influencers
      *
      * @param array $p
