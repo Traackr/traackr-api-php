@@ -269,9 +269,6 @@ class Influencers extends TraackrApiObject
      */
     public static function searchAudience($p = [
         'audience' => '{"network": "twitter"}',
-        'influencers' => null,
-        'tags' => null,
-        'tags_exclusive' => null,
         'is_tag_prefix' => false,
         'count' => 25])
     {
