@@ -216,7 +216,7 @@ class InfluencersTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($this->infName, $inf['influencer'][$twitterHandle]['name'], 'Incorrect name');
 
         // NOTE
-        // Disable customer key so that 'show' doe not return tags b/c lookupTwitter doesn't currently
+        // Disable customer key so that 'show' does not return tags b/c lookupTwitter doesn't currently
         Traackr\TraackrApi::setCustomerKey('');
         $inf = Traackr\Influencers::show($this->infUid);
         $twitter = Traackr\Influencers::lookupTwitter('dchancogne');
@@ -290,6 +290,146 @@ class InfluencersTest extends PHPUnit_Framework_TestCase
     {
         // this will fail and throw an expected exception
         Traackr\Influencers::addTwitter([]);
+    }
+
+    /**
+     * @group read-only
+     */
+    public function testLookupSocial()
+    {
+        $twitterHandle = 'dchancogne';
+
+        $inf = Traackr\Influencers::lookupSocial($twitterHandle);
+        // Check result is there
+        $this->assertArrayHasKey('influencer', $inf, 'No influencer found');
+        $this->assertArrayHasKey($twitterHandle, $inf['influencer'], 'Invalid influencer found');
+        // Check appropriate fields are present
+        $this->assertArrayHasKey('uid', $inf['influencer'][$twitterHandle], 'UID filed is missing');
+        $this->assertArrayHasKey('name', $inf['influencer'][$twitterHandle], 'Name field missing');
+        $this->assertArrayHasKey('description', $inf['influencer'][$twitterHandle], 'Description field missing');
+        $this->assertArrayHasKey('title', $inf['influencer'][$twitterHandle], 'Title field missing');
+        $this->assertArrayHasKey('location', $inf['influencer'][$twitterHandle], 'Location field missing');
+        $this->assertArrayHasKey('avatar', $inf['influencer'][$twitterHandle], 'Avatar field missing');
+        $this->assertArrayHasKey('reach', $inf['influencer'][$twitterHandle], 'Reach field missing');
+        $this->assertArrayHasKey('resonance', $inf['influencer'][$twitterHandle], 'Resonance field missing');
+        $this->assertArrayNotHasKey('channels', $inf['influencer'][$twitterHandle], 'Channels should not have be returned');
+        $this->assertArrayNotHasKey('tags', $inf['influencer'][$twitterHandle], 'Tags field missing');
+        // Check some values
+        $this->assertEquals($this->infUid, $inf['influencer'][$twitterHandle]['uid'], 'Incorrect UID');
+        $this->assertEquals($this->infName, $inf['influencer'][$twitterHandle]['name'], 'Incorrect name');
+
+        // NOTE
+        // Disable customer key so that 'show' does not return tags b/c lookupSocial doesn't currently
+        Traackr\TraackrApi::setCustomerKey('');
+        $inf = Traackr\Influencers::show($this->infUid);
+        $twitter = Traackr\Influencers::lookupSocial('dchancogne');
+        $this->assertJsonStringEqualsJsonString(
+            json_encode($inf['influencer'][$this->infUid]),
+            json_encode($twitter['influencer']['dchancogne'])
+        );
+
+        // Test based on Twitter ID type parameter
+        $twitter = Traackr\Influencers::lookupTwitter('7772342', 'TWITTER_ID');
+        $this->assertJsonStringEqualsJsonString(
+            json_encode($inf['influencer'][$this->infUid]),
+            json_encode($twitter['influencer']['7772342'])
+        );
+    }
+
+    /**
+     * @group read-only
+     * @expectedException \UnexpectedValueException
+     */
+    public function testLookupSocialInvalidPlatformParameter()
+    {
+        Traackr\Influencers::lookupSocial('dchancogne', 'INVALID');
+    }
+
+    /**
+     * @group read-only
+     * @expectedException \UnexpectedValueException
+     */
+    public function testLookupSocialInvalidTypeParameter()
+    {
+        Traackr\Influencers::lookupSocial('dchancogne', 'TWITTER', 'INVALID');
+    }
+
+    /**
+     * @group read-only
+     * @expectedException Traackr\NotFoundException
+     */
+    public function testLookupSocialNotFound()
+    {
+        Traackr\Influencers::lookupSocial('000RandomHandle000');
+    }
+
+    public function testAddSocialByUsername()
+    {
+        $result = Traackr\Influencers::addSocial([
+            'username' => $this->infTwitterHandle,
+            'platform' => 'TWITTER'
+        ]);
+
+        $this->assertNotEmpty($result['influencer'][$this->infTwitterHandle]);
+        $this->assertEquals($result['influencer'][$this->infTwitterHandle]['uid'], $this->infUid);
+    }
+
+    public function testAddSocialByUserId()
+    {
+        $result = Traackr\Influencers::addSocial([
+            'user_id' => $this->infTwitterId,
+            'platform' => 'TWITTER'
+        ]);
+
+        $this->assertNotEmpty($result['influencer'][$this->infTwitterId]);
+        $this->assertEquals($result['influencer'][$this->infTwitterId]['uid'], $this->infUid);
+    }
+
+    /**
+     * @expectedException Traackr\MissingParameterException
+     */
+    public function testAddSocialByUsernameAndUserId()
+    {
+        // this will fail and throw an expected exception
+        Traackr\Influencers::addSocial([
+            'username' => $this->infTwitterHandle,
+            'user_id' => $this->infTwitterId,
+            'platform' => 'TWITTER'
+        ]);
+    }
+
+    /**
+     * @expectedException Traackr\MissingParameterException
+     */
+    public function testAddSocialMissingUserParam()
+    {
+        // this will fail and throw an expected exception
+        Traackr\Influencers::addSocial([
+            'platform' => 'TWITTER'
+        ]);
+    }
+
+    /**
+     * @expectedException Traackr\MissingParameterException
+     */
+    public function testAddSocialMissingPlatformParam()
+    {
+        // this will fail and throw an expected exception
+        Traackr\Influencers::addSocial([
+            'username' => $this->infTwitterHandle
+        ]);
+    }
+
+    /**
+     * @expectedException Traackr\UnexpectedValueException
+     */
+    public function testAddSocialInvalidPlatformParam()
+    {
+        // this will fail and throw an expected exception
+        Traackr\Influencers::addSocial([
+            'username' => $this->infTwitterHandle,
+            'platform' => 'INVALID'
+        ]);
     }
 
     public function testTagAdd()
