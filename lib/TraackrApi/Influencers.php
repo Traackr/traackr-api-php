@@ -74,8 +74,8 @@ class Influencers extends TraackrApiObject
             throw new \UnexpectedValueException('Platform parameter must be "TWITTER" or "INSTAGRAM".');
         }
 
-        if ('USERNAME' !== $type && 'TWITTER_ID' !== $type) {
-            throw new \UnexpectedValueException('Type parameter must be "USERNAME" or "TWITTER_ID".');
+        if ('USERNAME' !== $type && 'USER_ID' !== $type) {
+            throw new \UnexpectedValueException('Type parameter must be "USERNAME" or "USER_ID".');
         }
 
         $inf = new Influencers();
@@ -138,7 +138,8 @@ class Influencers extends TraackrApiObject
         }
         if (empty($p['username']) && empty($p['user_id'])) {
             throw new MissingParameterException("Either username or user_id must be present");
-        } else if (!empty($p['username']) && !empty($p['user_id'])) {
+        }
+        if (!empty($p['username']) && !empty($p['user_id'])) {
             throw new MissingParameterException("Only one of username or user_id may be present");
         }
 
@@ -167,7 +168,8 @@ class Influencers extends TraackrApiObject
         // Validate business requirements
         if (empty($p['username']) && empty($p['twitter_id'])) {
             throw new MissingParameterException("Either username or twitter_id must be present");
-        } else if (!empty($p['username']) && !empty($p['twitter_id'])) {
+        }
+        if (!empty($p['username']) && !empty($p['twitter_id'])) {
             throw new MissingParameterException("Only one of username or twitter_id may be present");
         }
 
