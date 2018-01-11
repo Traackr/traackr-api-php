@@ -54,6 +54,41 @@ class Influencers extends TraackrApiObject
     }
 
     /**
+     * Lookup Influencer by a social handle
+     *
+     * @param string $username
+     * @param string $platform TWITTER | INSTAGRAM
+     * @param string $type USERNAME | TWITTER_ID
+     * @return bool|mixed
+     * @throws MissingParameterException
+     * @throws \UnexpectedValueException
+     */
+    public static function lookupSocial($username, $platform = 'TWITTER', $type = 'USERNAME')
+    {
+        if (empty($username)) {
+            throw new MissingParameterException("Missing username parameter");
+        }
+
+        // no need to differentiate 'Missing' from 'Unexpected'
+        if ('TWITTER' !== $platform && 'INSTAGRAM' !== $platform) {
+            throw new \UnexpectedValueException('Platform parameter must be "TWITTER" or "INSTAGRAM".');
+        }
+
+        if ('USERNAME' !== $type && 'USER_ID' !== $type) {
+            throw new \UnexpectedValueException('Type parameter must be "USERNAME" or "USER_ID".');
+        }
+
+        $inf = new Influencers();
+
+        $parameters = [
+            'platform' => $platform,
+            'type' => $type
+        ];
+
+        return $inf->get(TraackrApi::$apiBaseUrl . 'influencers/lookup/social/' . $username, $parameters);
+    }
+
+    /**
      * Lookup Influencer by a Twitter handle
      *
      * @param string $username
@@ -82,6 +117,41 @@ class Influencers extends TraackrApiObject
     }
 
     /**
+     * Add social account
+     *
+     * @param array $p
+     * @return bool|mixed
+     * @throws MissingParameterException
+     * @throws \UnexpectedValueException
+     */
+    public static function addSocial($p = array())
+    {
+        $inf = new Influencers();
+
+        $p = $inf->addCustomerKey($p);
+        $inf->checkRequiredParams($p, array('platform', 'customer_key'));
+
+        // Validate business requirements
+        $platform = $p['platform'];
+        if ('TWITTER' !== $platform && 'INSTAGRAM' !== $platform) {
+            throw new \UnexpectedValueException('Platform parameter must be "TWITTER" or "INSTAGRAM".');
+        }
+        if (empty($p['username']) && empty($p['user_id'])) {
+            throw new MissingParameterException("Either username or user_id must be present");
+        }
+        if (!empty($p['username']) && !empty($p['user_id'])) {
+            throw new MissingParameterException("Only one of username or user_id may be present");
+        }
+
+        // support multi params
+        if (!empty($p['tags'])) {
+            $p['tags'] = is_array($p['tags']) ? implode(',', $p['tags']) : $p['tags'];
+        }
+
+        return $inf->post(TraackrApi::$apiBaseUrl . 'influencers/add/social', $p);
+    }
+
+    /**
      * Add Twitter account
      *
      * @param array $p
@@ -98,7 +168,8 @@ class Influencers extends TraackrApiObject
         // Validate business requirements
         if (empty($p['username']) && empty($p['twitter_id'])) {
             throw new MissingParameterException("Either username or twitter_id must be present");
-        } else if (!empty($p['username']) && !empty($p['twitter_id'])) {
+        }
+        if (!empty($p['username']) && !empty($p['twitter_id'])) {
             throw new MissingParameterException("Only one of username or twitter_id may be present");
         }
 
