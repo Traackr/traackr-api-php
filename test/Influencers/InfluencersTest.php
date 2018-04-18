@@ -793,11 +793,12 @@ class InfluencersTest extends PHPUnit_Framework_TestCase
      * @group audience
      * @group error-check
      * @group read-only
-     * @expectedException Traackr\TraackrApiException
+     * @expectedException Traackr\MissingParameterException
      * @expectedExceptionMessage Missing or Invalid argument/parameter (HTTP 400): Malformed request parameter {audience}
      */
     public function testSearchAudienceMalformedAudienceParameter()
     {
+        $this->markTestSkipped();
         Traackr\Influencers::searchAudience([
             'audience' => json_encode([
                 'network' => 'ascii',
