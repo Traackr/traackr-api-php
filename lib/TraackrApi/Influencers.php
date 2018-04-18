@@ -351,8 +351,10 @@ class Influencers extends TraackrApiObject
         $p = $inf->addCustomerKey($p);
         $inf->checkRequiredParams($p, ['audience']);
 
-        $p['keywords'] = is_array($p['keywords']) ?
-            implode(',', $p['keywords']) : $p['keywords'];
+        if (isset($p['keywords'])) {
+            $p['keywords'] = is_array($p['keywords']) ?
+                implode(',', $p['keywords']) : $p['keywords'];
+        }
 
         if (isset($p['influencers'])) {
             $p['influencers'] = is_array($p['influencers']) ?
