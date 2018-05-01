@@ -758,9 +758,9 @@ class InfluencersTest extends PHPUnit_Framework_TestCase
      * @group read-only
      * @group audience
      */
-    public function testSearchAudience()
+    public function testSearchWithAudienceParameter()
     {
-        $inf = Traackr\Influencers::searchAudience([
+        $inf = Traackr\Influencers::search([
             'audience' => json_encode([
                 'network' => 'twitter',
                 'filters' => [
@@ -778,15 +778,14 @@ class InfluencersTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @group audience
      * @group error-check
      * @group read-only
      * @expectedException Traackr\MissingParameterException
-     * @expectedExceptionMessage Missing parameter: audience
+     * @expectedExceptionMessage Missing parameter: must provide keywords or audience parameter
      */
-    public function testSearchAudienceMissingParameter()
+    public function testSearchMissingRequiredParameter()
     {
-        Traackr\Influencers::searchAudience([]);
+        Traackr\Influencers::search([]);
     }
 
     /**
@@ -796,10 +795,10 @@ class InfluencersTest extends PHPUnit_Framework_TestCase
      * @expectedException Traackr\MissingParameterException
      * @expectedExceptionMessage Missing or Invalid argument/parameter (HTTP 400): Malformed request parameter {audience}
      */
-    public function testSearchAudienceMalformedAudienceParameter()
+    public function testSearchMalformedAudienceParameter()
     {
         $this->markTestSkipped();
-        Traackr\Influencers::searchAudience([
+        Traackr\Influencers::search([
             'audience' => json_encode([
                 'network' => 'ascii',
                 'filters' => [
