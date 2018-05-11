@@ -441,11 +441,7 @@ class InfluencersTest extends PHPUnit_Framework_TestCase
 
         $this->assertNotEmpty($result['uid']);
         $this->assertEquals($this->infUid, $result['influencer_uid']);
-        $this->assertEquals('BLOG', $result['platform']);
         $this->assertNotEmpty($result['ownership']);
-        $this->assertNotEmpty($result['percentContribution']);
-        $this->assertNotEmpty($result['toBeValidated']);
-        $this->assertNotEmpty($result['toBeRemoved']);
     }
 
     public function testReport()
