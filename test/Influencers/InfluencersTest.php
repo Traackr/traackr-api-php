@@ -797,7 +797,6 @@ class InfluencersTest extends PHPUnit_Framework_TestCase
      */
     public function testSearchMalformedAudienceParameter()
     {
-        $this->markTestSkipped();
         Traackr\Influencers::search([
             'audience' => json_encode([
                 'network' => 'ascii',
