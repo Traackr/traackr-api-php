@@ -752,6 +752,65 @@ class InfluencersTest extends PHPUnit_Framework_TestCase
 
     /**
      * @group read-only
+     * @group audience
+     */
+    public function testSearchAudience()
+    {
+        $inf = Traackr\Influencers::searchAudience([
+            'audience' => json_encode([
+                'network' => 'twitter',
+                'filters' => [
+                    [
+                        'code' => 'D02'
+                    ]
+                ]
+            ]),
+
+            'count' => 1
+        ]);
+
+        $this->assertCount(1, $inf['influencers']);
+        $this->assertEmpty($inf['influencers'][0]['post_hits']);
+    }
+
+    /**
+     * @group audience
+     * @group error-check
+     * @group read-only
+     * @expectedException Traackr\MissingParameterException
+     * @expectedExceptionMessage Missing parameter: audience
+     */
+    public function testSearchAudienceMissingParameter()
+    {
+        Traackr\Influencers::searchAudience([]);
+    }
+
+    /**
+     * @group audience
+     * @group error-check
+     * @group read-only
+     * @expectedException Traackr\MissingParameterException
+     * @expectedExceptionMessage Missing or Invalid argument/parameter (HTTP 400): Malformed request parameter {audience}
+     */
+    public function testSearchAudienceMalformedAudienceParameter()
+    {
+        $this->markTestSkipped();
+        Traackr\Influencers::searchAudience([
+            'audience' => json_encode([
+                'network' => 'ascii',
+                'filters' => [
+                    [
+                        'code' => 'D02'
+                    ]
+                ]
+            ]),
+
+            'count' => 1
+        ]);
+    }
+
+    /**
+     * @group read-only
      */
     public function testSearchRO()
     {
