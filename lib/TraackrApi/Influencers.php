@@ -355,11 +355,30 @@ class Influencers extends TraackrApiObject
         $p['enable_country_aggregation'] = $inf->convertBool($p, 'enable_country_aggregation');
 
         $p = $inf->addCustomerKey($p);
-        $inf->checkRequiredParams($p, array('keywords'));
+
+        $hasContentCriteria = false;
+        try {
+            $inf->checkRequiredParams($p, ['keywords']);
+            $hasContentCriteria = true;
+        } catch (MissingParameterException $e) {
+        }
+
+        $hasAudienceCriteria = false;
+        try {
+            $inf->checkRequiredParams($p, ['audience']);
+            $hasAudienceCriteria = true;
+        } catch (MissingParameterException $e) {
+        }
+
+        if (!$hasContentCriteria && !$hasAudienceCriteria) {
+            throw new MissingParameterException('Missing parameter: must provide keywords or audience parameter');
+        }
 
         // support for multi params
-        $p['keywords'] = is_array($p['keywords']) ?
-            implode(',', $p['keywords']) : $p['keywords'];
+        if (isset($p['keywords'])) {
+            $p['keywords'] = is_array($p['keywords']) ?
+                implode(',', $p['keywords']) : $p['keywords'];
+        }
         if (isset($p['influencers'])) {
             $p['influencers'] = is_array($p['influencers']) ?
                 implode(',', $p['influencers']) : $p['influencers'];
