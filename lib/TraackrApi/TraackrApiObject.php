@@ -233,7 +233,7 @@ abstract class TraackrApiObject
         return $this->call(!TraackrAPI::isJsonOutput());
     }
 
-    public function post($url, $params = array())
+    public function post($url, $params = [])
     {
         // POST call
         curl_setopt($this->curl, CURLOPT_POST, 1);
@@ -266,7 +266,7 @@ abstract class TraackrApiObject
     }
 
     // Support for HTTP DELETE Methods
-    public function delete($url, $params = array())
+    public function delete($url, $params = [])
     {
         // Build Parameters
         // Add API key parameter if not present
