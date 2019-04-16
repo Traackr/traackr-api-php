@@ -39,7 +39,7 @@ final class TraackrApi {
 
    private static $apiKey;
 
-   public static $apiBaseUrl = 'http://api.traackr.com/1.0/';
+   public static $apiBaseUrl = 'https://api.traackr.com/1.0/';
 
    private static $customerKey = '';
 
