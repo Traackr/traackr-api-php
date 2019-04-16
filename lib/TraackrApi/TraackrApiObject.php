@@ -6,6 +6,7 @@ abstract class TraackrApiObject
 {
     public static $connectionTimeout = 10;
     public static $timeout = 10;
+    public static $sslVerifyPeer = true;
 
     private $curl;
 
@@ -41,6 +42,8 @@ abstract class TraackrApiObject
         curl_setopt($this->curl, CURLOPT_TIMEOUT, self::$timeout);
         // Set encodings
         curl_setopt($this->curl, CURLOPT_ENCODING, 'gzip;q=1.0, deflate;q=0.5, identity;q=0.1');
+        // SSL verify peer
+        curl_setopt($this->curl, CURLOPT_SSL_VERIFYPEER, self::$sslVerifyPeer);
     }
 
     protected function checkRequiredParams($params, $fields)
