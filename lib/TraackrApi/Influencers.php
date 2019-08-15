@@ -57,7 +57,7 @@ class Influencers extends TraackrApiObject
      * Lookup Influencer by a social handle
      *
      * @param string $username
-     * @param string $platform TWITTER | INSTAGRAM
+     * @param string $platform e.g. TWITTER | INSTAGRAM | TWITCH
      * @param string $type USERNAME | TWITTER_ID
      * @return bool|mixed
      * @throws MissingParameterException
@@ -69,9 +69,8 @@ class Influencers extends TraackrApiObject
             throw new MissingParameterException("Missing username parameter");
         }
 
-        // no need to differentiate 'Missing' from 'Unexpected'
-        if ('TWITTER' !== $platform && 'INSTAGRAM' !== $platform) {
-            throw new \UnexpectedValueException('Platform parameter must be "TWITTER" or "INSTAGRAM".');
+        if (empty($platform)) {
+            throw new MissingParameterException("Missing platform parameter");
         }
 
         if ('USERNAME' !== $type && 'USER_ID' !== $type) {
