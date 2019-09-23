@@ -402,6 +402,14 @@ class Influencers extends TraackrApiObject
             $p['root_urls_exclusive'] = is_array($p['root_urls_exclusive']) ?
                 implode(',', $p['root_urls_exclusive']) : $p['root_urls_exclusive'];
         }
+        if ( isset($p['publication_types_inclusive']) ) {
+            $p['publication_types_inclusive'] = is_array($p['publication_types_inclusive']) ?
+                implode(',', $p['publication_types_inclusive']) : $p['publication_types_inclusive'];
+        }
+        if ( isset($p['publication_types_exclusive']) ) {
+            $p['publication_types_exclusive'] = is_array($p['publication_types_exclusive']) ?
+                implode(',', $p['publication_types_exclusive']) : $p['publication_types_exclusive'];
+        }
         if (isset($p['emails'])) {
             $p['emails'] = is_array($p['emails']) ?
                 implode(',', $p['emails']) : $p['emails'];

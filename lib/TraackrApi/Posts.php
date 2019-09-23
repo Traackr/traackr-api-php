@@ -40,6 +40,14 @@ class Posts extends TraackrApiObject {
          $p['root_urls_exclusive'] = is_array($p['root_urls_exclusive']) ?
             implode(',', $p['root_urls_exclusive']) : $p['root_urls_exclusive'];
       }
+      if ( isset($p['publication_types_inclusive']) ) {
+         $p['publication_types_inclusive'] = is_array($p['publication_types_inclusive']) ?
+               implode(',', $p['publication_types_inclusive']) : $p['publication_types_inclusive'];
+      }
+      if ( isset($p['publication_types_exclusive']) ) {
+         $p['publication_types_exclusive'] = is_array($p['publication_types_exclusive']) ?
+               implode(',', $p['publication_types_exclusive']) : $p['publication_types_exclusive'];
+      }
 
       return $posts->post(TraackrApi::$apiBaseUrl.'posts/lookup', $p);
 
@@ -102,8 +110,16 @@ class Posts extends TraackrApiObject {
          $p['root_urls_exclusive'] = is_array($p['root_urls_exclusive']) ?
             implode(',', $p['root_urls_exclusive']) : $p['root_urls_exclusive'];
       }
+      if ( isset($p['publication_types_inclusive']) ) {
+         $p['publication_types_inclusive'] = is_array($p['publication_types_inclusive']) ?
+               implode(',', $p['publication_types_inclusive']) : $p['publication_types_inclusive'];
+      }
+      if ( isset($p['publication_types_exclusive']) ) {
+         $p['publication_types_exclusive'] = is_array($p['publication_types_exclusive']) ?
+               implode(',', $p['publication_types_exclusive']) : $p['publication_types_exclusive'];
+      }
 
-       return $posts->post(TraackrApi::$apiBaseUrl.'posts/search', $p);
+      return $posts->post(TraackrApi::$apiBaseUrl.'posts/search', $p);
 
    }
 }
