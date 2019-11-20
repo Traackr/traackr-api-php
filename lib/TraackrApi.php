@@ -89,7 +89,11 @@ final class TraackrApi {
 
    public static function setCustomerKey($key) {
 
-      self::$customerKey = $key;
+      if (is_array($key)) {
+         self::$customerKey = implode(',', $key);
+      } else {
+         self::$customerKey = $key;
+      }
 
    } // End function setCustomerKey()
 
