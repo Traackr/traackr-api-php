@@ -56,11 +56,19 @@ abstract class TraackrApiObject
         }
     }
 
+    /**
+     * influencers/lookup & /search and posts/lookup and /search now support multiple
+     * customer-keys, so this function massages arrays of them.
+     */
     protected function addCustomerKey(&$params)
     {
         $key = TraackrApi::getCustomerKey();
         if (!empty($key) && empty($params[PARAM_CUSTOMER_KEY])) {
             $params[PARAM_CUSTOMER_KEY] = $key;
+        }
+
+        if (!empty($params[PARAM_CUSTOMER_KEY]) && is_array($params[PARAM_CUSTOMER_KEY])) {
+            $params[PARAM_CUSTOMER_KEY] = implode(',', $params[PARAM_CUSTOMER_KEY]);
         }
 
         return $params;
