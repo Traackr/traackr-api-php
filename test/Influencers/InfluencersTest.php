@@ -582,6 +582,88 @@ class InfluencersTest extends PHPUnit_Framework_TestCase
         $this->assertNotTrue(in_array($this->infTag, $inf['influencer'][$this->infUid]['tags']));
     }
 
+    public function testTagBulkEdit()
+    {
+        $inf = Traackr\Influencers::show($this->infUid);
+        $this->assertCount(0, $inf['influencer'][$this->infUid]['tags']);
+
+        // Test adding tags to one influencer
+        Traackr\Influencers::tagBulkEdit(array(
+            'influencers' => $this->infUid,
+            'tags_add' => array(
+                $this->infTag,
+                $this->infTag2,
+                $this->infTagUTF8
+            )
+        ));
+        $inf = Traackr\Influencers::show($this->infUid);
+        $this->assertCount(3, $inf['influencer'][$this->infUid]['tags']);
+        $this->assertTrue(in_array($this->infTag, $inf['influencer'][$this->infUid]['tags']));
+        $this->assertTrue(in_array($this->infTag2, $inf['influencer'][$this->infUid]['tags']));
+        $this->assertTrue(in_array($this->infTagUTF8, $inf['influencer'][$this->infUid]['tags']));
+
+        // Test removing tags from one influencer
+        Traackr\Influencers::tagBulkEdit(array(
+            'influencers' => $this->infUid,
+            'tags_remove' => array(
+                $this->infTag,
+                $this->infTagUTF8
+            )
+        ));
+        $inf = Traackr\Influencers::show($this->infUid);
+        $this->assertCount(1, $inf['influencer'][$this->infUid]['tags']);
+        $this->assertFalse(in_array($this->infTag, $inf['influencer'][$this->infUid]['tags']));
+        $this->assertFalse(in_array($this->infTagUTF8, $inf['influencer'][$this->infUid]['tags']));
+
+        // Test removing and adding tags to multiple influencers
+        Traackr\Influencers::tagBulkEdit(array(
+            'influencers' => array(
+                $this->infUid,
+                $this->infUid2
+            ),
+            'tags_add' => array(
+                $this->infTag
+            ),
+            'tags_remove' => array(
+                $this->infTag2,
+                $this->infTagUTF8
+            )
+        ));
+        $infs = Traackr\Influencers::show(array(
+            $this->infUid,
+            $this->infUid2
+        ));
+        $this->assertCount(1, $inf['influencer'][$this->infUid]['tags']);
+        $this->assertTrue(in_array($this->infTag, $infs['influencer'][$this->infUid]['tags']));
+        $this->assertFalse(in_array($this->infTag2, $infs['influencer'][$this->infUid]['tags']));
+        $this->assertFalse(in_array($this->infTagUTF8, $infs['influencer'][$this->infUid]['tags']));
+        $this->assertCount(1, $infs['influencer'][$this->infUid2]['tags']);
+        $this->assertTrue(in_array($this->infTag, $infs['influencer'][$this->infUid2]['tags']));
+        $this->assertFalse(in_array($this->infTag2, $infs['influencer'][$this->infUid2]['tags']));
+        $this->assertFalse(in_array($this->infTagUTF8, $infs['influencer'][$this->infUid2]['tags']));
+
+
+
+        // Test removing tags from multiple influencers
+        Traackr\Influencers::tagBulkEdit(array(
+            'influencers' => array(
+                $this->infUid,
+                $this->infUid2
+            ),
+            'tags_remove' => array(
+                $this->infTag
+            )
+        ));
+        $infs = Traackr\Influencers::show(array(
+            $this->infUid,
+            $this->infUid2
+        ));
+        $this->assertCount(0, $inf['influencer'][$this->infUid]['tags']);
+        $this->assertFalse(in_array($this->infTag, $infs['influencer'][$this->infUid]['tags']));
+        $this->assertCount(0, $infs['influencer'][$this->infUid2]['tags']);
+        $this->assertFalse(in_array($this->infTag, $infs['influencer'][$this->infUid2]['tags']));
+    }
+
     public function testTagList()
     {
         $infs = Traackr\Influencers::tagList(array('tag' => 'SomeRandomTagNeverUser'));
