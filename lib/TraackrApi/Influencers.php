@@ -263,6 +263,35 @@ class Influencers extends TraackrApiObject
     }
 
     /**
+     * Add or remove tags associated to an influencer(s)
+     *
+     * @param array $p
+     * @return bool|mixed
+     * @throws MissingParameterException
+     */
+    public static function tagBulkEdit($p = array())
+    {
+        $inf = new Influencers();
+
+        $p = $inf->addCustomerKey($p);
+        $inf->checkRequiredParams($p, array('influencers', 'customer_key'));
+
+        // support for multi params
+        $p['influencers'] = is_array($p['influencers']) ?
+            implode(',', $p['influencers']) : $p['influencers'];
+        if (!empty($p['tags_add'])) {
+            $p['tags_add'] = is_array($p['tags_add']) ?
+                implode(',', $p['tags_add']) : $p['tags_add'];
+        }
+        if (!empty($p['tags_remove'])) {
+            $p['tags_remove'] = is_array($p['tags_remove']) ?
+                implode(',', $p['tags_remove']) : $p['tags_remove'];
+        }
+
+        return $inf->post(TraackrApi::$apiBaseUrl . 'influencers/tag/bulkedit', $p);
+    }
+
+    /**
      * Get the tags on an influencer
      *
      * @param array $p
