@@ -326,6 +326,7 @@ class Influencers extends TraackrApiObject
         'enable_tags_aggregation' => false,
         'enable_country_aggregation' => false,
         'enable_audience_aggregation' => false,
+        'enable_uids_aggregation' => false,
         'count' => 25, 'page' => 0,
         'sort' => 'name', 'sort_order' => 'asc'))
     {
@@ -336,6 +337,7 @@ class Influencers extends TraackrApiObject
         $p['enable_tags_aggregation'] = $inf->convertBool($p, 'enable_tags_aggregation');
         $p['enable_country_aggregation'] = $inf->convertBool($p, 'enable_country_aggregation');
         $p['enable_audience_aggregation'] = $inf->convertBool($p, 'enable_audience_aggregation');
+        $p['enable_uids_aggregation'] = $inf->convertBool($p, 'enable_uids_aggregation');
 
         $p = $inf->addCustomerKey($p);
 
