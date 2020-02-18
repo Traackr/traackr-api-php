@@ -346,6 +346,10 @@ class Influencers extends TraackrApiObject
             $p['influencers'] = is_array($p['influencers']) ?
                 implode(',', $p['influencers']) : $p['influencers'];
         }
+        if (isset($p['influencers_exclusive'])) {
+            $p['influencers_exclusive'] = is_array($p['influencers_exclusive']) ?
+                implode(',', $p['influencers_exclusive']) : $p['influencers_exclusive'];
+        }
         if (isset($p['tags'])) {
             $p['tags'] = is_array($p['tags']) ?
                 implode(',', $p['tags']) : $p['tags'];
@@ -413,6 +417,10 @@ class Influencers extends TraackrApiObject
             $p['influencers'] = is_array($p['influencers']) ?
                 implode(',', $p['influencers']) : $p['influencers'];
         }
+        if (isset($p['influencers_exclusive'])) {
+            $p['influencers_exclusive'] = is_array($p['influencers_exclusive']) ?
+                implode(',', $p['influencers_exclusive']) : $p['influencers_exclusive'];
+        }
         if (isset($p['tags'])) {
             $p['tags'] = is_array($p['tags']) ?
                 implode(',', $p['tags']) : $p['tags'];
@@ -444,6 +452,14 @@ class Influencers extends TraackrApiObject
         if (isset($p['emails'])) {
             $p['emails'] = is_array($p['emails']) ?
                 implode(',', $p['emails']) : $p['emails'];
+        }
+        if (isset($p['posts_inclusive'])) {
+            $p['posts_inclusive'] = is_array($p['posts_inclusive']) ?
+                implode(',', $p['posts_inclusive']) : $p['posts_inclusive'];
+        }
+        if (isset($p['posts_exclusive'])) {
+            $p['posts_exclusive'] = is_array($p['posts_exclusive']) ?
+                implode(',', $p['posts_exclusive']) : $p['posts_exclusive'];
         }
         return $inf->post(TraackrApi::$apiBaseUrl . 'influencers/search', $p);
     }

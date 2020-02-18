@@ -48,7 +48,14 @@ class Posts extends TraackrApiObject {
          $p['publication_types_exclusive'] = is_array($p['publication_types_exclusive']) ?
                implode(',', $p['publication_types_exclusive']) : $p['publication_types_exclusive'];
       }
-
+      if (isset($p['posts_inclusive'])) {
+         $p['posts_inclusive'] = is_array($p['posts_inclusive']) ?
+               implode(',', $p['posts_inclusive']) : $p['posts_inclusive'];
+      }
+      if (isset($p['posts_exclusive'])) {
+         $p['posts_exclusive'] = is_array($p['posts_exclusive']) ?
+               implode(',', $p['posts_exclusive']) : $p['posts_exclusive'];
+      }
       return $posts->post(TraackrApi::$apiBaseUrl.'posts/lookup', $p);
 
    }
@@ -118,7 +125,14 @@ class Posts extends TraackrApiObject {
          $p['publication_types_exclusive'] = is_array($p['publication_types_exclusive']) ?
                implode(',', $p['publication_types_exclusive']) : $p['publication_types_exclusive'];
       }
-
+      if (isset($p['posts_inclusive'])) {
+         $p['posts_inclusive'] = is_array($p['posts_inclusive']) ?
+               implode(',', $p['posts_inclusive']) : $p['posts_inclusive'];
+      }
+      if (isset($p['posts_exclusive'])) {
+         $p['posts_exclusive'] = is_array($p['posts_exclusive']) ?
+               implode(',', $p['posts_exclusive']) : $p['posts_exclusive'];
+      }
       return $posts->post(TraackrApi::$apiBaseUrl.'posts/search', $p);
 
    }
