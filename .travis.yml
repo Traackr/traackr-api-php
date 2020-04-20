@@ -13,4 +13,4 @@ notifications:
   slack: traackr:uCvPkzPufVG9zKPpIu5AtG7M
 env:
   global:
-    secure: ggYYwf4JEVf3zq/CwlWmelxJ9Dpyf4hGMAvhoCN1qT9el8HjNJCMceMNTc30WBFdwgnaFPA2JlFW2a6Ocyy19x4ydY7BYu/f26EZ1YI6BvNtUDTWhI3t5FnldQUsiJx5ce6xHnBn2ofKuMopw/dDI8MoLIjuTWhk3O4APJci+FM=
+  - secure: LARPzUAGFcCqta7NZrymyknBUrJYmdKoTF+qNW9wBuS3iuGiYEBJHqIJy7M2e6pRe0kHPjrqZmz1FSd1RL2Nz7q974G6b9GOa/cNm6jIyEmc0wDZFR/dlPZWGTZWS8SNZLXXV5CSK3W1XwMeW1ZhIbcGw80Ef0EfsCNFqR+mbj8=
