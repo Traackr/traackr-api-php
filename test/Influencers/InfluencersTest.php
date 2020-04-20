@@ -382,11 +382,11 @@ class InfluencersTest extends PHPUnit_Framework_TestCase
 
     /**
      * @group read-only
-     * @expectedException \UnexpectedValueException
+     * @expectedException Traackr\MissingParameterException
      */
     public function testLookupSocialInvalidPlatformParameter()
     {
-        Traackr\Influencers::lookupSocial('dchancogne', 'INVALID');
+        Traackr\Influencers::lookupSocial('dchancogne', '');
     }
 
     /**
@@ -784,12 +784,12 @@ class InfluencersTest extends PHPUnit_Framework_TestCase
 
 
         // Lookup By Email
-        $inf = Traackr\Influencers::search(array('keywords' => 'traackr', 'emails' => array('dchancogne@traackr.com', 'paul@traackr.com', 'paul@seedsforhope.org')));
+        $inf = Traackr\Influencers::search(array('keywords' => 'traackr', 'emails' => array('dchancogne@traackr.com', 'jdorfman@traackr.com')));
         $this->assertGreaterThan(0, $inf['influencers'], 'No results found');
         $this->assertCount(2, $inf['influencers'], 'Two results should have been found');
 
         // Lookup By Email String
-        $inf = Traackr\Influencers::search(array('keywords' => 'traackr', 'emails' => 'dchancogne@traackr.com,paul@traackr.com,paul@seedsforhope.org'));
+        $inf = Traackr\Influencers::search(array('keywords' => 'traackr', 'emails' => 'dchancogne@traackr.com,jdorfman@traackr.com'));
         $this->assertGreaterThan(0, $inf['influencers'], 'No results found');
         $this->assertCount(2, $inf['influencers'], 'Two results should have been found');
     }
@@ -843,7 +843,7 @@ class InfluencersTest extends PHPUnit_Framework_TestCase
                 'network' => 'twitter',
                 'filters' => [
                     [
-                        'code' => 'D02'
+                        'code' => 'GEN'
                     ]
                 ]
             ]),
@@ -880,7 +880,7 @@ class InfluencersTest extends PHPUnit_Framework_TestCase
                 'network' => 'ascii',
                 'filters' => [
                     [
-                        'code' => 'D02'
+                        'code' => 'GEN'
                     ]
                 ]
             ]),
