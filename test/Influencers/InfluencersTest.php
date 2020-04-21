@@ -382,11 +382,55 @@ class InfluencersTest extends PHPUnit_Framework_TestCase
 
     /**
      * @group read-only
-     * @expectedException \UnexpectedValueException
+     */
+    public function testLookupSocialTiktok()
+    {
+        $handle = 'mason_fulp';
+
+        $inf = Traackr\Influencers::lookupSocial($handle, 'TIKTOK');
+        // Check result is there
+        $this->assertArrayHasKey('influencer', $inf, 'No influencer found');
+        $this->assertArrayHasKey($handle, $inf['influencer'], 'Invalid influencer found');
+        // Check appropriate fields are present
+        $this->assertArrayHasKey('uid', $inf['influencer'][$handle], 'UID filed is missing');
+        $this->assertArrayHasKey('name', $inf['influencer'][$handle], 'Name field missing');
+        $this->assertArrayHasKey('description', $inf['influencer'][$handle], 'Description field missing');
+        $this->assertArrayHasKey('title', $inf['influencer'][$handle], 'Title field missing');
+        $this->assertArrayHasKey('location', $inf['influencer'][$handle], 'Location field missing');
+        $this->assertArrayHasKey('avatar', $inf['influencer'][$handle], 'Avatar field missing');
+        $this->assertArrayHasKey('reach', $inf['influencer'][$handle], 'Reach field missing');
+        $this->assertArrayHasKey('resonance', $inf['influencer'][$handle], 'Resonance field missing');
+        $this->assertArrayNotHasKey('channels', $inf['influencer'][$handle], 'Channels should not have be returned');
+        $this->assertArrayNotHasKey('tags', $inf['influencer'][$handle], 'Tags field missing');
+        // Check some values
+        $this->assertEquals('5c6d75287d804a02900102878879b595', $inf['influencer'][$handle]['uid'], 'Incorrect UID');
+        $this->assertEquals('dsada', $inf['influencer'][$handle]['name'], 'Incorrect name');
+
+        // NOTE
+        // Disable customer key so that 'show' does not return tags b/c lookupSocial doesn't currently
+        Traackr\TraackrApi::setCustomerKey('');
+        $inf = Traackr\Influencers::show('5c6d75287d804a02900102878879b595');
+        $insta = Traackr\Influencers::lookupSocial('mason_fulp', 'TIKTOK');
+        $this->assertJsonStringEqualsJsonString(
+            json_encode($inf['influencer']['5c6d75287d804a02900102878879b595']),
+            json_encode($insta['influencer']['mason_fulp'])
+        );
+
+        // Test based on Insta ID type parameter
+        $insta = Traackr\Influencers::lookupSocial('6532073363051937794', 'TIKTOK', 'USER_ID');
+        $this->assertJsonStringEqualsJsonString(
+            json_encode($inf['influencer']['5c6d75287d804a02900102878879b595']),
+            json_encode($insta['influencer']['6532073363051937794'])
+        );
+    }
+
+    /**
+     * @group read-only
+     * @expectedException Traackr\MissingParameterException
      */
     public function testLookupSocialInvalidPlatformParameter()
     {
-        Traackr\Influencers::lookupSocial('dchancogne', 'INVALID');
+        Traackr\Influencers::lookupSocial('dchancogne', '');
     }
 
     /**
@@ -784,12 +828,12 @@ class InfluencersTest extends PHPUnit_Framework_TestCase
 
 
         // Lookup By Email
-        $inf = Traackr\Influencers::search(array('keywords' => 'traackr', 'emails' => array('dchancogne@traackr.com', 'paul@traackr.com', 'paul@seedsforhope.org')));
+        $inf = Traackr\Influencers::search(array('keywords' => 'traackr', 'emails' => array('dchancogne@traackr.com', 'jdorfman@traackr.com')));
         $this->assertGreaterThan(0, $inf['influencers'], 'No results found');
         $this->assertCount(2, $inf['influencers'], 'Two results should have been found');
 
         // Lookup By Email String
-        $inf = Traackr\Influencers::search(array('keywords' => 'traackr', 'emails' => 'dchancogne@traackr.com,paul@traackr.com,paul@seedsforhope.org'));
+        $inf = Traackr\Influencers::search(array('keywords' => 'traackr', 'emails' => 'dchancogne@traackr.com,jdorfman@traackr.com'));
         $this->assertGreaterThan(0, $inf['influencers'], 'No results found');
         $this->assertCount(2, $inf['influencers'], 'Two results should have been found');
     }
@@ -843,7 +887,7 @@ class InfluencersTest extends PHPUnit_Framework_TestCase
                 'network' => 'twitter',
                 'filters' => [
                     [
-                        'code' => 'D02'
+                        'code' => 'GEN'
                     ]
                 ]
             ]),
@@ -880,7 +924,7 @@ class InfluencersTest extends PHPUnit_Framework_TestCase
                 'network' => 'ascii',
                 'filters' => [
                     [
-                        'code' => 'D02'
+                        'code' => 'GEN'
                     ]
                 ]
             ]),
