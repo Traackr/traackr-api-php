@@ -89,34 +89,6 @@ class Influencers extends TraackrApiObject
     }
 
     /**
-     * Lookup Influencer by a Twitter handle
-     *
-     * @param string $username
-     * @param string $type USERNAME | TWITTER_ID
-     * @return bool|mixed
-     * @throws MissingParameterException
-     * @throws \UnexpectedValueException
-     */
-    public static function lookupTwitter($username, $type = 'USERNAME')
-    {
-        if (empty($username)) {
-            throw new MissingParameterException("Missing username parameter");
-        }
-
-        if ('USERNAME' !== $type && 'TWITTER_ID' !== $type) {
-            throw new \UnexpectedValueException('Type parameter must be "USERNAME" or "TWITTER_ID".');
-        }
-
-        $inf = new Influencers();
-
-        $parameters = [
-            'type' => $type
-        ];
-
-        return $inf->get(TraackrApi::$apiBaseUrl . 'influencers/lookup/twitter/' . $username, $parameters);
-    }
-
-    /**
      * Add social account
      *
      * @param array $p
@@ -146,36 +118,6 @@ class Influencers extends TraackrApiObject
         }
 
         return $inf->post(TraackrApi::$apiBaseUrl . 'influencers/add/social', $p);
-    }
-
-    /**
-     * Add Twitter account
-     *
-     * @param array $p
-     * @return bool|mixed
-     * @throws MissingParameterException
-     */
-    public static function addTwitter($p = array())
-    {
-        $inf = new Influencers();
-
-        $p = $inf->addCustomerKey($p);
-        $inf->checkRequiredParams($p, array('customer_key'));
-
-        // Validate business requirements
-        if (empty($p['username']) && empty($p['twitter_id'])) {
-            throw new MissingParameterException("Either username or twitter_id must be present");
-        }
-        if (!empty($p['username']) && !empty($p['twitter_id'])) {
-            throw new MissingParameterException("Only one of username or twitter_id may be present");
-        }
-
-        // support multi params
-        if (!empty($p['tags'])) {
-            $p['tags'] = is_array($p['tags']) ? implode(',', $p['tags']) : $p['tags'];
-        }
-
-        return $inf->post(TraackrApi::$apiBaseUrl . 'influencers/add/twitter', $p);
     }
 
     /**
