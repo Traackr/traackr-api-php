@@ -33,6 +33,14 @@ abstract class TraackrApiObject
 
     public function __construct()
     {
+        $this->initCurl();
+    }
+
+    /**
+     * Initialize self::$curl with the base settings all request types use.
+     */
+    private function initCurl()
+    {
         // init cURL
         $this->curl = curl_init();
         // return value as a string
@@ -219,9 +227,7 @@ abstract class TraackrApiObject
 
     public function get($url, $params = [])
     {
-        // Ensure we do a GET call - W/o a set to 0 a CURL might be set for a POST
-        // call from a previous request
-        curl_setopt($this->curl, CURLOPT_POST, 0);
+        $this->initCurl();
         // Add API key parameter if not present
         $api_key = TraackrApi::getApiKey();
         if (!isset($params[PARAM_API_KEY]) && !empty($api_key)) {
@@ -246,6 +252,7 @@ abstract class TraackrApiObject
 
     public function post($url, $params = [])
     {
+        $this->initCurl();
         // POST call
         curl_setopt($this->curl, CURLOPT_POST, 1);
 
@@ -279,6 +286,7 @@ abstract class TraackrApiObject
     // Support for HTTP DELETE Methods
     public function delete($url, $params = [])
     {
+        $this->initCurl();
         // Build Parameters
         // Add API key parameter if not present
         $api_key = TraackrApi::getApiKey();
