@@ -28,7 +28,7 @@ abstract class TraackrApiObject
 
         // To Ensure the server sends back UTF-8 text
         'Accept-Charset: utf-8',
-        'Accept: text/plain'
+        'Accept: */*'
     ];
 
     public function __construct()
