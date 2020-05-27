@@ -22,19 +22,24 @@ abstract class TraackrApiObject
         //value under the covers)
         'Expect:',
 
-        // Sets request headers. This are important to be UTF-8 compliant
-        // To ensure that POST parameters (passed in the body) are UTF-8 encoded:
-        'Content-Type: application/x-www-form-urlencoded;charset=utf-8',
-
         // To Ensure the server sends back UTF-8 text
         'Accept-Charset: utf-8',
-        'Accept: text/plain'
+        'Accept: */*'
     ];
 
     public function __construct()
     {
         // init cURL
         $this->curl = curl_init();
+    }
+
+    /**
+     * Initialize self::$curl with the base settings all request types use.
+     */
+    private function initCurlOpts()
+    {
+        // clear any existing opts
+        curl_reset($this->curl);
         // return value as a string
         curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, true);
         // Set timeouts
@@ -117,13 +122,13 @@ abstract class TraackrApiObject
         return $params;
     }
 
-    private function call($decode)
+    private function call($decode, $contentTypeHeader)
     {
         // Prep headers
         curl_setopt(
             $this->curl,
             CURLOPT_HTTPHEADER,
-            array_merge($this->curl_headers, TraackrApi::getExtraHeaders())
+            array_merge($this->curl_headers, [$contentTypeHeader], TraackrApi::getExtraHeaders())
         );
 
         // Make the call!
@@ -219,9 +224,7 @@ abstract class TraackrApiObject
 
     public function get($url, $params = [])
     {
-        // Ensure we do a GET call - W/o a set to 0 a CURL might be set for a POST
-        // call from a previous request
-        curl_setopt($this->curl, CURLOPT_POST, 0);
+        $this->initCurlOpts();
         // Add API key parameter if not present
         $api_key = TraackrApi::getApiKey();
         if (!isset($params[PARAM_API_KEY]) && !empty($api_key)) {
@@ -241,11 +244,12 @@ abstract class TraackrApiObject
         $logger = TraackrAPI::getLogger();
         $logger->debug('Calling (GET): ' . $url);
 
-        return $this->call(!TraackrAPI::isJsonOutput());
+        return $this->call(!TraackrAPI::isJsonOutput(), 'Content-Type: application/json;charset=utf-8');
     }
 
     public function post($url, $params = [])
     {
+        $this->initCurlOpts();
         // POST call
         curl_setopt($this->curl, CURLOPT_POST, 1);
 
@@ -273,12 +277,13 @@ abstract class TraackrApiObject
         $logger = TraackrAPI::getLogger();
         $logger->debug('Calling (POST): ' . $url . ' [' . $http_param_query . ']');
 
-        return $this->call(!TraackrAPI::isJsonOutput());
+        return $this->call(!TraackrAPI::isJsonOutput(), 'Content-Type: application/x-www-form-urlencoded;charset=utf-8');
     }
 
     // Support for HTTP DELETE Methods
     public function delete($url, $params = [])
     {
+        $this->initCurlOpts();
         // Build Parameters
         // Add API key parameter if not present
         $api_key = TraackrApi::getApiKey();
@@ -306,6 +311,6 @@ abstract class TraackrApiObject
         $logger = TraackrAPI::getLogger();
         $logger->debug('Calling (DELETE): ' . $url);
 
-        return $this->call(!TraackrAPI::isJsonOutput());
+        return $this->call(!TraackrAPI::isJsonOutput(), 'Content-Type: application/json;charset=utf-8');
     }
 }
