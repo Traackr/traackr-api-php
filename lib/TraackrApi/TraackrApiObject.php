@@ -22,10 +22,6 @@ abstract class TraackrApiObject
         //value under the covers)
         'Expect:',
 
-        // Sets request headers. This are important to be UTF-8 compliant
-        // To ensure that POST parameters (passed in the body) are UTF-8 encoded:
-        'Content-Type: application/x-www-form-urlencoded;charset=utf-8',
-
         // To Ensure the server sends back UTF-8 text
         'Accept-Charset: utf-8',
         'Accept: */*'
@@ -126,13 +122,13 @@ abstract class TraackrApiObject
         return $params;
     }
 
-    private function call($decode)
+    private function call($decode, $contentTypeHeader)
     {
         // Prep headers
         curl_setopt(
             $this->curl,
             CURLOPT_HTTPHEADER,
-            array_merge($this->curl_headers, TraackrApi::getExtraHeaders())
+            array_merge($this->curl_headers, [$contentTypeHeader], TraackrApi::getExtraHeaders())
         );
 
         // Make the call!
@@ -248,7 +244,7 @@ abstract class TraackrApiObject
         $logger = TraackrAPI::getLogger();
         $logger->debug('Calling (GET): ' . $url);
 
-        return $this->call(!TraackrAPI::isJsonOutput());
+        return $this->call(!TraackrAPI::isJsonOutput(), 'Content-Type: application/json;charset=utf-8');
     }
 
     public function post($url, $params = [])
@@ -281,7 +277,7 @@ abstract class TraackrApiObject
         $logger = TraackrAPI::getLogger();
         $logger->debug('Calling (POST): ' . $url . ' [' . $http_param_query . ']');
 
-        return $this->call(!TraackrAPI::isJsonOutput());
+        return $this->call(!TraackrAPI::isJsonOutput(), 'Content-Type: application/x-www-form-urlencoded;charset=utf-8');
     }
 
     // Support for HTTP DELETE Methods
@@ -315,6 +311,6 @@ abstract class TraackrApiObject
         $logger = TraackrAPI::getLogger();
         $logger->debug('Calling (DELETE): ' . $url);
 
-        return $this->call(!TraackrAPI::isJsonOutput());
+        return $this->call(!TraackrAPI::isJsonOutput(), 'Content-Type: application/json;charset=utf-8');
     }
 }
