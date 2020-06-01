@@ -42,6 +42,25 @@ class AnalysisTest extends PHPUnit_Framework_TestCase {
 
    } // End function toplinksTest()
 
+    /**
+    * @group read-only
+    */
+    public function testKeywords() {
+        $json = array('keywords' => array(
+            array('label' => 'default',
+            'context' => 'POST',
+            'query_string' => 'hello world')));
+        $result = Traackr\Analysis::keywords($json);
+        $this->assertTrue($result['keywords']['default']['is_valid']);
+
+        $json = array('keywords' => array(
+            array('label' => 'default',
+            'context' => 'POST',
+            'query_string' => 'a')));
+        $result = Traackr\Analysis::keywords($json);
+        $this->assertFalse($result['keywords']['default']['is_valid']);
+    }
+
    /**
     * Tests that the same topLinks information is returned when looking up links for
     * influencers by tags or by influencer uids

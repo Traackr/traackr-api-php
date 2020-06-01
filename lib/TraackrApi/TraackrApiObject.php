@@ -247,7 +247,7 @@ abstract class TraackrApiObject
         return $this->call(!TraackrAPI::isJsonOutput(), 'Content-Type: application/json;charset=utf-8');
     }
 
-    public function post($url, $params = [])
+    public function post($url, $params = [], $isJson = false)
     {
         $this->initCurlOpts();
         // POST call
@@ -256,7 +256,7 @@ abstract class TraackrApiObject
         // Build Parameters
         // Add API key parameter if not present
         $api_key = TraackrApi::getApiKey();
-        if (!isset($params[PARAM_API_KEY]) && !empty($api_key)) {
+        if (!isset($params[PARAM_API_KEY]) && !empty($api_key) && !$isJson) {
             $params[PARAM_API_KEY] = $api_key;
         }
 
@@ -268,16 +268,21 @@ abstract class TraackrApiObject
         // Sets URL
         curl_setopt($this->curl, CURLOPT_URL, $url);
 
-        // Prepare params
-        $params = $this->prepareParameters($params);
-        // Sets params
-        $http_param_query = http_build_query($params);
+        if (!$isJson) {
+            // Prepare params
+            $params = $this->prepareParameters($params);
+            // Sets params
+            $http_param_query = http_build_query($params);
+        } else {
+            $http_param_query = json_encode($params);
+        }
         curl_setopt($this->curl, CURLOPT_POSTFIELDS, $http_param_query);
+
         // Make call
         $logger = TraackrAPI::getLogger();
         $logger->debug('Calling (POST): ' . $url . ' [' . $http_param_query . ']');
 
-        return $this->call(!TraackrAPI::isJsonOutput(), 'Content-Type: application/x-www-form-urlencoded;charset=utf-8');
+        return $this->call(!TraackrAPI::isJsonOutput(), $isJson ? 'Content-Type: application/json;charset=utf-8' : 'Content-Type: application/x-www-form-urlencoded;charset=utf-8');
     }
 
     // Support for HTTP DELETE Methods
