@@ -25,8 +25,6 @@ class Analysis extends TraackrApiObject {
     public static function keywords($p = array())
     {
         $analysis = new Analysis();
-        $p = $analysis->addCustomerKey($p);
-
         return $analysis->post(TraackrApi::$apiBaseUrl.'analysis/keywords', $p, true);
     }
 }
