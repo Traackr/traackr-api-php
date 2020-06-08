@@ -254,15 +254,11 @@ abstract class TraackrApiObject
         curl_setopt($this->curl, CURLOPT_POST, 1);
 
         // Build Parameters
-        // Add API key parameter if not present
+        // Add API key parameter if not present; API key always passed as a query
+        // string even for POST
         $api_key = TraackrApi::getApiKey();
-        if (!isset($params[PARAM_API_KEY]) && !empty($api_key) && !$isJson) {
-            $params[PARAM_API_KEY] = $api_key;
-        }
-
-        // API key always passed as a query string even for POST
-        if (!empty($params[PARAM_API_KEY])) {
-            $url .= '?' . PARAM_API_KEY . '=' . $params[PARAM_API_KEY];
+        if (!empty($api_key)) {
+            $url .= '?' . PARAM_API_KEY . '=' . $api_key;
         }
 
         // Sets URL
@@ -290,15 +286,11 @@ abstract class TraackrApiObject
     {
         $this->initCurlOpts();
         // Build Parameters
-        // Add API key parameter if not present
+        // Add API key parameter if not present; API key always passed as a query
+        // string even for DELETE
         $api_key = TraackrApi::getApiKey();
-        if (!isset($params[PARAM_API_KEY]) && !empty($api_key)) {
-            $params[PARAM_API_KEY] = $api_key;
-        }
-
-        // API key always passed as a query string even for POST
-        if (!empty($params[PARAM_API_KEY])) {
-            $url .= '?' . PARAM_API_KEY . '=' . $params[PARAM_API_KEY];
+        if (!empty($api_key)) {
+            $url .= '?' . PARAM_API_KEY . '=' . $api_key;
         }
 
         // Sets URL
