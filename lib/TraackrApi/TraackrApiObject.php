@@ -122,7 +122,7 @@ abstract class TraackrApiObject
         return $params;
     }
 
-    private function call($decode, $contentTypeHeader)
+    private function call($decode, $contentTypeHeader, $chunkFunction = false)
     {
         // Prep headers
         curl_setopt(
@@ -130,6 +130,10 @@ abstract class TraackrApiObject
             CURLOPT_HTTPHEADER,
             array_merge($this->curl_headers, [$contentTypeHeader], TraackrApi::getExtraHeaders())
         );
+
+        if ($chunkFunction) {
+            curl_setopt($this->curl, CURLOPT_WRITEFUNCTION, $chunkFunction);
+        }
 
         // Make the call!
         $curl_exec = curl_exec($this->curl);
@@ -247,7 +251,7 @@ abstract class TraackrApiObject
         return $this->call(!TraackrAPI::isJsonOutput(), 'Content-Type: application/json;charset=utf-8');
     }
 
-    public function post($url, $params = [], $isJson = false)
+    public function post($url, $params = [], $isJson = false, $chunkFunction = false)
     {
         $this->initCurlOpts();
         // POST call
@@ -278,7 +282,9 @@ abstract class TraackrApiObject
         $logger = TraackrAPI::getLogger();
         $logger->debug('Calling (POST): ' . $url . ' [' . $http_param_query . ']');
 
-        return $this->call(!TraackrAPI::isJsonOutput(), $isJson ? 'Content-Type: application/json;charset=utf-8' : 'Content-Type: application/x-www-form-urlencoded;charset=utf-8');
+        $contentTypeHeader = $isJson ? 'Content-Type: application/json;charset=utf-8' : 'Content-Type: application/x-www-form-urlencoded;charset=utf-8';
+
+        return $this->call(!TraackrAPI::isJsonOutput(), $contentTypeHeader, $chunkFunction);
     }
 
     // Support for HTTP DELETE Methods
