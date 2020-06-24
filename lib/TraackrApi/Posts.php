@@ -148,7 +148,7 @@ class Posts extends TraackrApiObject {
       'enable_monthly_aggregation' => false,
       'enable_weekly_aggregation' => false,
       'enable_daily_aggregation' => false,
-      'count' => 100000, 'sort' => 'date'), $chunkFunction ) {
+      'count' => 100000, 'sort' => 'date'), $chunkFunction = false ) {
 
       $posts = new Posts();
       $p = $posts->addCustomerKey($p);
