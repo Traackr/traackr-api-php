@@ -65,12 +65,6 @@ class Posts extends TraackrApiObject {
       'lang' => 'all',
       'include_keyword_matches' => false,
       'include_entities' => false,
-      'enable_keyword_aggregation' => false,
-      'enable_influencer_aggregation' => false,
-      'enable_domain_aggregation' => false,
-      'enable_monthly_aggregation' => false,
-      'enable_weekly_aggregation' => false,
-      'enable_daily_aggregation' => false,
       'count' => 25, 'page' => 0, 'sort' => 'date') ) {
 
       $posts = new Posts();
@@ -81,12 +75,6 @@ class Posts extends TraackrApiObject {
       $p['is_tag_prefix'] = $posts->convertBool($p, 'is_tag_prefix');
       $p['include_keyword_matches'] = $posts->convertBool($p, 'include_keyword_matches');
       $p['include_entities'] = $posts->convertBool($p, 'include_entities');
-      $p['enable_keyword_aggregation'] = $posts->convertBool($p, 'enable_keyword_aggregation');
-      $p['enable_influencer_aggregation'] = $posts->convertBool($p, 'enable_influencer_aggregation');
-      $p['enable_domain_aggregation'] = $posts->convertBool($p, 'enable_domain_aggregation');
-      $p['enable_monthly_aggregation'] = $posts->convertBool($p, 'enable_monthly_aggregation');
-      $p['enable_weekly_aggregation'] = $posts->convertBool($p, 'enable_weekly_aggregation');
-      $p['enable_daily_aggregation'] = $posts->convertBool($p, 'enable_daily_aggregation');
       $p['include_brand_content'] = $posts->convertBool($p, 'include_brand_content');
       $p['include_shared_content'] = $posts->convertBool($p, 'include_shared_content');
 

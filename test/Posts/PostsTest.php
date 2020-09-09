@@ -40,13 +40,13 @@ class PostsTest extends PHPUnit_Framework_TestCase {
    /**
     * Having a false keyword match param, should still return
     * valid results, even with keyword aggregation turned on
-    * @group read only
+    * @group read-only
     */
    public function testSearchWithKeywordAggregations() {
       $posts = Traackr\Posts::search(array(
          'keywords' => array('traackr', '"content marketing"'),
          'include_keyword_matches' => false,
-         'enable_keyword_aggregation' => true
+         'aggregations' => json_encode(['agg_keyword' => true])
       ));
       $this->assertGreaterThan(0, $posts['posts'], 'No results found');
    }
