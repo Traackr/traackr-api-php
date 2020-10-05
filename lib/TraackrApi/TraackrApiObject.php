@@ -38,7 +38,9 @@ abstract class TraackrApiObject
     {
         if ($concurrent) {
             $this->concurrent = true;
-            $this->guzzleClient = new Client();
+            $this->guzzleClient = new Client([
+                'verify' => self::$sslVerifyPeer
+            ]);
         } else {
             // init cURL
             $this->curl = curl_init();
