@@ -293,19 +293,20 @@ abstract class TraackrApiObject
 
     public function getConcurrent(array $requests)
     {
+        $logger = TraackrAPI::getLogger();
         // build requests
         $guzzleOptions = $this->getGuzzleOpts();
-        $guzzleRequests = function ($requests) use ($guzzleOptions) {
+        $guzzleRequests = function ($requests) use ($guzzleOptions, $logger) {
             foreach ($requests as $request) {
                 $options = $guzzleOptions;
                 $options['query'] = $request['params'];
                 $options['headers']['Content-Type'] = 'application/json;charset=utf-8';
+                $logger->debug('Calling (GET)[concurrent]: ' . $request['url'] . ' with options: ' . print_r($options, true));
                 yield new Request('GET', $request['url'], $options);
             }
         };
 
         $results = [];
-        $logger = TraackrAPI::getLogger();
         // queue up requests
         $pool = new Pool($this->guzzleClient, $guzzleRequests($requests), [
             'concurrency' => $this->maxConcurrentRequests,
