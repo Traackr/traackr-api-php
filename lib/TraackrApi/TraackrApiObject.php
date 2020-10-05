@@ -299,7 +299,14 @@ abstract class TraackrApiObject
         $guzzleRequests = function ($requests) use ($guzzleOptions, $logger) {
             foreach ($requests as $request) {
                 $options = $guzzleOptions;
+                // Add API key parameter if not present
+                $api_key = TraackrApi::getApiKey();
+                if (!isset($request['params'][PARAM_API_KEY]) && !empty($api_key)) {
+                    $request['params'][PARAM_API_KEY] = $api_key;
+                }
+                // set query string based on parameters
                 $options['query'] = $this->prepareParameters($request['params']);
+                // set content-type header
                 $options['headers']['Content-Type'] = 'application/json;charset=utf-8';
                 $logger->debug('Calling (GET)[concurrent]: ' . $request['url'] . ' with options: ' . print_r($options, true));
                 yield new Request('GET', $request['url'], $options);
