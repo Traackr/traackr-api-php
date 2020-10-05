@@ -317,7 +317,7 @@ abstract class TraackrApiObject
         // queue up requests
         $pool = new Pool($this->guzzleClient, $guzzleRequests($requests), [
             'concurrency' => $this->maxConcurrentRequests,
-            'fulfilled' => function (Response $response, $index) use ($logger, $results, $requests) {
+            'fulfilled' => function (Response $response, $index) use ($logger, &$results, $requests) {
                 $httpCode = $response->getStatusCode();
                 if ($httpCode !== 200) {
                     $this->handleErrorResponse($logger, $requests[$index]['url'], $httpCode, $response->getBody());
