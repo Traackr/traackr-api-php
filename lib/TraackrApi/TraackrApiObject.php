@@ -48,7 +48,7 @@ abstract class TraackrApiObject
     private function getGuzzleHeaders()
     {
         $headers = [];
-        foreach (self::$curl_headers as $header) {
+        foreach ($this->curl_headers as $header) {
             $parts = explode(':', $header);
             $property = $parts[0];
             $value = '';
