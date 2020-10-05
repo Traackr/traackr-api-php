@@ -12,7 +12,6 @@ abstract class TraackrApiObject
     public static $timeout = 10;
     public static $sslVerifyPeer = true;
 
-    private $concurrent = false;
     private $maxConcurrentRequests = 10;
     private $curl;
     private $guzzleClient;
@@ -37,8 +36,9 @@ abstract class TraackrApiObject
     public function __construct($concurrent = false)
     {
         if ($concurrent) {
-            $this->concurrent = true;
             $this->guzzleClient = new Client([
+                'connect_timeout' => self::$connectionTimeout,
+                'timeout' => self::$timeout,
                 'verify' => self::$sslVerifyPeer
             ]);
         } else {
@@ -61,16 +61,6 @@ abstract class TraackrApiObject
         }
         $headers['Accept-Encoding'] = 'gzip;q=1.0, deflate;q=0.5, identity;q=0.1';
         return $headers;
-    }
-
-    private function getGuzzleOpts()
-    {
-        $options = [
-            'connect_timeout' => self::$connectionTimeout,
-            'timeout' => self::$timeout,
-            'headers' => $this->getGuzzleHeaders()
-        ];
-        return $options;
     }
 
     /**
@@ -295,21 +285,20 @@ abstract class TraackrApiObject
     {
         $logger = TraackrAPI::getLogger();
         // build requests
-        $guzzleOptions = $this->getGuzzleOpts();
-        $guzzleRequests = function ($requests) use ($guzzleOptions, $logger) {
+        $headers = $this->getGuzzleHeaders();
+        $headers['Content-Type'] = 'application/json;charset=utf-8';
+        $guzzleRequests = function ($requests) use ($headers, $logger) {
             foreach ($requests as $request) {
-                $options = $guzzleOptions;
+                $params = $this->prepareParameters($request['params']);
                 // Add API key parameter if not present
                 $api_key = TraackrApi::getApiKey();
-                if (!isset($request['params'][PARAM_API_KEY]) && !empty($api_key)) {
-                    $request['params'][PARAM_API_KEY] = $api_key;
+                if (!isset($params[PARAM_API_KEY]) && !empty($api_key)) {
+                    $params[PARAM_API_KEY] = $api_key;
                 }
-                // set query string based on parameters
-                $options['query'] = $this->prepareParameters($request['params']);
-                // set content-type header
-                $options['headers']['Content-Type'] = 'application/json;charset=utf-8';
-                $logger->debug('Calling (GET)[concurrent]: ' . $request['url'] . ' with options: ' . print_r($options, true));
-                yield new Request('GET', $request['url'], $options);
+                $queryString = http_build_query($params);
+                $url = $request['url'] . '?' . $queryString;
+                $logger->debug('Calling (GET)[concurrent]: ' . $url);
+                yield new Request('GET', $url, $headers);
             }
         };
 
