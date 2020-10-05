@@ -299,7 +299,7 @@ abstract class TraackrApiObject
         $guzzleRequests = function ($requests) use ($guzzleOptions, $logger) {
             foreach ($requests as $request) {
                 $options = $guzzleOptions;
-                $options['query'] = $request['params'];
+                $options['query'] = $this->prepareParameters($request['params']);
                 $options['headers']['Content-Type'] = 'application/json;charset=utf-8';
                 $logger->debug('Calling (GET)[concurrent]: ' . $request['url'] . ' with options: ' . print_r($options, true));
                 yield new Request('GET', $request['url'], $options);
