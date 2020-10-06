@@ -11,8 +11,8 @@ abstract class TraackrApiObject
     public static $connectionTimeout = 10;
     public static $timeout = 10;
     public static $sslVerifyPeer = true;
+    public static $maxConcurrentRequests = 5;
 
-    private $maxConcurrentRequests = 5;
     private $curl;
     private $guzzleClient;
 
@@ -305,7 +305,7 @@ abstract class TraackrApiObject
         $results = [];
         // queue up requests
         $pool = new Pool($this->guzzleClient, $guzzleRequests($requests), [
-            'concurrency' => $this->maxConcurrentRequests,
+            'concurrency' => self::$maxConcurrentRequests,
             'fulfilled' => function (Response $response, $index) use ($logger, &$results, $requests) {
                 $httpCode = $response->getStatusCode();
                 if ($httpCode !== 200) {
