@@ -1,14 +1,24 @@
 <?php
-
 namespace Traackr;
+use GuzzleHttp\Client;
+use GuzzleHttp\Handler\CurlHandler;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Pool;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Psr7\Response;
 
 abstract class TraackrApiObject
 {
     public static $connectionTimeout = 10;
     public static $timeout = 10;
     public static $sslVerifyPeer = true;
+    public static $maxConcurrentRequests = 10;
+    public static $maxRetries = 3;
 
     private $curl;
+    private $guzzleClient;
+    private $logger;
 
     // Headers passed with each request
     private $curl_headers = [
@@ -27,10 +37,64 @@ abstract class TraackrApiObject
         'Accept: */*'
     ];
 
-    public function __construct()
+    public function __construct($concurrent = false)
     {
-        // init cURL
-        $this->curl = curl_init();
+        $this->logger = TraackrAPI::getLogger();
+        if ($concurrent) {
+            $stack = HandlerStack::create(new CurlHandler());
+            $stack->push(\GuzzleHttp\Middleware::retry($this->createGuzzleRetryHandler()));
+            $this->guzzleClient = new Client([
+                'connect_timeout' => self::$connectionTimeout,
+                'timeout' => self::$timeout,
+                'verify' => self::$sslVerifyPeer,
+                'handler' => $stack
+            ]);
+        } else {
+            // init cURL
+            $this->curl = curl_init();
+        }
+    }
+
+    private function createGuzzleRetryHandler()
+    {
+        return function (
+            $retries,
+            Request $request,
+            Response $response = null,
+            RequestException $exception = null
+        ) {
+            if ($retries >= self::$maxRetries) {
+                return false;
+            }
+            if ($response->getStatusCode() != 500) {
+                return false;
+            }
+            $this->logger->debug(sprintf(
+                'Retrying %s %s %s/%s, %s',
+                $request->getMethod(),
+                $request->getUri(),
+                $retries + 1,
+                self::$maxRetries,
+                $response ? 'status code: ' . $response->getStatusCode() : $exception->getMessage()
+            ), [$request->getHeader('Host')[0]]);
+            return true;
+        };
+    }
+
+    private function getGuzzleHeaders()
+    {
+        $headers = [];
+        foreach ($this->curl_headers as $header) {
+            $parts = explode(':', $header);
+            $property = $parts[0];
+            $value = '';
+            if (!empty($parts[1])) {
+                $value = trim($parts[1]);
+            }
+            $headers[$property] = $value;
+        }
+        $headers['Accept-Encoding'] = 'gzip;q=1.0, deflate;q=0.5, identity;q=0.1';
+        return $headers;
     }
 
     /**
@@ -122,6 +186,62 @@ abstract class TraackrApiObject
         return $params;
     }
 
+    private function handleErrorResponse($url, $httpCode, $body)
+    {
+        if ($httpCode == '400') {
+            // Let's try to see if it's a bad customer key
+            if ($body === 'Customer key not found') {
+                $message = 'Invalid Customer Key (HTTP 400)';
+
+                $this->logger->error($message);
+
+                throw new InvalidCustomerKeyException(
+                    $message . ': ' . $body,
+                    $httpCode
+                );
+            }
+
+            $message = 'Missing or Invalid argument/parameter (HTTP 400)';
+
+            $this->logger->error($message);
+
+            throw new MissingParameterException(
+                $message . ': ' . $body,
+                $httpCode
+            );
+        }
+
+        if ($httpCode == '403') {
+            $message = 'Invalid API key (HTTP 403)';
+            $this->logger->error($message);
+
+            throw new InvalidApiKeyException(
+                $message . ': ' . $body,
+                $httpCode
+            );
+        }
+
+        if ($httpCode == '404') {
+            $message = 'API resource not found (HTTP 404)';
+
+            $this->logger->error($message);
+
+            throw new NotFoundException(
+                $message . ': ' . $url,
+                $httpCode
+            );
+        }
+
+        $message = 'API HTTP Error (HTTP ' . $httpCode . ')';
+
+        $this->logger->error($message);
+
+        throw new TraackrApiException(
+            $message . ': ' . $body,
+            $httpCode
+        );
+    }
+
     private function call($decode, $contentTypeHeader)
     {
         // Prep headers
@@ -140,7 +260,7 @@ abstract class TraackrApiObject
             $info = curl_getinfo($this->curl);
             $message = 'API call failed (' . $info['url'] . '): ' . curl_error($this->curl);
 
-            $logger->error($message);
+            $this->logger->error($message);
 
             throw new TraackrApiException($message);
         }
@@ -148,68 +268,16 @@ abstract class TraackrApiObject
         if (null === $curl_exec) {
             $message = 'API call failed. Response was null.';
 
-            $logger->error($message);
+            $this->logger->error($message);
 
             throw new TraackrApiException($message);
         }
 
-        $httpcode = curl_getinfo($this->curl, CURLINFO_HTTP_CODE);
+        $httpCode = curl_getinfo($this->curl, CURLINFO_HTTP_CODE);
 
-        if ($httpcode != '200') {
+        if ($httpCode != '200') {
             $info = curl_getinfo($this->curl);
-
-            if ($httpcode == '400') {
-                // Let's try to see if it's a bad customer key
-                if ($curl_exec === 'Customer key not found') {
-                    $message = 'Invalid Customer Key (HTTP 400)';
-
-                    $logger->error($message);
-
-                    throw new InvalidCustomerKeyException(
-                        $message . ': ' . $curl_exec,
-                        $httpcode
-                    );
-                }
-
-                $message = 'Missing or Invalid argument/parameter (HTTP 400)';
-
-                $logger->error($message);
-
-                throw new MissingParameterException(
-                    $message . ': ' . $curl_exec,
-                    $httpcode
-                );
-            }
-
-            if ($httpcode == '403') {
-                $message = 'Invalid API key (HTTP 403)';
-                $logger->error($message);
-
-                throw new InvalidApiKeyException(
-                    $message . ': ' . $curl_exec,
-                    $httpcode
-                );
-            }
-
-            if ($httpcode == '404') {
-                $message = 'API resource not found (HTTP 404)';
-
-                $logger->error($message);
-
-                throw new NotFoundException(
-                    $message . ': ' . $info['url'],
-                    $httpcode
-                );
-            }
-
-            $message = 'API HTTP Error (HTTP ' . $httpcode . ')';
-
-            $logger->error($message);
-
-            throw new TraackrApiException(
-                $message . ': ' . $curl_exec,
-                $httpcode
-            );
+            $this->handleErrorResponse($info['url'], $httpCode, $curl_exec);
         }
 
         // API MUST return UTF8
@@ -241,10 +309,64 @@ abstract class TraackrApiObject
         // Sets URL
         curl_setopt($this->curl, CURLOPT_URL, $url);
         // Make call
-        $logger = TraackrAPI::getLogger();
-        $logger->debug('Calling (GET): ' . $url);
+        $this->logger->debug('Calling (GET): ' . $url);
 
         return $this->call(!TraackrAPI::isJsonOutput(), 'Content-Type: application/json;charset=utf-8');
+    }
+
+    public function getConcurrent(array $requests)
+    {
+        // build requests
+        $headers = $this->getGuzzleHeaders();
+        $headers['Content-Type'] = 'application/json;charset=utf-8';
+        $guzzleRequests = function ($requests) use ($headers) {
+            foreach ($requests as $request) {
+                $params = $this->prepareParameters($request['params']);
+                // Add API key parameter if not present
+                $api_key = TraackrApi::getApiKey();
+                if (!isset($params[PARAM_API_KEY]) && !empty($api_key)) {
+                    $params[PARAM_API_KEY] = $api_key;
+                }
+                $queryString = http_build_query($params);
+                $url = $request['url'] . '?' . $queryString;
+                $this->logger->debug('Calling (GET)[concurrent]: ' . $url);
+                yield new Request('GET', $url, $headers);
+            }
+        };
+
+        $results = [];
+        // queue up requests
+        $pool = new Pool($this->guzzleClient, $guzzleRequests($requests), [
+            'concurrency' => self::$maxConcurrentRequests,
+            'fulfilled' => function (Response $response, $index) use (&$results, $requests) {
+                $httpCode = $response->getStatusCode();
+                if ($httpCode !== 200) {
+                    $this->handleErrorResponse($requests[$index]['url'], $httpCode, $response->getBody());
+                }
+                if (!TraackrAPI::isJsonOutput()) {
+                    $rez = json_decode($response->getBody(), true);
+                } else {
+                    $rez = $response->getBody();
+                }
+                $results[] = null === $rez ? false : $rez;
+            },
+            'rejected' => function (RequestException $e) {
+                // TODO: give consumer an option to
+                // continue with some failed requests?
+                $url = $e->getRequest()->getUri();
+                $message = 'API call failed (' . $url . '): ' . $e->getMessage();
+                $this->logger->error($message);
+                throw new TraackrApiException($message);
+            },
+        ]);
+
+        // Initiate the transfers and create a promise
+        $promise = $pool->promise();
+
+        // Force the pool of requests to complete.
+        $promise->wait();
+
+        return $results;
     }
 
     public function post($url, $params = [], $isJson = false)
@@ -275,8 +397,7 @@ abstract class TraackrApiObject
         curl_setopt($this->curl, CURLOPT_POSTFIELDS, $http_param_query);
 
         // Make call
-        $logger = TraackrAPI::getLogger();
-        $logger->debug('Calling (POST): ' . $url . ' [' . $http_param_query . ']');
+        $this->logger->debug('Calling (POST): ' . $url . ' [' . $http_param_query . ']');
 
         return $this->call(!TraackrAPI::isJsonOutput(), $isJson ? 'Content-Type: application/json;charset=utf-8' : 'Content-Type: application/x-www-form-urlencoded;charset=utf-8');
     }
@@ -305,8 +426,7 @@ abstract class TraackrApiObject
         // Set Custom Request for DELETE
         curl_setopt($this->curl, CURLOPT_CUSTOMREQUEST, 'DELETE');
         // Make call
-        $logger = TraackrAPI::getLogger();
-        $logger->debug('Calling (DELETE): ' . $url);
+        $this->logger->debug('Calling (DELETE): ' . $url);
 
         return $this->call(!TraackrAPI::isJsonOutput(), 'Content-Type: application/json;charset=utf-8');
     }

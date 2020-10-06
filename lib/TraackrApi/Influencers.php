@@ -7,7 +7,7 @@ class Influencers extends TraackrApiObject
     /**
      * Get an influencer's data
      *
-     * @param string $uid
+     * @param string|array $uid
      * @param array $p
      * @return bool|mixed
      * @throws MissingParameterException
@@ -18,8 +18,21 @@ class Influencers extends TraackrApiObject
             throw new MissingParameterException("Missing Influencer UID parameter");
         }
 
+        $concurrent = false;
+        if (
+            !empty($p['with_audience'])
+            && $p['with_audience'] === true
+            && is_array($uid)
+            && count($uid) > 1
+        ) {
+            // we need to use concurrent requests
+            // to fetch result since `show` with audience
+            // only supports 1 influencer UID
+            $concurrent = true;
+        }
+
         // API Object
-        $inf = new Influencers();
+        $inf = new Influencers($concurrent);
 
         //Sanitize default values
         $p['with_channels'] = $inf->convertBool($p, 'with_channels');
@@ -27,6 +40,27 @@ class Influencers extends TraackrApiObject
         // Add customer key + check required params
         $p = $inf->addCustomerKey($p);
         $inf->checkRequiredParams($p, array('with_channels'));
+
+        if ($concurrent) {
+            $requests = array_map(function($item) use ($p) {
+                return [
+                    'url' => TraackrApi::$apiBaseUrl . 'influencers/show/' . $item,
+                    'params' => $p
+                ];
+            }, $uid);
+            $results = $inf->getConcurrent($requests);
+            // merge influencer results
+            $mergedInfResults = [];
+            foreach ($results as $result) {
+                foreach ($result['influencer'] as $key => $inf) {
+                    $mergedInfResults[$key] = $inf;
+                }
+            }
+            return [
+                'influencer' => $mergedInfResults
+            ];
+        }
+
         // support for multi params
         $uid = is_array($uid) ? implode(',', $uid) : $uid;
 
