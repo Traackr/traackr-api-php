@@ -12,7 +12,7 @@ abstract class TraackrApiObject
     public static $timeout = 10;
     public static $sslVerifyPeer = true;
 
-    private $maxConcurrentRequests = 10;
+    private $maxConcurrentRequests = 5;
     private $curl;
     private $guzzleClient;
 
