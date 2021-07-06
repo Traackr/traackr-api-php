@@ -117,7 +117,7 @@ class AccountMgmtTest extends PHPUnit_Framework_TestCase {
       catch (Traackr\TraackrApiException $e) {
          $this->assertEquals($e->getMessage(), 'Invalid Customer Key (HTTP 400): Customer key not found');
          $this->assertEquals($e->getCode(), 400);
-      }      
+      }
    } // End function testCreateEditViewKey()
 
    /**
@@ -132,10 +132,7 @@ class AccountMgmtTest extends PHPUnit_Framework_TestCase {
 
       // Delete Customer Key
       $delete_response = Traackr\AccountMgmt::customerkeyDelete(array('customer_key' => $customer_key));
-      $this->assertNotEmpty($delete_response);
-      $this->assertNotEmpty($delete_response['status']);
-      $status = $delete_response['status']; 
-      $this->assertEquals($status, 'ok');   
+      $this->assertEmpty($delete_response); // delete now returns empty-string (and no exception) upon success
 
       try {
          Traackr\AccountMgmt::customerkeyDelete(array('customer_key' => $customer_key));
@@ -143,7 +140,7 @@ class AccountMgmtTest extends PHPUnit_Framework_TestCase {
       catch (Traackr\TraackrApiException $e) {
          $this->assertEquals($e->getMessage(), 'Invalid Customer Key (HTTP 400): Customer key not found');
          $this->assertEquals($e->getCode(), 400);
-      }      
+      }
    } // End function testCreateAndDeleteKey()
 
 } // End class AccountMgmt

@@ -308,6 +308,6 @@ abstract class TraackrApiObject
         $logger = TraackrAPI::getLogger();
         $logger->debug('Calling (DELETE): ' . $url);
 
-        return $this->call(!TraackrAPI::isJsonOutput(), 'Content-Type: application/json;charset=utf-8');
+        return $this->call(false, 'Content-Type: application/x-www-form-urlencoded;charset=utf-8');
     }
 }
