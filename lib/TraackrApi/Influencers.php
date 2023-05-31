@@ -347,8 +347,15 @@ class Influencers extends TraackrApiObject
         } catch (MissingParameterException $e) {
         }
 
-        if (!$hasContentCriteria && !$hasAudienceCriteria) {
-            throw new MissingParameterException('Missing parameter: must provide keywords or audience parameter');
+        $hasSocialDataSearchCriteria = false;
+        try {
+            $inf->checkRequiredParams($p, ['social_data_audience_search_criteria']);
+            $hasSocialDataSearchCriteria = true;
+        } catch (MissingParameterException $e) {
+        }
+
+        if (!$hasContentCriteria && !$hasAudienceCriteria && !$hasSocialDataSearchCriteria) {
+            throw new MissingParameterException('Missing parameter: must provide keywords, audience, or social data search parameter');
         }
 
         // support for multi params
