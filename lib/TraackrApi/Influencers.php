@@ -20,17 +20,16 @@ class Influencers extends TraackrApiObject
 
         // API Object
         $inf = new Influencers();
-
         //Sanitize default values
         $p['with_channels'] = $inf->convertBool($p, 'with_channels');
-
+        // support for multi params
+        $uid = is_array($uid) ? implode(',', $uid) : $uid;
+        $p['uids'] = $uid;
         // Add customer key + check required params
         $p = $inf->addCustomerKey($p);
         $inf->checkRequiredParams($p, array('with_channels'));
-        // support for multi params
-        $uid = is_array($uid) ? implode(',', $uid) : $uid;
 
-        return $inf->get(TraackrApi::$apiBaseUrl . 'influencers/show/' . $uid, $p);
+        return $inf->post(TraackrApi::$apiBaseUrl . 'influencers/show/', $p);
     }
 
     /**
