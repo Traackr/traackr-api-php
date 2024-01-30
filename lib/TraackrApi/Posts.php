@@ -85,7 +85,6 @@ class Posts extends TraackrApiObject {
       $p['include_shared_content'] = $posts->convertBool($p, 'include_shared_content');
       $p['force_vit_legacy'] = $posts->convertBool($p, 'force_vit_legacy');
 
-
       // support for multi params
       $p['keywords'] = is_array($p['keywords']) ?
          implode(',', $p['keywords']) : $p['keywords'];
