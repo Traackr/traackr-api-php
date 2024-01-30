@@ -8,7 +8,9 @@ class Posts extends TraackrApiObject {
       'is_tag_prefix' => false,
       'lang' => 'all',
       'include_entities' => false,
-      'count' => 25, 'page' => 0) ) {
+      'count' => 25,
+      'page' => 0,
+      'force_vit_legacy' => true) ) {
 
       $posts = new Posts();
       $p = $posts->addCustomerKey($p);
@@ -18,6 +20,7 @@ class Posts extends TraackrApiObject {
       $p['include_entities'] = $posts->convertBool($p, 'include_entities');
       $p['include_brand_content'] = $posts->convertBool($p, 'include_brand_content');
       $p['include_shared_content'] = $posts->convertBool($p, 'include_shared_content');
+      $p['force_vit_legacy'] = $posts->convertBool($p, 'force_vit_legacy');
 
       // support for multi params
       if ( isset($p['influencers']) ) {
@@ -65,7 +68,10 @@ class Posts extends TraackrApiObject {
       'lang' => 'all',
       'include_keyword_matches' => false,
       'include_entities' => false,
-      'count' => 25, 'page' => 0, 'sort' => 'date') ) {
+      'count' => 25,
+      'page' => 0,
+      'sort' => 'date',
+      'force_vit_legacy' => true) ) {
 
       $posts = new Posts();
       $p = $posts->addCustomerKey($p);
@@ -77,6 +83,8 @@ class Posts extends TraackrApiObject {
       $p['include_entities'] = $posts->convertBool($p, 'include_entities');
       $p['include_brand_content'] = $posts->convertBool($p, 'include_brand_content');
       $p['include_shared_content'] = $posts->convertBool($p, 'include_shared_content');
+      $p['force_vit_legacy'] = $posts->convertBool($p, 'force_vit_legacy');
+
 
       // support for multi params
       $p['keywords'] = is_array($p['keywords']) ?
