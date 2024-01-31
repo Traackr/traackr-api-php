@@ -9,8 +9,7 @@ class Posts extends TraackrApiObject {
       'lang' => 'all',
       'include_entities' => false,
       'count' => 25,
-      'page' => 0,
-      'force_vit_legacy' => true) ) {
+      'page' => 0) ) {
 
       $posts = new Posts();
       $p = $posts->addCustomerKey($p);
@@ -70,8 +69,7 @@ class Posts extends TraackrApiObject {
       'include_entities' => false,
       'count' => 25,
       'page' => 0,
-      'sort' => 'date',
-      'force_vit_legacy' => true) ) {
+      'sort' => 'date') ) {
 
       $posts = new Posts();
       $p = $posts->addCustomerKey($p);
