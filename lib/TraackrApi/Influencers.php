@@ -277,7 +277,7 @@ class Influencers extends TraackrApiObject
         $p['enable_country_aggregation'] = $inf->convertBool($p, 'enable_country_aggregation');
         $p['enable_audience_aggregation'] = $inf->convertBool($p, 'enable_audience_aggregation');
         $p['enable_uids_aggregation'] = $inf->convertBool($p, 'enable_uids_aggregation');
-        $p['force_vit_legacy'] = $posts->convertBool($p, 'force_vit_legacy');
+        $p['force_vit_legacy'] = $inf->convertBool($p, 'force_vit_legacy');
 
         $p = $inf->addCustomerKey($p);
 
@@ -329,7 +329,7 @@ class Influencers extends TraackrApiObject
         $p['enable_audience_aggregation'] = $inf->convertBool($p, 'enable_audience_aggregation');
         $p['enable_country_aggregation'] = $inf->convertBool($p, 'enable_country_aggregation');
         $p['enable_uids_aggregation'] = $inf->convertBool($p, 'enable_uids_aggregation');
-        $p['force_vit_legacy'] = $posts->convertBool($p, 'force_vit_legacy');
+        $p['force_vit_legacy'] = $inf->convertBool($p, 'force_vit_legacy');
 
 
         $p = $inf->addCustomerKey($p);
