@@ -19,7 +19,7 @@ class Posts extends TraackrApiObject {
       $p['include_entities'] = $posts->convertBool($p, 'include_entities');
       $p['include_brand_content'] = $posts->convertBool($p, 'include_brand_content');
       $p['include_shared_content'] = $posts->convertBool($p, 'include_shared_content');
-      $p['force_vit_legacy'] = $posts->convertBool($p, 'force_vit_legacy');
+      $p['use_alternate_vit'] = $posts->convertBool($p, 'use_alternate_vit');
 
       // support for multi params
       if ( isset($p['influencers']) ) {
@@ -81,7 +81,7 @@ class Posts extends TraackrApiObject {
       $p['include_entities'] = $posts->convertBool($p, 'include_entities');
       $p['include_brand_content'] = $posts->convertBool($p, 'include_brand_content');
       $p['include_shared_content'] = $posts->convertBool($p, 'include_shared_content');
-      $p['force_vit_legacy'] = $posts->convertBool($p, 'force_vit_legacy');
+      $p['use_alternate_vit'] = $posts->convertBool($p, 'use_alternate_vit');
 
       // support for multi params
       $p['keywords'] = is_array($p['keywords']) ?
