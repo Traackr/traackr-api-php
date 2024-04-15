@@ -302,6 +302,10 @@ class Influencers extends TraackrApiObject
             $p['emails'] = is_array($p['emails']) ?
                 implode(',', $p['emails']) : $p['emails'];
         }
+        // include parameter if set (true by default)
+        if (isset($p['enable_regional_country_exclusions'])) {
+            $p['enable_regional_country_exclusions'] = $inf->convertBool($p, 'enable_regional_country_exclusions');
+        }
         return $inf->post(TraackrApi::$apiBaseUrl . 'influencers/lookup', $p);
     }
 
@@ -411,6 +415,10 @@ class Influencers extends TraackrApiObject
         if (isset($p['posts_exclusive'])) {
             $p['posts_exclusive'] = is_array($p['posts_exclusive']) ?
                 implode(',', $p['posts_exclusive']) : $p['posts_exclusive'];
+        }
+        // include parameter if set (true by default)
+        if (isset($p['enable_regional_country_exclusions'])) {
+            $p['enable_regional_country_exclusions'] = $inf->convertBool($p, 'enable_regional_country_exclusions');
         }
         return $inf->post(TraackrApi::$apiBaseUrl . 'influencers/search', $p);
     }
