@@ -58,6 +58,11 @@ class Posts extends TraackrApiObject {
          $p['posts_exclusive'] = is_array($p['posts_exclusive']) ?
                implode(',', $p['posts_exclusive']) : $p['posts_exclusive'];
       }
+      
+      // include parameter if set (true by default)
+      if (isset($p['enable_regional_country_exclusions'])) {
+         $p['enable_regional_country_exclusions'] = $posts->convertBool($p, 'enable_regional_country_exclusions');
+      }
       return $posts->post(TraackrApi::$apiBaseUrl.'posts/lookup', $p);
 
    }
@@ -125,6 +130,11 @@ class Posts extends TraackrApiObject {
       if (isset($p['posts_exclusive'])) {
          $p['posts_exclusive'] = is_array($p['posts_exclusive']) ?
                implode(',', $p['posts_exclusive']) : $p['posts_exclusive'];
+      }
+
+      // include parameter if set (true by default)
+      if (isset($p['enable_regional_country_exclusions'])) {
+         $p['enable_regional_country_exclusions'] = $posts->convertBool($p, 'enable_regional_country_exclusions');
       }
       return $posts->post(TraackrApi::$apiBaseUrl.'posts/search', $p);
 
