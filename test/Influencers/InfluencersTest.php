@@ -10,6 +10,7 @@ class InfluencersTest extends PHPUnit_Framework_TestCase
     private $channel = 'http://traackr.com/blog';
     private $infTwitterHandle = 'dchancogne';
     private $infTwitterId = '7772342';
+    private $infTwitterUrl = 'http://twitter.com/dchancogne';
 
     private $infUid2 = 'ae1955b0f92037c895e5bfdd259a1304';
 
@@ -364,6 +365,16 @@ class InfluencersTest extends PHPUnit_Framework_TestCase
         $result = Traackr\Influencers::addSocial([
             'user_id' => $this->infTwitterId,
             'platform' => 'TWITTER'
+        ]);
+
+        $this->assertNotEmpty($result['influencer'][$this->infTwitterId]);
+        $this->assertEquals($result['influencer'][$this->infTwitterId]['uid'], $this->infUid);
+    }
+
+    public function testAddSocialByURL()
+    {
+        $result = Traackr\Influencers::addSocial([
+            'url' => $this->infTwitterUrl,
         ]);
 
         $this->assertNotEmpty($result['influencer'][$this->infTwitterId]);
