@@ -101,14 +101,28 @@ class Influencers extends TraackrApiObject
 
         $p = $inf->addCustomerKey($p);
         // note that we do not specifically validate our growing list of platforms
-        $inf->checkRequiredParams($p, array('platform', 'customer_key'));
+        $inf->checkRequiredParams($p, array('customer_key'));
+
+        // Trim and clean up platform
+        $p['platform'] = trim($p['platform']);
+        if (empty($p['platform'])) {
+            $p['platform'] = null;
+        } else {
+            $p['platform'] = strtoupper($p['platform']);
+        }
 
         // Validate business requirements
-        if (empty($p['username']) && empty($p['user_id'])) {
-            throw new MissingParameterException("Either username or user_id must be present");
+        if (empty($p['username']) && empty($p['user_id']) && empty($p['url'])) {
+            throw new MissingParameterException("Either username, user_id, or url must be present");
         }
-        if (!empty($p['username']) && !empty($p['user_id'])) {
-            throw new MissingParameterException("Only one of username or user_id may be present");
+
+        $count = !empty($p['username']) + !empty($p['user_id']) + !empty($p['url']);
+        if ($count !== 1) {
+            throw new MissingParameterException("Only one of username, user_id, or url must be present");
+        }
+
+        if ((!empty($p['username']) || !empty($p['user_id'])) && $p['platform'] === null) {
+            throw new MissingParameterException("Platform must be passed with username or user_id");
         }
 
         // support multi params
