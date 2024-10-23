@@ -943,4 +943,16 @@ class InfluencersTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($this->infUid, $inf['influencers'][0]['uid'], 'Incorrect UID');
         $this->assertEquals($this->infName, $inf['influencers'][0]['name'], 'Incorrect name');
     }
+
+    /**
+     * @group error-check
+     * @group read-only
+     * @expectedException Traackr\MissingParameterException
+     * @expectedExceptionMessage Missing parameter: query
+     */
+    public function testQuickLookupMissingRequiredParameter()
+    {
+        // this will fail and throw an expected exception
+        Traackr\Influencers::quickLookup([]);
+    }
 }
