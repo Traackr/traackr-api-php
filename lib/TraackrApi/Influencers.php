@@ -438,6 +438,32 @@ class Influencers extends TraackrApiObject
     }
 
     /**
+     * Quick search for influencers
+     *
+     * @param array $p
+     * @return bool|mixed
+     * @throws MissingParameterException
+     */
+    public static function quickLookup($p = array())
+    {
+        $inf = new Influencers();
+
+        $p = $inf->addCustomerKey($p);
+
+        $hasContentCriteria = false;
+
+        // Input text to search
+        $inf->checkRequiredParams($p, ['query']);
+
+        // Sanitize default values
+        if (isset($p['debug'])) {
+            $p['debug'] = $inf->convertBool($p, 'debug');
+        }
+
+        return $inf->get(TraackrApi::$apiBaseUrl . 'influencers/quick-lookup', $p);
+    }
+
+    /**
      * Add a channel URL to an influencer
      *
      * @param array $p
