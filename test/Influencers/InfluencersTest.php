@@ -915,4 +915,32 @@ class InfluencersTest extends PHPUnit_Framework_TestCase
             'influencers' => array($this->infUid, $this->infUid2),
             'tags' => array($this->infTag, $this->infTag2)));
     }
+
+    public function testQuickLookup()
+    {
+        $inf = Traackr\Influencers::quickLookup(array('query' => 'xxxXXXxxx'));
+        $this->assertCount(0, $inf['influencers'], 'Results found');
+
+        $inf = Traackr\Influencers::quickLookup(array('query' => $this->infName));
+        // Check results format
+        $this->assertArrayHasKey('page_info', $inf, 'No paging info');
+        $this->assertArrayHasKey('influencers', $inf, 'No influencers info');
+        // Should only have found 1 result
+        $this->assertCount(1, $inf['influencers'], 'Found multiple results');
+        // Check some values
+        $this->assertEquals($this->infUid, $inf['influencers'][0]['uid'], 'Invalid influencer/UID found');
+
+        // Check appropriate fields are present
+        $this->assertArrayHasKey('uid', $inf['influencers'][0], 'UID filed is missing');
+        $this->assertArrayHasKey('name', $inf['influencers'][0], 'Name field missing');
+        $this->assertArrayHasKey('description', $inf['influencers'][0], 'Description field missing');
+        $this->assertArrayHasKey('verified', $inf['influencers'][0], 'Verified field missing');
+        $this->assertArrayHasKey('thumbnail', $inf['influencers'][0], 'Thumbnail field missing');
+        $this->assertArrayHasKey('avatar', $inf['influencers'][0], 'Avatar field missing');
+        $this->assertArrayHasKey('audience', $inf['influencers'][0], 'Audience field missing');
+
+        // Check some values
+        $this->assertEquals($this->infUid, $inf['influencers'][0]['uid'], 'Incorrect UID');
+        $this->assertEquals($this->infName, $inf['influencers'][0]['name'], 'Incorrect name');
+    }
 }
